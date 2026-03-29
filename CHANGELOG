@@ -1,0 +1,79 @@
+retroarch-appletv4k changelog
+==============================
+
+2026-03-29  Ryan Musante
+
+	Tagged as v2.0
+
+	* README.md: Convert PDF guide to GitHub-style markdown
+	* README.md: Add ROM folder reference table (Section 3)
+	  with folder names, extensions, cores, and tier for all 17 systems
+	* README.md: Add N64 folder (n64/) and per-game override notes
+	* README.md: Add directory structure tree example
+	* README.md: Add linked table of contents with anchor references
+	* README.md: Add setup checklist with GitHub task-list syntax
+	* README.md: Add GitHub issue hyperlinks for all known bugs
+	* README.md: Add Section 16 — Apple TV 4K 4th Gen projected impact
+	* README.md: Reference Tier 1 screenshot (IMG_1618.jpeg) inline
+	* retroarch.cfg: Sync folder structure with README
+	  - Rename genesis/ to megadrive/
+	  - Add gbc/, mastersystem/, segacd/, fbneo/, 3ds/ folders
+	* retroarch.cfg: Fix section header reference (Section 17 → 16)
+	* CHANGELOG: Initial changelog in kernel.org format
+	* LICENSE: Add MIT license
+
+2026-03-28  Ryan Musante
+
+	Tagged as v1.0
+
+	* retroarch.cfg: Initial drop-in configuration
+	  - Target: Apple TV 4K 3rd Gen (2022), A15 Bionic, 128 GB
+	  - Software: RetroArch v1.22.x (App Store), tvOS 18+
+	  - All keys verified against RetroArch source (configuration.c)
+	* retroarch.cfg: Section 1 — Menu (XMB driver)
+	* retroarch.cfg: Section 2 — Video
+	  - Metal driver, V-Sync, integer scaling, no bilinear filtering
+	  - Shaders enabled globally, per-core disable via overrides
+	  - Max swapchain images = 2 (verify on Metal)
+	  - Aspect ratio index 22 (Core Provided)
+	  - Threaded video intentionally omitted (crash #14978)
+	  - Hard GPU sync intentionally omitted (no ARB_sync on Metal)
+	* retroarch.cfg: Section 3 — Audio (48 ms latency default)
+	* retroarch.cfg: Section 4 — Latency
+	  - Preemptive frames enabled, 1 frame default
+	  - Automatic frame delay enabled
+	  - Late input polling (type 2)
+	* retroarch.cfg: Section 5 — Hotkeys
+	  - L3+R3 menu toggle (combo index 2)
+	  - Additional hotkeys documented as GUI-only
+	* retroarch.cfg: Section 6 — Directories
+	  - File browser, BIOS, saves, states under Config/
+	  - ":"  prefix for tvOS app content root
+	* retroarch.cfg: Section 7 — Cloud Sync (iCloud CloudKit backend)
+	* retroarch.cfg: Section 8 — Save management
+	  - Sort by core name, not content directory
+	* retroarch.cfg: Section 9 — Rewind (disabled globally)
+	* retroarch.cfg: Section 10 — CRT shader reference table
+	  - 9 recommended presets with GPU load ratings
+	  - Per-core shader assignments
+	  - GPU-intensive presets listed as avoid
+	* retroarch.cfg: Section 11 — BIOS file placement reference
+	* retroarch.cfg: Section 12 — Recommended cores per system
+	  - Tier 1/2/3 classification with rationale
+	  - PPSSPP GL workaround for Metal/Vulkan crash (#18050)
+	  - Azahar (3DS) experimental status noted
+	* retroarch.cfg: Section 13 — Folder structure reference
+	* retroarch.cfg: Section 14 — Post-install checklist (22 items)
+	* retroarch.cfg: Section 15 — Per-core override reference
+	  - 12 cores with specific override recommendations
+	  - GitHub issue references for N64 bugs (#18300, #14201)
+	* retroarch.cfg: Section 16 — Known issues table (10 entries)
+	* retroarch.cfg: Section 17 — 4th Gen (2026) projected hardware notes
+	  - A17 Pro spec comparison
+	  - Per-setting impact analysis
+	  - Per-core override change projections
+	  - Connectivity and storage improvements
+	  - Constraints that do not change
+	* retroarch-apple-tv-setup-guide.pdf: Source document
+	  - 16 pages, 18 sections
+	  - Verified against RetroArch source, Libretro docs, GitHub issues
