@@ -1,6 +1,6 @@
 # RetroArch on Apple TV 4K
 
-**RetroArch v1.22.x** · **tvOS 18+** · **Apple TV 4K 3rd Gen (64 GB Wi-Fi · j255ap · A2737)** · **March 2026** · **Rev. 6**
+**RetroArch v1.22.x** · **tvOS 18+** · **Apple TV 4K 3rd Gen (64 GB Wi-Fi · j255ap · A2737)** · **March 2026** · **Rev. 7**
 
 Turn your Apple TV into a retro gaming console. This guide covers installation, ROM and BIOS setup, controller configuration, performance tuning, and CRT shaders for the Apple TV 4K 3rd Generation. A companion `retroarch.cfg` with all recommended settings is included.
 

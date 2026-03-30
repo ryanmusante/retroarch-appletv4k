@@ -3,6 +3,20 @@ retroarch-appletv4k changelog
 
 2026-03-29  Ryan Musante
 
+	Tagged as v2.8
+
+	* retroarch.cfg: Trim all multiline comments to single-line
+	* retroarch.cfg: Move inline comments above their key lines
+	* retroarch.cfg: Condense header (install, format, omitted on one line each)
+	* retroarch.cfg: Compress Appendix A override reference to one-line-per-core
+	* retroarch.cfg: Compress Appendix B checklist to category-per-line format
+	* retroarch.cfg: 267 → 135 lines (25 active keys unchanged)
+	* README.md: Bump revision 6 → 7
+	* retroarch.cfg: Sync source reference to rev.7
+	* CHANGELOG: Update for v2.8
+
+2026-03-29  Ryan Musante
+
 	Tagged as v2.7
 
 	* README.md: Remove Notes column from Tier 1 Supported Systems
@@ -43,24 +57,6 @@ retroarch-appletv4k changelog
 	* retroarch.cfg: Group checklist into labeled subsections (Appendix B)
 	* retroarch.cfg: Add README.md cross-reference index in appendix header
 	* retroarch.cfg: All 25 active key=value lines preserved unchanged
-	* CHANGELOG: Update for v2.5
-
-2026-03-29  Ryan Musante
-
-	Tagged as v2.5
-
-	* retroarch.cfg: Restructure from 17 sections to 9 active + 2 appendices
-	* retroarch.cfg: Remove duplicate documentation (CRT shaders, BIOS table,
-	  recommended cores, folder structure, known issues, 4th Gen projections)
-	  — all content preserved in README.md
-	* retroarch.cfg: Merge §4/4b/4c Latency into single §4 with unified comment
-	* retroarch.cfg: Replace per-key Source/Verified lines with header-level
-	  verification statement
-	* retroarch.cfg: Replace ASCII box-drawing tables with compact list format
-	* retroarch.cfg: Consolidate per-core overrides into Appendix A (by tier)
-	* retroarch.cfg: Consolidate checklist into Appendix B (grouped subsections)
-	* retroarch.cfg: Add "Intentionally Omitted" block to header
-	* retroarch.cfg: ~700 lines → ~265 lines; zero functional key changes
 	* CHANGELOG: Update for v2.5
 
 2026-03-29  Ryan Musante
