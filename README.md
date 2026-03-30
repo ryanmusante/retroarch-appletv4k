@@ -60,14 +60,14 @@ Minimum recommended version: **RetroArch v1.20.0** (required for WebDAV, automat
 
 The A15 Bionic handles retro emulation well, but Apple's App Store restriction on JIT compilation limits performance for demanding systems.
 
-![Tier 1 — Flawless systems](IMG_1618.jpeg)
-*Screenshot: Tier 1 systems run at full speed with shaders enabled.*
-
 | Tier | Systems | Performance | Recommended Core |
 |------|---------|-------------|-----------------|
-| **1 — Flawless** | NES, SNES, GB/GBC/GBA | Full speed, shaders OK | Mesen, Snes9x, mGBA |
-| **1 — Flawless** | Genesis/MD/CD, Master System | Full speed, shaders OK | Genesis Plus GX |
-| **1 — Flawless** | PC Engine/TG-16, Neo Geo, Arcade | Full speed, shaders OK | Beetle PCE, FinalBurn Neo |
+| **1 — Flawless** | NES | Full speed, shaders OK | Mesen |
+| **1 — Flawless** | SNES | Full speed, shaders OK | Snes9x |
+| **1 — Flawless** | GB / GBC / GBA | Full speed, shaders OK | mGBA |
+| **1 — Flawless** | Genesis / MD / CD, Master System | Full speed, shaders OK | Genesis Plus GX |
+| **1 — Flawless** | PC Engine / TG-16 | Full speed, shaders OK | Beetle PCE |
+| **1 — Flawless** | Neo Geo, Arcade | Full speed, shaders OK | FinalBurn Neo |
 | **2 — Good** | PlayStation 1 | Most titles full speed | PCSX ReARMed |
 | **2 — Good** | Nintendo 64 | ~60–70% compatibility | Mupen64Plus-Next |
 | **2 — Good** | Nintendo DS | Works but no touchscreen | melonDS DS |
@@ -78,8 +78,6 @@ The A15 Bionic handles retro emulation well, but Apple's App Store restriction o
 > **PSP Warning:** Crashes with Vulkan/Metal driver on tvOS (GitHub [#18050](https://github.com/libretro/RetroArch/issues/18050)). Set `video_driver = "gl"` in a per-core override. See [Per-Core Overrides](#15-per-core-override-reference).
 
 > **Not available via App Store:** Dreamcast, GameCube, Wii, and PS2 require JIT and cannot run through the App Store version. 3DS was added experimentally in v1.22.x nightly builds (2026) via the Azahar core (Citra fork). Azahar 2125.0 is at RC1 as of March 2026.
-
-Alternative cores added in 2025: Geargrafx (PC Engine) and ClownMDEmu (Genesis/Mega Drive). The primary cores listed above remain the recommended defaults.
 
 ---
 
@@ -525,7 +523,6 @@ Create via GUI: Quick Menu → Overrides → Save Core Overrides.
 | `README.md` | This guide |
 | `CHANGELOG` | Release history (kernel.org style) |
 | `retroarch.cfg` | Drop-in configuration for Apple TV 4K 3rd Gen |
-| `IMG_1618.jpeg` | Tier 1 performance reference screenshot |
 | `LICENSE` | MIT License |
 
 ---

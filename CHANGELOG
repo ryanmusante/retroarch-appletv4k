@@ -3,6 +3,17 @@ retroarch-appletv4k changelog
 
 2026-03-29  Ryan Musante
 
+	Tagged as v2.1
+
+	* README.md: Remove Tier 1 screenshot reference (IMG_1618.jpeg)
+	* README.md: Split Tier 1 into one row per system, one core each
+	* README.md: Remove alternative cores paragraph (Geargrafx, ClownMDEmu)
+	* README.md: Remove IMG_1618.jpeg from Files table
+	* retroarch.cfg: Remove alternative cores from Section 12
+	* CHANGELOG: Update for v2.1
+
+2026-03-29  Ryan Musante
+
 	Tagged as v2.0
 
 	* README.md: Convert PDF guide to GitHub-style markdown
