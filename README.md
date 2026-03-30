@@ -1,6 +1,6 @@
 # RetroArch on Apple TV 4K
 
-**RetroArch v1.22.x** · **tvOS 18+** · **Apple TV 4K 3rd Gen (64 GB Wi-Fi · j255ap · A2737)** · **March 2026** · **Rev. 7**
+**RetroArch v1.22.x** · **tvOS 18+** · **Apple TV 4K 3rd Gen (64 GB Wi-Fi · j255ap · A2737)** · **March 2026** · **Rev. 8**
 
 Turn your Apple TV into a retro gaming console. This guide covers installation, ROM and BIOS setup, controller configuration, performance tuning, and CRT shaders for the Apple TV 4K 3rd Generation. A companion `retroarch.cfg` with all recommended settings is included.
 
@@ -279,8 +279,10 @@ The PS/Xbox home button opens tvOS Control Center, not RetroArch's menu. A contr
 | Video driver | Metal | Best performance on Apple silicon |
 | V-Sync | ON | — |
 | Integer Scale | ON | Pixel-perfect output; produces borders at 4K |
+| Integer Overscale | Optional | Enable for 224p content (NES/SNES) to fill more screen |
 | Bilinear Filtering | OFF | Required for correct shader rendering |
 | Threaded Video | Omitted | Crashes on tvOS (see [Known Issues](#12-known-issues)) |
+| Frame Rest | ON | Sleeps GPU between frames; reduces heat/power (v1.17.0+) |
 | Max Swapchain Images | 2 | Verify in Settings → Video → Synchronization |
 | Aspect Ratio | Core Provided | — |
 
@@ -299,6 +301,8 @@ The PS/Xbox home button opens tvOS Control Center, not RetroArch's menu. A contr
 | Resolution | tvOS Settings → Video and Audio | 4K SDR 60 Hz |
 | Match Frame Rate | tvOS Settings → Video and Audio → Match Content | ON |
 | Match Dynamic Range | tvOS Settings → Video and Audio → Match Content | OFF |
+| Audio Format | tvOS Settings → Video and Audio | Stereo |
+| Reduce Loud Sounds | tvOS Settings → Video and Audio | OFF |
 | Game Mode | TV settings (HDMI input) | ON |
 | Chroma subsampling | TV settings (HDMI input) | YCbCr 4:4:4 or RGB Full |
 
@@ -336,7 +340,9 @@ CRT shaders simulate scanlines, phosphor glow, and curvature for authentic visua
 
 **Avoid on Apple TV:** CRT-Royale, CRT-Geom-Deluxe, Guest-Dr-Venom, Guest-Advanced, and all Mega Bezel shaders — too GPU-intensive for the A15.
 
-> **Tip:** If `shaders_slang/crt/` appears empty after an update, re-run Online Updater → Update Slang Shaders. If that fails, manually upload presets via WebDAV to `Config/shaders_slang/crt/` (see [Known Issues](#12-known-issues)).
+**crt-easymode 4K parameters** (community-recommended starting point): Mask Strength 0.18, Mask Type 1, Scanline Strength 0.95, Gamma Input 2.2, Gamma Output 1.8, Brightness 1.10. Adjust Mask Strength to taste on your display.
+
+> **Tip:** If `shaders_slang/crt/` appears empty after an update, re-run Online Updater → Update Slang Shaders. If that fails, manually upload presets via WebDAV to `Config/shaders_slang/crt/`.
 
 ---
 
@@ -389,16 +395,16 @@ Snes9x run-ahead can be bumped to 2 for SMW/Zelda if no audio artifacts are obse
 
 | Core | Overrides | Notes |
 |------|-----------|-------|
-| **PCSX ReARMed** (PS1) | `run_ahead_frames = "2"`, `audio_latency = "48"`, `rewind_enable = "false"` | — |
-| **Mupen64Plus-Next** (N64) | `run_ahead_frames = "1"`, `rewind_enable = "false"`, `video_frame_delay_auto = "false"`, `audio_latency = "64"` | Rewind freezes; auto frame delay incompatible |
-| **melonDS DS** (NDS) | `run_ahead_frames = "1"`, `rewind_enable = "false"` | — |
+| **PCSX ReARMed** (PS1) | `run_ahead_frames = "1"`, `audio_latency = "32"`, `rewind_enable = "false"` | — |
+| **Mupen64Plus-Next** (N64) | `run_ahead_frames = "1"`, `rewind_enable = "false"`, `video_frame_delay_auto = "false"`, `audio_latency = "64"` | Rewind freezes emulation; auto frame delay incompatible (#14201) |
+| **melonDS DS** (NDS) | `run_ahead_frames = "1"`, `rewind_enable = "false"` | Use software renderer at 1x resolution |
 
 ### Tier 3 cores (disable all latency features)
 
 | Core | Overrides | Notes |
 |------|-----------|-------|
 | **Yabause** (Saturn) | `preemptive_frames_enable = "false"`, `run_ahead_frames = "0"`, `rewind_enable = "false"`, `video_shader_enable = "false"` | — |
-| **PPSSPP** (PSP) | `video_driver = "gl"`, `preemptive_frames_enable = "false"`, `run_ahead_frames = "0"`, `rewind_enable = "false"`, `video_shader_enable = "false"` | Metal/Vulkan crashes |
+| **PPSSPP** (PSP) | `video_driver = "gl"`, `preemptive_frames_enable = "false"`, `run_ahead_frames = "0"`, `rewind_enable = "false"`, `video_shader_enable = "false"` | Metal/Vulkan crashes; set core options: `ppsspp_vertex_cache = enabled`, `ppsspp_separate_io_thread = enabled`, `internal_resolution = 1x` |
 | **Azahar** (3DS) | `preemptive_frames_enable = "false"`, `run_ahead_frames = "0"`, `rewind_enable = "false"`, `video_shader_enable = "false"` | — |
 
 ---
@@ -426,7 +432,7 @@ Most titles at full speed. Some per-core overrides recommended.
 
 | System | Core | Notes |
 |--------|------|-------|
-| PlayStation 1 | PCSX ReARMed | Run-ahead 2 safe on most titles |
+| PlayStation 1 | PCSX ReARMed | Run-ahead 1 safe on most titles |
 | Nintendo 64 | Mupen64Plus-Next | ~60–70% compatibility; complex titles (Conker, Rogue Squadron) may have issues; disable rewind and auto frame delay |
 | Nintendo DS | melonDS DS | No touchscreen input available |
 
@@ -450,12 +456,12 @@ Significant compatibility or performance issues. Disable all latency features.
 | 2 | Switch Pro B button exits app | [#18286](https://github.com/libretro/RetroArch/issues/18286) | Open | Avoid Switch Pro Controller |
 | 3 | Ghost inputs with multiple controllers | [#18447](https://github.com/libretro/RetroArch/issues/18447) | Open | Use single controller or test carefully |
 | 4 | iCloud Sync crash on tvOS 18.6 | — | Reports | Disable Cloud Sync temporarily |
-| 5 | Mupen64Plus-Next rewind freezes emulation | [#18300](https://github.com/libretro/RetroArch/issues/18300) | Open | Disable rewind per-core |
-| 6 | Mupen64Plus-Next auto frame delay incompatible | [#14201](https://github.com/libretro/RetroArch/issues/14201) | Open | Disable auto frame delay per-core |
+| 5 | Mupen64Plus-Next per-core rewind feature request | [#18300](https://github.com/libretro/RetroArch/issues/18300) | Open | Rewind not safe on N64; disable per-core |
+| 6 | Mupen64Plus-Next auto frame delay incompatible | [#14201](https://github.com/libretro/RetroArch/issues/14201) | Open | Disable auto frame delay per-core; refactored in v1.20.0 |
 | 7 | N64 rendering glitches (game-specific) | [#16598](https://github.com/libretro/RetroArch/issues/16598) | Open | Per-game overrides |
-| 8 | Threaded video crashes RetroArch on tvOS | [#14978](https://github.com/libretro/RetroArch/issues/14978) | Persists | Keep `video_threaded` omitted |
-| 9 | Empty shader directory after update | [#16083](https://github.com/libretro/RetroArch/issues/16083) | Partial | Re-run Online Updater; manual WebDAV upload |
-| 10 | Cloud Sync conflicts between tvOS and macOS | [#16727](https://github.com/libretro/RetroArch/issues/16727) | Open | Close content before quitting |
+| 8 | Threaded video crashes RetroArch on tvOS | [#14978](https://github.com/libretro/RetroArch/issues/14978) | Persists | Keep `video_threaded` omitted; upstream fix targets Mesa/GL only, not Metal |
+| 9 | Cloud Sync conflicts between tvOS and macOS | [#16727](https://github.com/libretro/RetroArch/issues/16727) | Partial | DS_Store filter + foreground re-sync added; close content before quitting |
+| 10 | Bluetooth controller jitter over HDMI | — | Reports | Replace HDMI cable if input latency is inconsistent |
 
 ---
 
@@ -484,10 +490,13 @@ Significant compatibility or performance issues. Disable all latency features.
 
 - [ ] Apple TV output: 4K SDR 60 Hz
 - [ ] Match Dynamic Range: OFF
+- [ ] tvOS Audio Format: Stereo
+- [ ] tvOS Reduce Loud Sounds: OFF
 - [ ] TV Game Mode enabled
 - [ ] Chroma 4:4:4 / RGB Full enabled on TV
 - [ ] `aspect_ratio_index` verified as Core Provided
 - [ ] Automatic Frame Delay enabled
+- [ ] Frame Rest enabled
 - [ ] Input Poll Type Behavior set to Late
 - [ ] Max Swapchain Images set to 2 (verify on Metal)
 
@@ -500,7 +509,7 @@ Significant compatibility or performance issues. Disable all latency features.
 ### Per-core overrides
 
 - [ ] N64: disable auto frame delay + rewind
-- [ ] PSP: switch to GL, disable latency features
+- [ ] PSP: switch to GL, disable latency features, set core options (vertex cache, IO thread, 1x res)
 
 ---
 

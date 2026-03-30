@@ -3,6 +3,44 @@ retroarch-appletv4k changelog
 
 2026-03-29  Ryan Musante
 
+	Tagged as v2.9
+
+	* Apply optimization spec v4 (delta-only), excluding
+	  video_threaded=true (rank 9) and video_frame_delay_auto
+	  N64 re-enable (rank 8)
+	* retroarch.cfg: Add video_frame_rest = "true" (v1.17.0+)
+	* retroarch.cfg: Add input_max_users = "1" (solo play)
+	* retroarch.cfg: Add content_runtime_log = "true"
+	* retroarch.cfg: Change audio_latency from 48 to 32; add
+	  rate_control_delta note for stutter edge case
+	* retroarch.cfg: Add video_scale_integer_overscale comment (224p)
+	* retroarch.cfg: Update preemptive frames comment (PS1 no longer 2)
+	* retroarch.cfg: Update rewind comment — remove #18300 ref
+	* retroarch.cfg: Appendix A: PS1 run_ahead 2→1, audio 48→32;
+	  melonDS add renderer=software resolution=1x; PPSSPP add core
+	  options (vertex_cache, io_thread, 1x res)
+	* retroarch.cfg: Appendix B: Add tvOS Audio Format/Reduce Loud
+	  Sounds, Frame Rest checklist items; sync PSP core options
+	* retroarch.cfg: Bump source rev.7 → rev.8
+	* README.md: §7 Video: Add Frame Rest, Integer Overscale rows
+	* README.md: §7 TV output: Add Audio Format (Stereo),
+	  Reduce Loud Sounds (OFF)
+	* README.md: §8 CRT Shaders: Add crt-easymode 4K parameters
+	* README.md: §10 Tier 2: PS1 run_ahead 2→1, audio 48→32;
+	  melonDS add software renderer note; N64 fix #18300 annotation
+	* README.md: §10 Tier 3: PPSSPP add core options
+	* README.md: §11: PS1 run-ahead note 2→1
+	* README.md: §12 Known Issues: Remove #16083 (closed); fix #18300
+	  description (per-core rewind feature request, not freeze); annotate
+	  #14201 (v1.20.0 refactor), #14978 (Mesa/GL only fix), #16727
+	  (partial fix); add BT jitter over HDMI row
+	* README.md: §13 Checklist: Add tvOS audio, Frame Rest, PPSSPP
+	  core options items
+	* README.md: Bump revision 7 → 8
+	* CHANGELOG: Update for v2.9
+
+2026-03-29  Ryan Musante
+
 	Tagged as v2.8
 
 	* retroarch.cfg: Trim all multiline comments to single-line
