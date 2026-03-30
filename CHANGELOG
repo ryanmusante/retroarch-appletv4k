@@ -3,6 +3,102 @@ retroarch-appletv4k changelog
 
 2026-03-29  Ryan Musante
 
+	Tagged as v2.6
+
+	* README.md: Bump revision 4 → 5
+	* retroarch.cfg: Sync source reference to rev.5
+	* retroarch.cfg: Add "(hold)" to Fast Forward and Rewind hotkey
+	  comments to match README §7 hotkey table
+	* Remove stale retroarch.cfg.bak
+	* Cross-reference verification pass: 25 active keys, 23 checklist
+	  items, 12 cores, 10 known issues, all TOC anchors confirmed
+	* CHANGELOG: Update for v2.6
+
+2026-03-29  Ryan Musante
+
+	Tagged as v2.5
+
+	* retroarch.cfg: Restructure from 17 sections (702 lines) to
+	  9 active sections + 2 appendices (258 lines)
+	* retroarch.cfg: Remove duplicate reference sections (CRT shaders,
+	  BIOS table, recommended cores, folder structure, known issues,
+	  4th Gen projections) — all live in README.md
+	* retroarch.cfg: Merge §4/4b/4c Latency into single §4
+	* retroarch.cfg: Replace per-source "Source:/Verified:" lines with
+	  single verification statement in header
+	* retroarch.cfg: Replace ASCII box-drawing tables with compact
+	  inline list format in Appendix A (per-core overrides)
+	* retroarch.cfg: Group checklist into labeled subsections (Appendix B)
+	* retroarch.cfg: Add README.md cross-reference index in appendix header
+	* retroarch.cfg: All 25 active key=value lines preserved unchanged
+	* CHANGELOG: Update for v2.5
+
+2026-03-29  Ryan Musante
+
+	Tagged as v2.5
+
+	* retroarch.cfg: Restructure from 17 sections to 9 active + 2 appendices
+	* retroarch.cfg: Remove duplicate documentation (CRT shaders, BIOS table,
+	  recommended cores, folder structure, known issues, 4th Gen projections)
+	  — all content preserved in README.md
+	* retroarch.cfg: Merge §4/4b/4c Latency into single §4 with unified comment
+	* retroarch.cfg: Replace per-key Source/Verified lines with header-level
+	  verification statement
+	* retroarch.cfg: Replace ASCII box-drawing tables with compact list format
+	* retroarch.cfg: Consolidate per-core overrides into Appendix A (by tier)
+	* retroarch.cfg: Consolidate checklist into Appendix B (grouped subsections)
+	* retroarch.cfg: Add "Intentionally Omitted" block to header
+	* retroarch.cfg: ~700 lines → ~265 lines; zero functional key changes
+	* CHANGELOG: Update for v2.5
+
+2026-03-29  Ryan Musante
+
+	Tagged as v2.4
+
+	* retroarch.cfg: Sync source reference from PDF to README.md rev.4
+	* retroarch.cfg: Update all "Guide Section" cross-references to match
+	  README v2.3 section numbering (§4, §5, §7, §8, §10, §11, §12)
+	* retroarch.cfg: Update "Section 16" → "Appendix A" in header and body
+	* retroarch.cfg: Update "PDF Section 2A" → "README Appendix A"
+	* CHANGELOG: Update for v2.4
+
+2026-03-29  Ryan Musante
+
+	Tagged as v2.3
+
+	* README.md: Restructure from 18 sections to 14 (13 + 1 appendix)
+	* README.md: Add Quick Start 5-step summary at top
+	* README.md: Merge ROM Folder Reference + BIOS Files + Scanning
+	  into unified "ROM and BIOS Setup" section (§4)
+	* README.md: Merge User Interface + Hotkeys + Performance Optimization
+	  into unified "Configuration" section (§7) with table-based layout
+	* README.md: Move Supported Systems to §11 (reference, not setup)
+	* README.md: Move Known Issues to §12 with numbered Ref column
+	* README.md: Demote 4th Gen Projections to Appendix A
+	* README.md: Standardize callouts (Warning/Note/Tip), max 2 per section
+	* README.md: Remove inline GitHub issue links from body text;
+	  consolidate all references in Known Issues table
+	* README.md: Group Setup Checklist into labeled subsections
+	* README.md: Installation now includes retroarch.cfg upload step
+	* README.md: Per-Core Overrides grouped by tier with Notes column
+	* README.md: Bump revision 3 → 4
+	* CHANGELOG: Update for v2.3
+
+2026-03-29  Ryan Musante
+
+	Tagged as v2.2
+
+	* README.md: Retarget to 64 GB Wi-Fi model (j255ap / A2737)
+	* README.md: Update hardware table with model identifier and storage note
+	* README.md: Replace Ethernet references with Wi-Fi guidance
+	* README.md: Add 64 GB cache purge warning in Storage Persistence
+	* README.md: Update Netplay section for Wi-Fi-only operation
+	* README.md: Bump revision 2 → 3
+	* retroarch.cfg: Update target line to 64 GB Wi-Fi (j255ap)
+	* CHANGELOG: Update for v2.2
+
+2026-03-29  Ryan Musante
+
 	Tagged as v2.1
 
 	* README.md: Remove Tier 1 screenshot reference (IMG_1618.jpeg)
