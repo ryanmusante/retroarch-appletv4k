@@ -1,6 +1,6 @@
 # RetroArch on Apple TV 4K
 
-**RetroArch v1.22.x** · **tvOS 18+** · **Apple TV 4K 3rd Gen (64 GB Wi-Fi · j255ap · A2737)** · **March 2026** · **Rev. 5**
+**RetroArch v1.22.x** · **tvOS 18+** · **Apple TV 4K 3rd Gen (64 GB Wi-Fi · j255ap · A2737)** · **March 2026** · **Rev. 6**
 
 Turn your Apple TV into a retro gaming console. This guide covers installation, ROM and BIOS setup, controller configuration, performance tuning, and CRT shaders for the Apple TV 4K 3rd Generation. A companion `retroarch.cfg` with all recommended settings is included.
 
@@ -277,12 +277,12 @@ The PS/Xbox home button opens tvOS Control Center, not RetroArch's menu. A contr
 | Setting | Value | Notes |
 |---------|-------|-------|
 | Video driver | Metal | Best performance on Apple silicon |
-| V-Sync | ON | |
+| V-Sync | ON | — |
 | Integer Scale | ON | Pixel-perfect output; produces borders at 4K |
 | Bilinear Filtering | OFF | Required for correct shader rendering |
 | Threaded Video | Omitted | Crashes on tvOS (see [Known Issues](#12-known-issues)) |
 | Max Swapchain Images | 2 | Verify in Settings → Video → Synchronization |
-| Aspect Ratio | Core Provided | |
+| Aspect Ratio | Core Provided | — |
 
 ### Latency reduction
 
@@ -290,7 +290,7 @@ The PS/Xbox home button opens tvOS Control Center, not RetroArch's menu. A contr
 |---------|-------|-------|
 | Preemptive Frames | ON, 1 frame | Already set in companion config |
 | Automatic Frame Delay | ON | Disable per-core for N64 (see [Per-Core Overrides](#10-per-core-overrides)) |
-| Input Poll Type Behavior | Late | |
+| Input Poll Type Behavior | Late | — |
 
 ### TV output
 
@@ -389,17 +389,17 @@ Snes9x run-ahead can be bumped to 2 for SMW/Zelda if no audio artifacts are obse
 
 | Core | Overrides | Notes |
 |------|-----------|-------|
-| **PCSX ReARMed** (PS1) | `run_ahead_frames = "2"`, `audio_latency = "48"`, `rewind_enable = "false"` | |
+| **PCSX ReARMed** (PS1) | `run_ahead_frames = "2"`, `audio_latency = "48"`, `rewind_enable = "false"` | — |
 | **Mupen64Plus-Next** (N64) | `run_ahead_frames = "1"`, `rewind_enable = "false"`, `video_frame_delay_auto = "false"`, `audio_latency = "64"` | Rewind freezes; auto frame delay incompatible |
-| **melonDS DS** (NDS) | `run_ahead_frames = "1"`, `rewind_enable = "false"` | |
+| **melonDS DS** (NDS) | `run_ahead_frames = "1"`, `rewind_enable = "false"` | — |
 
 ### Tier 3 cores (disable all latency features)
 
 | Core | Overrides | Notes |
 |------|-----------|-------|
-| **Yabause** (Saturn) | `preemptive_frames_enable = "false"`, `run_ahead_frames = "0"`, `rewind_enable = "false"`, `video_shader_enable = "false"` | |
+| **Yabause** (Saturn) | `preemptive_frames_enable = "false"`, `run_ahead_frames = "0"`, `rewind_enable = "false"`, `video_shader_enable = "false"` | — |
 | **PPSSPP** (PSP) | `video_driver = "gl"`, `preemptive_frames_enable = "false"`, `run_ahead_frames = "0"`, `rewind_enable = "false"`, `video_shader_enable = "false"` | Metal/Vulkan crashes |
-| **Azahar** (3DS) | `preemptive_frames_enable = "false"`, `run_ahead_frames = "0"`, `rewind_enable = "false"`, `video_shader_enable = "false"` | |
+| **Azahar** (3DS) | `preemptive_frames_enable = "false"`, `run_ahead_frames = "0"`, `rewind_enable = "false"`, `video_shader_enable = "false"` | — |
 
 ---
 
@@ -411,14 +411,14 @@ The A15 Bionic handles retro emulation well, but Apple's App Store restriction o
 
 Full speed with CRT shaders enabled. No per-core workarounds needed.
 
-| System | Core | Notes |
-|--------|------|-------|
-| NES | Mesen | |
-| SNES | Snes9x | |
-| GB / GBC / GBA | mGBA | |
-| Genesis / MD / CD, Master System | Genesis Plus GX | |
-| PC Engine / TG-16 | Beetle PCE | |
-| Neo Geo, Arcade (CPS1/2/3) | FinalBurn Neo | |
+| System | Core |
+|--------|------|
+| NES | Mesen |
+| SNES | Snes9x |
+| GB / GBC / GBA | mGBA |
+| Genesis / MD / CD, Master System | Genesis Plus GX |
+| PC Engine / TG-16 | Beetle PCE |
+| Neo Geo, Arcade (CPS1/2/3) | FinalBurn Neo |
 
 ### Tier 2 — Good
 
