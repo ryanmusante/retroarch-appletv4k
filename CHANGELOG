@@ -1,6 +1,28 @@
 retroarch-appletv4k changelog
 ==============================
 
+2026-03-30  Ryan Musante
+
+	Tagged as v2.10
+
+	* retroarch.cfg: Clarify preemptive frames comment — run_ahead_frames
+	  sets count for preemptive method, not an independent feature
+	* retroarch.cfg: Fix cloud sync comment — "config" → "core settings"
+	  to distinguish from retroarch.cfg (which does not sync)
+	* retroarch.cfg: Remove redundant audio_latency="32" from mGBA override
+	  (global changed to 32 in v2.9; override now matches global)
+	* retroarch.cfg: Remove redundant audio="32" from PCSX ReARMed override
+	  (same reason)
+	* retroarch.cfg: Bump source rev.8 → rev.9
+	* README.md: §7 Latency: Preemptive Frames notes now explain
+	  relationship with run_ahead_frames
+	* README.md: §10 Tier 1 mGBA: Remove redundant audio_latency="32"
+	* README.md: §10 Tier 2 PCSX ReARMed: Remove redundant audio_latency="32"
+	* README.md: Bump revision 8 → 9
+	* Cross-reference verification pass: 28 active keys, 26 checklist
+	  items, 12 cores, 10 known issues, all TOC anchors confirmed
+	* CHANGELOG: Update for v2.10
+
 2026-03-29  Ryan Musante
 
 	Tagged as v2.9

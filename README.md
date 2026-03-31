@@ -1,6 +1,6 @@
 # RetroArch on Apple TV 4K
 
-**RetroArch v1.22.x** · **tvOS 18+** · **Apple TV 4K 3rd Gen (64 GB Wi-Fi · j255ap · A2737)** · **March 2026** · **Rev. 8**
+**RetroArch v1.22.x** · **tvOS 18+** · **Apple TV 4K 3rd Gen (64 GB Wi-Fi · j255ap · A2737)** · **March 2026** · **Rev. 9**
 
 Turn your Apple TV into a retro gaming console. This guide covers installation, ROM and BIOS setup, controller configuration, performance tuning, and CRT shaders for the Apple TV 4K 3rd Generation. A companion `retroarch.cfg` with all recommended settings is included.
 
@@ -290,7 +290,7 @@ The PS/Xbox home button opens tvOS Control Center, not RetroArch's menu. A contr
 
 | Setting | Value | Notes |
 |---------|-------|-------|
-| Preemptive Frames | ON, 1 frame | Already set in companion config |
+| Preemptive Frames | ON, 1 frame | Lower-cost run-ahead method (v1.16.0+); `run_ahead_frames` sets count |
 | Automatic Frame Delay | ON | Disable per-core for N64 (see [Per-Core Overrides](#10-per-core-overrides)) |
 | Input Poll Type Behavior | Late | — |
 
@@ -384,7 +384,7 @@ Override files are stored at `Config/config/<core_name>/<core_name>.cfg`. Create
 |------|-----------|
 | **Mesen** (NES) | `rewind_enable = "true"`, `run_ahead_frames = "1"` |
 | **Snes9x** (SNES) | `rewind_enable = "true"`, `run_ahead_frames = "1"` |
-| **mGBA** (GBA) | `rewind_enable = "true"`, `run_ahead_frames = "1"`, `audio_latency = "32"` |
+| **mGBA** (GBA) | `rewind_enable = "true"`, `run_ahead_frames = "1"` |
 | **Genesis Plus GX** | `rewind_enable = "true"`, `run_ahead_frames = "1"` |
 | **Beetle PCE** | `rewind_enable = "true"`, `run_ahead_frames = "1"` |
 | **FinalBurn Neo** | `rewind_enable = "true"`, `run_ahead_frames = "1"` |
@@ -395,7 +395,7 @@ Snes9x run-ahead can be bumped to 2 for SMW/Zelda if no audio artifacts are obse
 
 | Core | Overrides | Notes |
 |------|-----------|-------|
-| **PCSX ReARMed** (PS1) | `run_ahead_frames = "1"`, `audio_latency = "32"`, `rewind_enable = "false"` | — |
+| **PCSX ReARMed** (PS1) | `run_ahead_frames = "1"`, `rewind_enable = "false"` | — |
 | **Mupen64Plus-Next** (N64) | `run_ahead_frames = "1"`, `rewind_enable = "false"`, `video_frame_delay_auto = "false"`, `audio_latency = "64"` | Rewind freezes emulation; auto frame delay incompatible (#14201) |
 | **melonDS DS** (NDS) | `run_ahead_frames = "1"`, `rewind_enable = "false"` | Use software renderer at 1x resolution |
 
