@@ -2,6 +2,36 @@ retroarch-appletv4k changelog
 
 2026-03-31  Ryan Musante
 
+	Tagged as v2.12
+
+	* README.md: Restructure from 14 sections to 13 (12 + 1 appendix)
+	* README.md: Move Storage Persistence from §5 to §3 (critical-path
+	  information now precedes file transfer instructions)
+	* README.md: Merge Per-Core Overrides (old §10) into Supported
+	  Systems (old §11) → unified §10 with inline override tables per tier
+	* README.md: Remove directory tree (redundant with ROM folder
+	  reference table)
+	* README.md: Add "Systems not supported (JIT required)" subsection
+	* README.md: Inline GitHub issue links at point of relevance
+	  (controllers, video settings, iCloud sync) in addition to Known
+	  Issues table
+	* README.md: Standardize callouts — replace "Tip" with "Note",
+	  "Warning" with ⚠️ "Critical" for storage section
+	* README.md: Tone pass — remove casual phrasing throughout
+	  ("Turn your Apple TV", "Write them down", "Trinitron look",
+	  "too GPU-intensive", "Save on one Apple device")
+	* README.md: Renumber sections §3–§13 (File Transfers §3→§4,
+	  ROM and BIOS §4→§5, Controllers §6, Configuration §7, Shaders §8,
+	  iCloud §9, Supported Systems §10, Known Issues §12→§11,
+	  Checklist §13→§12)
+	* README.md: Bump revision 10 → 11, version 2.11 → 2.12
+	* retroarch.cfg: Sync source reference to rev.11
+	* Cross-reference verification pass: 28 active keys, 26 checklist
+	  items, 12 cores, 10 known issues, 13 TOC anchors confirmed
+	* CHANGELOG: Update for v2.12
+
+2026-03-31  Ryan Musante
+
 	Tagged as v2.11
 
 	* README.md: Add shields.io badges (version, RetroArch, license)
