@@ -14,7 +14,6 @@ Turn your Apple TV into a retro gaming console. This guide covers installation, 
 
 For detailed instructions, continue reading below.
 
----
 
 ## Table of Contents
 
@@ -33,7 +32,6 @@ For detailed instructions, continue reading below.
 13. [Setup Checklist](#13-setup-checklist)
 14. [Appendix A: 4th Gen Projections](#appendix-a-4th-gen-projections)
 
----
 
 ## 1. Prerequisites
 
@@ -60,7 +58,6 @@ Minimum recommended version: **RetroArch v1.20.0** (required for WebDAV, automat
 
 > **Note:** Only use ROM and BIOS files for games and hardware you legally own. Downloading copyrighted material you do not own is illegal in most jurisdictions.
 
----
 
 ## 2. Installation
 
@@ -77,7 +74,6 @@ No sideloading, developer accounts, or jailbreaking required.
 
 > **Tip:** RetroArch v1.20.0 added Bluetooth keyboard support on tvOS for text input, search, and core option editing.
 
----
 
 ## 3. File Transfers
 
@@ -102,7 +98,6 @@ Available in RetroArch v1.20.0+. Port 8080.
 
 > **Note:** The 64 GB Wi-Fi model has no Ethernet port. Use 5 GHz Wi-Fi for faster transfers and keep the Apple TV close to your router.
 
----
 
 ## 4. ROM and BIOS Setup
 
@@ -192,7 +187,6 @@ Config/
 └── retroarch.cfg
 ```
 
----
 
 ## 5. Storage Persistence
 
@@ -214,7 +208,6 @@ Since v1.19.1, RetroArch stores `retroarch.cfg` in NSUserDefaults (the 500 KB pe
 
 ROM files are never synced by iCloud. Always maintain backups on your computer. Keep your ROM library lean to reduce cache pressure on the 64 GB model.
 
----
 
 ## 6. Controllers
 
@@ -240,7 +233,6 @@ The Apple TV supports up to four simultaneous Bluetooth controllers. The Siri Re
 
 > **Note:** Ghost inputs from controllers 2+ may bleed into controller 1 in multi-controller setups. Test before relying on multiplayer (see [Known Issues](#12-known-issues)).
 
----
 
 ## 7. Configuration
 
@@ -312,7 +304,6 @@ Apple TV does not support gaming VRR — only QMS VRR for media. Leave "Sync to 
 
 RetroArch supports peer-to-peer Netplay with up to 16 players and spectators. Low-latency network recommended (5 GHz Wi-Fi or Ethernet on 128 GB model). Only cores with serialization (save state) support are compatible.
 
----
 
 ## 8. CRT Shaders
 
@@ -344,7 +335,6 @@ CRT shaders simulate scanlines, phosphor glow, and curvature for authentic visua
 
 > **Tip:** If `shaders_slang/crt/` appears empty after an update, re-run Online Updater → Update Slang Shaders. If that fails, manually upload presets via WebDAV to `Config/shaders_slang/crt/`.
 
----
 
 ## 9. iCloud Sync
 
@@ -372,7 +362,6 @@ Save on one Apple device, continue on another.
 
 > **Note:** Close content and return to the main menu before quitting RetroArch to avoid sync conflicts between devices (see [Known Issues](#12-known-issues)).
 
----
 
 ## 10. Per-Core Overrides
 
@@ -407,7 +396,6 @@ Snes9x run-ahead can be bumped to 2 for SMW/Zelda if no audio artifacts are obse
 | **PPSSPP** (PSP) | `video_driver = "gl"`, `preemptive_frames_enable = "false"`, `run_ahead_frames = "0"`, `rewind_enable = "false"`, `video_shader_enable = "false"` | Metal/Vulkan crashes; set core options: `ppsspp_vertex_cache = enabled`, `ppsspp_separate_io_thread = enabled`, `internal_resolution = 1x` |
 | **Azahar** (3DS) | `preemptive_frames_enable = "false"`, `run_ahead_frames = "0"`, `rewind_enable = "false"`, `video_shader_enable = "false"` | — |
 
----
 
 ## 11. Supported Systems
 
@@ -446,7 +434,6 @@ Significant compatibility or performance issues. Disable all latency features.
 | PSP | PPSSPP | Interpreter only; must use GL driver (Metal/Vulkan crash); may crash |
 | Nintendo 3DS | Azahar | Added experimentally in v1.22.x nightly builds (2026); Azahar 2125.0 at RC1 as of March 2026 |
 
----
 
 ## 12. Known Issues
 
@@ -463,7 +450,6 @@ Significant compatibility or performance issues. Disable all latency features.
 | 9 | Cloud Sync conflicts between tvOS and macOS | [#16727](https://github.com/libretro/RetroArch/issues/16727) | Partial | DS_Store filter + foreground re-sync added; close content before quitting |
 | 10 | Bluetooth controller jitter over HDMI | — | Reports | Replace HDMI cable if input latency is inconsistent |
 
----
 
 ## 13. Setup Checklist
 
@@ -511,7 +497,6 @@ Significant compatibility or performance issues. Disable all latency features.
 - [ ] N64: disable auto frame delay + rewind
 - [ ] PSP: switch to GL, disable latency features, set core options (vertex cache, IO thread, 1x res)
 
----
 
 ## Appendix A: 4th Gen Projections
 
@@ -546,7 +531,6 @@ Significant compatibility or performance issues. Disable all latency features.
 | No VRR for gaming | QMS only (media frame-rate switching) |
 | Siri Remote not a gamepad | Hardware limitation |
 
----
 
 ## Files in This Repository
 
@@ -557,7 +541,6 @@ Significant compatibility or performance issues. Disable all latency features.
 | `retroarch.cfg` | Drop-in configuration for Apple TV 4K 3rd Gen |
 | `LICENSE` | MIT License |
 
----
 
 ## License
 
