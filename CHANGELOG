@@ -1,5 +1,19 @@
 retroarch-appletv4k changelog
 
+2026-03-31  Ryan Musante
+
+	Tagged as v2.11
+
+	* README.md: Add shields.io badges (version, RetroArch, license)
+	* README.md: Remove horizontal rule decorations between sections
+	* README.md: Bump revision 9 → 10
+	* retroarch.cfg: Remove decorative box-drawing and section divider lines
+	* retroarch.cfg: Sync source reference to rev.10
+	* CHANGELOG: Remove underline decoration below title
+	* Cross-reference verification pass: 28 active keys, 26 checklist
+	  items, 12 cores, 10 known issues, all TOC anchors confirmed
+	* CHANGELOG: Update for v2.11
+
 2026-03-30  Ryan Musante
 
 	Tagged as v2.10
