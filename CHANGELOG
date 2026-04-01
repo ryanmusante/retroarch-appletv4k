@@ -1,5 +1,82 @@
 retroarch-appletv4k changelog
 
+2026-04-01  Ryan Musante
+
+	Tagged as v2.14
+
+	* Apply optimization spec v6 (frame pacing, latency stack, per-core audit)
+	* retroarch.cfg: Remove video_frame_rest (removed in v1.20.0, obsoleted
+	  by frame delay refactor)
+	* retroarch.cfg: vrr_runloop_enable "true" → "false" (Apple TV is fixed
+	  60 Hz; ON disables DRC, causing judder and audio desync)
+	* retroarch.cfg: video_swap_interval "0" → "1" (explicit 60 Hz; auto
+	  has documented mis-detection failure modes #15320, #15804)
+	* retroarch.cfg: Add video_refresh_rate="59.950001" (calibrated DRC
+	  target; recalibrate on device for accuracy)
+	* retroarch.cfg: Add audio_max_timing_skew="0.050000" (maximum DRC
+	  speed adjustment for core-vs-display rate mismatch)
+	* retroarch.cfg: Add cloud_sync_enable_thumbnails="false",
+	  cloud_sync_enable_system="false" (exclude large/replaceable data
+	  from iCloud sync)
+	* retroarch.cfg: Add savestate_thumbnail_enable="true" (v1.21.0+
+	  visual save state slot previews)
+	* retroarch.cfg: Active keys 41 → 45 (−1 removed, +5 added, 2 modified)
+	* retroarch.cfg: Rewind comment: "per-core for Tier 1" → "per-game only"
+	* retroarch.cfg: Appendix: Tier 1 header "rewind + run-ahead safe" →
+	  "run-ahead safe"; remove rewind="true" from Mesen, Snes9x, mGBA,
+	  Genesis Plus GX, Beetle PCE
+	* retroarch.cfg: Appendix: Snes9x add snes9x_overclock=200 per-game
+	  for SuperFX titles
+	* retroarch.cfg: Appendix: Genesis Plus GX add genesis_plus_gx_bram=
+	  "per game" for Sega CD save isolation
+	* retroarch.cfg: Appendix: PCSX ReARMed add preemptive="false",
+	  video_threaded="true", audio="48", pcsx_rearmed_drc=disabled,
+	  pcsx_rearmed_duping_enable=enabled
+	* retroarch.cfg: Appendix: Mupen64Plus-Next add video_threaded="true",
+	  EnableCopyColorFromRDRAM=Off, EnableCopyDepthToRDRAM=Software,
+	  txFilterMode=None
+	* retroarch.cfg: Appendix: melonDS DS run_ahead "1" → "0"; add
+	  preemptive="false", frame_delay_auto="false", video_threaded="true",
+	  audio="48", melonds_ds_jit_enable=disabled,
+	  melonds_ds_boot_directly=enabled
+	* retroarch.cfg: Appendix: Beetle Saturn add frame_delay_auto="false",
+	  video_threaded="true", audio="64", beetle_saturn_cdimagecache=enabled,
+	  beetle_saturn_midsync=disabled
+	* retroarch.cfg: Appendix: PPSSPP add frame_delay_auto="false",
+	  video_threaded="true", audio="64",
+	  ppsspp_texture_scaling_level=1; ppsspp_fast_memory "enabled" →
+	  "disabled" (crash-prone without JIT); add Metal retest note
+	* retroarch.cfg: Appendix: Azahar add frame_delay_auto="false",
+	  video_threaded="true", audio="64", azahar_use_cpu_jit=disabled,
+	  azahar_use_shader_jit=disabled, azahar_is_new_3ds="New 3DS"
+	* retroarch.cfg: Checklist: vrr_runloop → OFF; remove Frame Rest;
+	  expand per-core overrides for PS1/NDS/Saturn/3DS
+	* README.md: Bump version 2.13 → 2.14, rev.12 → rev.13, March → April
+	* README.md: §7 Video settings: remove Frame Rest row; update Threaded
+	  Video note for per-core usage; Refresh Rate recommend 8192+ frames
+	* README.md: §7 Latency: Sync to Exact Content Framerate ON → OFF;
+	  Preemptive Frames note disable for Tier 2–3
+	* README.md: §7 TV output: rewrite vrr_runloop paragraph (OFF, not ON;
+	  explain DRC restoration)
+	* README.md: §8 CRT Shaders: restructure preset table by GPU cost tier
+	  (Minimal/Low/Medium); add 1080p fallback note for thermal throttling
+	* README.md: §10 Tier 1: remove rewind_enable from all cores; add
+	  SuperFX overclock per-game for Snes9x; add BRAM per-game for
+	  Genesis Plus GX
+	* README.md: §10 Tier 2: PS1 add preemptive disabled, threaded video,
+	  DRC disabled, duping, audio 48; N64 add threaded video + 3 GLideN64
+	  options; NDS run_ahead 1 → 0, add JIT disabled, boot directly,
+	  preemptive disabled, frame delay disabled, threaded video, audio 48
+	* README.md: §10 Tier 3: Saturn add CD cache, midsync disabled, frame
+	  delay disabled, threaded video, audio 64; PPSSPP add texture scaling,
+	  frame delay disabled, threaded video, audio 64, fast_memory →
+	  disabled + risk note + Metal retest note; Azahar add CPU/shader JIT
+	  disabled, New 3DS, frame delay disabled, threaded video, audio 64
+	* README.md: §11 Known Issues: update #8 threaded video for per-core
+	  usage; add #12 A15 thermal throttling
+	* README.md: §12 Checklist: vrr_runloop → OFF; remove Frame Rest;
+	  expand per-core overrides for PS1/NDS/Saturn/3DS
+
 2026-03-31  Ryan Musante
 
 	Tagged as v2.13
