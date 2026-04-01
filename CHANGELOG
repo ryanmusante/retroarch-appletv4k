@@ -2,6 +2,52 @@ retroarch-appletv4k changelog
 
 2026-03-31  Ryan Musante
 
+	Tagged as v2.13
+
+	* Apply optimization spec v5 (performance and gaming audit)
+	* retroarch.cfg: Add 13 global keys (28 → 41 active keys):
+	  vrr_runloop_enable, audio_sync, autosave_interval,
+	  savestate_auto_save, savestate_auto_load, savestate_file_compression,
+	  video_swap_interval, config_save_on_exit, menu_pause_libretro,
+	  pause_nonactive, suspend_screensaver_enable, audio_rate_control_delta,
+	  playlist_show_sublabels
+	* retroarch.cfg: Remove decorative elements (bare # borders, section
+	  markers, double blank lines, checkbox chars in appendix)
+	* retroarch.cfg: Appendix A: replace Yabause with Beetle Saturn
+	* retroarch.cfg: Appendix A: FBNeo rewind "true" → "false" (#16374)
+	* retroarch.cfg: Appendix A: PS1 run_ahead "1" → "0" (interpreter)
+	* retroarch.cfg: Appendix A: add core options for all 12 cores
+	  (Mesen, Snes9x, mGBA, Genesis Plus GX, Beetle PCE, FBNeo,
+	  PCSX ReARMed, Mupen64Plus-Next, melonDS DS, Beetle Saturn,
+	  PPSSPP, Azahar)
+	* retroarch.cfg: Appendix B: add Sync, Saves, Config checklist lines;
+	  expand Overrides to cover N64/PSP/Saturn core options
+	* README.md: Add TOC sub-entries for §5, §7, §10
+	* README.md: §7 Video settings: add Refresh Rate calibration row
+	* README.md: §7 Latency: add Sync to Exact Content Framerate row
+	* README.md: §7 TV output: Match Frame Rate ON → OFF
+	* README.md: §7 TV output: rewrite VRR paragraph (vrr_runloop ON,
+	  Match Frame Rate OFF)
+	* README.md: §8 CRT Shaders: add lightweight shader note for
+	  Tier 2–3 cores
+	* README.md: §10 Tier 1: add core options for all 6 cores; FBNeo
+	  rewind → false with #16374 note
+	* README.md: §10 Tier 2: PS1 run_ahead → 0 with interpreter note;
+	  N64 add cached_interpreter, HLE, GLideN64, threaded renderer;
+	  NDS add threaded renderer
+	* README.md: §10 Tier 3: replace Yabause with Beetle Saturn; PPSSPP
+	  add 7 core options + #4804 driver switch note; Azahar add HW
+	  renderer + shader cache
+	* README.md: §5 ROM table: Saturn core Yabause → Beetle Saturn
+	* README.md: §11 Known Issues: add #11 PPSSPP GL driver switch (#4804)
+	* README.md: §12 Checklist: add Display items (Match Frame Rate,
+	  vrr_runloop, video_refresh_rate); add Data safety subsection;
+	  expand Per-core overrides for PS1/Saturn/3DS
+	* README.md: Remove decorative elements (shields.io badges removed
+	  then restored, double blank lines collapsed)
+
+2026-03-31  Ryan Musante
+
 	Tagged as v2.12
 
 	* README.md: Restructure from 14 to 13 sections (12 + 1 appendix)

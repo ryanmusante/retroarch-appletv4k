@@ -1,10 +1,10 @@
 # RetroArch on Apple TV 4K
 
-![version](https://img.shields.io/badge/version-2.12-blue)
+![version](https://img.shields.io/badge/version-2.13-blue)
 ![RetroArch](https://img.shields.io/badge/RetroArch-v1.22.x-green)
 ![license](https://img.shields.io/badge/license-MIT-yellow)
 
-**RetroArch v1.22.x** · **tvOS 18+** · **Apple TV 4K 3rd Gen (64 GB Wi-Fi · j255ap · A2737)** · **March 2026** · **Rev. 11**
+**RetroArch v1.22.x** · **tvOS 18+** · **Apple TV 4K 3rd Gen (64 GB Wi-Fi · j255ap · A2737)** · **March 2026** · **Rev. 12**
 
 A comprehensive guide to installing and configuring RetroArch on the Apple TV 4K 3rd Generation. Covers installation, ROM and BIOS management, controller pairing, performance tuning, CRT shader selection, and iCloud save synchronization. A companion `retroarch.cfg` with all recommended settings is included.
 
@@ -17,8 +17,6 @@ A comprehensive guide to installing and configuring RetroArch on the Apple TV 4K
 5. Scan ROMs (Manual Scan) and launch a game.
 
 Detailed instructions for each step follow below.
-
-
 ## Table of Contents
 
 1. [Prerequisites](#1-prerequisites)
@@ -26,16 +24,22 @@ Detailed instructions for each step follow below.
 3. [Storage Persistence](#3-storage-persistence)
 4. [File Transfers](#4-file-transfers)
 5. [ROM and BIOS Setup](#5-rom-and-bios-setup)
+   - [ROM folder reference](#rom-folder-reference)
+   - [BIOS files](#bios-files)
 6. [Controllers](#6-controllers)
 7. [Configuration](#7-configuration)
+   - [Video settings](#video-settings)
+   - [Latency reduction](#latency-reduction)
+   - [TV output](#tv-output)
 8. [CRT Shaders](#8-crt-shaders)
 9. [iCloud Sync](#9-icloud-sync)
 10. [Supported Systems and Per-Core Overrides](#10-supported-systems-and-per-core-overrides)
+    - [Tier 1 — Flawless](#tier-1--flawless)
+    - [Tier 2 — Good](#tier-2--good)
+    - [Tier 3 — Limited / Experimental](#tier-3--limited--experimental)
 11. [Known Issues](#11-known-issues)
 12. [Setup Checklist](#12-setup-checklist)
 13. [Appendix A: 4th Gen Projections](#appendix-a-4th-gen-projections)
-
-
 ## 1. Prerequisites
 
 Minimum recommended version: **RetroArch v1.20.0** (required for WebDAV, automatic frame delay, and integer scaling enhancements). Versions before v1.19.1 lack automatic config backup and asset re-extraction.
@@ -60,8 +64,6 @@ Minimum recommended version: **RetroArch v1.20.0** (required for WebDAV, automat
 | BIOS files | Required for PS1, Sega CD, Saturn, Neo Geo (see [ROM and BIOS Setup](#5-rom-and-bios-setup)) |
 
 > **Legal Notice:** Only use ROM and BIOS files for games and hardware you legally own. Downloading copyrighted material you do not own is illegal in most jurisdictions.
-
-
 ## 2. Installation
 
 No sideloading, developer accounts, or jailbreaking required.
@@ -76,8 +78,6 @@ No sideloading, developer accounts, or jailbreaking required.
 4. **Apply configuration:** Upload the companion `retroarch.cfg` via the web interface (see [File Transfers](#4-file-transfers)), then quit and relaunch RetroArch. Do **not** use "Save Current Configuration" before relaunching — it overwrites the uploaded file with the in-memory config.
 
 > **Note:** RetroArch v1.20.0 added Bluetooth keyboard support on tvOS for text input, search, and core option editing.
-
-
 ## 3. Storage Persistence
 
 > ⚠️ **Critical:** Understanding tvOS storage behavior is essential to preventing data loss.
@@ -97,8 +97,6 @@ Since v1.19.1, RetroArch stores `retroarch.cfg` in NSUserDefaults (the 500 KB pe
 5. Enable **iCloud Cloud Sync:** Settings → Saving → Cloud Sync → Enable → Backend: iCloud.
 
 ROM files are never synced by iCloud. Always maintain backups on the transfer computer. Keep the ROM library lean to reduce cache pressure on the 64 GB model.
-
-
 ## 4. File Transfers
 
 tvOS has no Files app. All transfers use RetroArch's built-in network servers. RetroArch must remain running during all transfers.
@@ -121,8 +119,6 @@ Available in RetroArch v1.20.0+. Port 8080.
 | Windows | File Explorer → right-click This PC → Map Network Drive → `http://appletv.local:8080` |
 
 > **Note:** The 64 GB Wi-Fi model has no Ethernet port. Use 5 GHz Wi-Fi for faster transfers and position the Apple TV near the router.
-
-
 ## 5. ROM and BIOS Setup
 
 ### ROM folder reference
@@ -145,7 +141,7 @@ Place ROMs in `Config/ROMs/<folder>/` using the folder names below. These names 
 | PlayStation 1 | `psx/` | `.cue`, `.bin`, `.chd`, `.pbp` | PCSX ReARMed | 2 |
 | Nintendo 64 | `n64/` | `.n64`, `.z64`, `.v64` | Mupen64Plus-Next | 2 |
 | Nintendo DS | `nds/` | `.nds` | melonDS DS | 2 |
-| Sega Saturn | `saturn/` | `.cue`, `.chd` | Yabause | 3 |
+| Sega Saturn | `saturn/` | `.cue`, `.chd` | Beetle Saturn | 3 |
 | PSP | `psp/` | `.iso`, `.cso` | PPSSPP | 3 |
 | Nintendo 3DS | `3ds/` | `.3ds`, `.cia` | Azahar | 3 |
 
@@ -178,8 +174,6 @@ Use Manual Scan to build playlists:
 5. **Start Scan.** Repeat for each system.
 
 Playlists appear under Main Menu → Playlists.
-
-
 ## 6. Controllers
 
 The Apple TV supports up to four simultaneous Bluetooth controllers. The Siri Remote navigates menus only and cannot be used as a gamepad.
@@ -203,8 +197,6 @@ The Apple TV supports up to four simultaneous Bluetooth controllers. The Siri Re
 | Nintendo Switch Pro | Sync button | **Avoid** — B button exits app ([#18286](https://github.com/libretro/RetroArch/issues/18286)) |
 
 > **Warning:** Ghost inputs from controllers 2+ may bleed into controller 1 in multi-controller setups. Test before relying on multiplayer ([#18447](https://github.com/libretro/RetroArch/issues/18447)).
-
-
 ## 7. Configuration
 
 ### User interface
@@ -248,11 +240,13 @@ The PS/Xbox home button opens tvOS Control Center, not RetroArch's menu. A contr
 | Frame Rest | ON | Sleeps GPU between frames; reduces heat and power draw (v1.17.0+) |
 | Max Swapchain Images | 2 | Verify in Settings → Video → Synchronization |
 | Aspect Ratio | Core Provided | — |
+| Refresh Rate | Calibrate | Settings → Video → Output → Estimated Screen Refresh Rate; run ~4096 frames and accept measured value. DRC requires accuracy within 0.1%. RA 1.21.0 fixed tvOS-specific refresh rate detection. |
 
 ### Latency reduction
 
 | Setting | Value | Notes |
 |---------|-------|-------|
+| Sync to Exact Content Framerate | ON | Forces frame pacing to core's native rate; functions as timing correction on fixed-refresh tvOS despite VRR naming |
 | Preemptive Frames | ON, 1 frame | Lower-cost run-ahead method (v1.16.0+); `run_ahead_frames` sets count |
 | Automatic Frame Delay | ON | Disable per-core for N64 (see [Supported Systems and Per-Core Overrides](#10-supported-systems-and-per-core-overrides)) |
 | Input Poll Type Behavior | Late | — |
@@ -262,20 +256,18 @@ The PS/Xbox home button opens tvOS Control Center, not RetroArch's menu. A contr
 | Setting | Location | Value |
 |---------|----------|-------|
 | Resolution | tvOS Settings → Video and Audio | 4K SDR 60 Hz |
-| Match Frame Rate | tvOS Settings → Video and Audio → Match Content | ON |
+| Match Frame Rate | tvOS Settings → Video and Audio → Match Content | OFF |
 | Match Dynamic Range | tvOS Settings → Video and Audio → Match Content | OFF |
 | Audio Format | tvOS Settings → Video and Audio | Stereo |
 | Reduce Loud Sounds | tvOS Settings → Video and Audio | OFF |
 | Game Mode | TV settings (HDMI input) | ON |
 | Chroma subsampling | TV settings (HDMI input) | YCbCr 4:4:4 or RGB Full |
 
-Apple TV does not support gaming VRR — only QMS VRR for media frame-rate switching. Leave "Sync to Exact Content Framerate" OFF.
+Apple TV does not support gaming VRR — only QMS VRR for media frame-rate switching. However, "Sync to Exact Content Framerate" (`vrr_runloop_enable`) should be **ON** — despite the VRR name, it functions as a timing correction that forces frame pacing to the core's native rate on fixed-refresh displays, fixing speed and sync issues on tvOS. Match Frame Rate (tvOS system setting) should be **OFF** — it is designed for AVPlayer video playback and has no positive effect on emulation.
 
 ### Netplay
 
 RetroArch supports peer-to-peer Netplay with up to 16 players and spectators. A low-latency network is recommended (5 GHz Wi-Fi or Ethernet on the 128 GB model). Only cores with serialization (save state) support are compatible.
-
-
 ## 8. CRT Shaders
 
 CRT shaders simulate scanlines, phosphor glow, and curvature for display characteristics representative of period-accurate hardware.
@@ -300,13 +292,11 @@ CRT shaders simulate scanlines, phosphor glow, and curvature for display charact
 | `fakelottes.slangp` | 16-bit systems (lighter crt-lottes) | Low |
 | `crt-aperture.slangp` | SNES, Genesis (lighter than crt-hyllian) | Low |
 
-**Avoid on Apple TV:** CRT-Royale, CRT-Geom-Deluxe, Guest-Dr-Venom, Guest-Advanced, and all Mega Bezel shaders exceed the A15's GPU budget.
+**Avoid on Apple TV:** CRT-Royale, CRT-Geom-Deluxe, Guest-Dr-Venom, Guest-Advanced, and all Mega Bezel shaders exceed the A15's GPU budget. Slang shaders degrade performance noticeably on iOS/tvOS Metal — use lightweight presets (`zfast_crt`, `crt-easymode`, `crt-pi`) for Tier 2–3 cores where GPU headroom is limited by run-ahead and interpreter overhead.
 
 **crt-easymode 4K parameters** (community-recommended starting point): Mask Strength 0.18, Mask Type 1, Scanline Strength 0.95, Gamma Input 2.2, Gamma Output 1.8, Brightness 1.10. Adjust Mask Strength to taste for your display.
 
 > **Note:** If `shaders_slang/crt/` appears empty after an update, re-run Online Updater → Update Slang Shaders. If that fails, upload presets manually via WebDAV to `Config/shaders_slang/crt/`.
-
-
 ## 9. iCloud Sync
 
 Synchronize save data across Apple devices signed into the same Apple ID.
@@ -332,8 +322,6 @@ Synchronize save data across Apple devices signed into the same Apple ID.
 `retroarch.cfg` does **not** sync via Cloud Sync — upload it manually to each device. The iCloud Drive backend (PR #17814) is available on macOS/iOS but not Apple TV; continue using the CloudKit backend.
 
 > **Note:** Close content and return to the main menu before quitting RetroArch to prevent sync conflicts between devices ([#16727](https://github.com/libretro/RetroArch/issues/16727)).
-
-
 ## 10. Supported Systems and Per-Core Overrides
 
 The A15 Bionic handles retro emulation effectively, but Apple's App Store restriction on JIT compilation limits performance for demanding systems. Dreamcast, GameCube, Wii, and PS2 require JIT and cannot run through the App Store version.
@@ -346,12 +334,12 @@ Full speed with CRT shaders enabled. No per-core workarounds required.
 
 | System | Core | Recommended Overrides |
 |--------|------|-----------------------|
-| NES | Mesen | `rewind_enable = "true"`, `run_ahead_frames = "1"` |
-| SNES | Snes9x | `rewind_enable = "true"`, `run_ahead_frames = "1"` |
-| GB / GBC / GBA | mGBA | `rewind_enable = "true"`, `run_ahead_frames = "1"` |
-| Genesis / MD / CD, Master System | Genesis Plus GX | `rewind_enable = "true"`, `run_ahead_frames = "1"` |
-| PC Engine / TG-16 | Beetle PCE | `rewind_enable = "true"`, `run_ahead_frames = "1"` |
-| Neo Geo, Arcade (CPS1/2/3) | FinalBurn Neo | `rewind_enable = "true"`, `run_ahead_frames = "1"` |
+| NES | Mesen | `rewind_enable = "true"`, `run_ahead_frames = "1"`. Core options: `mesen_nospritelimit = On`, `mesen_overclock = Medium`, `mesen_overclock_type = Before NMI`, `mesen_reduce_dmc_popping = On` |
+| SNES | Snes9x | `rewind_enable = "true"`, `run_ahead_frames = "1"`. Core options: `snes9x_reduce_sprite_flicker = enabled`, `snes9x_overclock_cycles = Light` |
+| GB / GBC / GBA | mGBA | `rewind_enable = "true"`, `run_ahead_frames = "1"`. Core options: `mgba_color_correction = Game Boy Advance`, `mgba_interframe_blending = Smart`, `mgba_audio_low_pass_filter = ON` |
+| Genesis / MD / CD, Master System | Genesis Plus GX | `rewind_enable = "true"`, `run_ahead_frames = "1"`. Core options: `genesis_plus_gx_ym2612 = Nuked (YM2612)`, `genesis_plus_gx_audio_filter = Low-Pass`, `genesis_plus_gx_lowpass_range = 55`, `genesis_plus_gx_no_sprite_limit = enabled` |
+| PC Engine / TG-16 | Beetle PCE | `rewind_enable = "true"`, `run_ahead_frames = "1"`. Core options: `pce_fast_cdimagecache = enabled`, `pce_fast_nospritelimit = enabled` |
+| Neo Geo, Arcade (CPS1/2/3) | FinalBurn Neo | `rewind_enable = "false"`, `run_ahead_frames = "1"`. Rewind conflicts with runahead in FBNeo ([#16374](https://github.com/libretro/RetroArch/issues/16374)); run-ahead provides the latency benefit |
 
 Snes9x run-ahead can be set to 2 for titles such as Super Mario World and Zelda if no audio artifacts are observed.
 
@@ -361,9 +349,9 @@ Most titles at full speed. Per-core overrides recommended.
 
 | System | Core | Overrides | Notes |
 |--------|------|-----------|-------|
-| PlayStation 1 | PCSX ReARMed | `run_ahead_frames = "1"`, `rewind_enable = "false"` | Run-ahead 1 is safe on most titles |
-| Nintendo 64 | Mupen64Plus-Next | `run_ahead_frames = "1"`, `rewind_enable = "false"`, `video_frame_delay_auto = "false"`, `audio_latency = "64"` | ~60–70% compatibility; complex titles (Conker, Rogue Squadron) may exhibit issues; rewind freezes emulation; auto frame delay incompatible ([#14201](https://github.com/libretro/RetroArch/issues/14201)) |
-| Nintendo DS | melonDS DS | `run_ahead_frames = "1"`, `rewind_enable = "false"` | Use software renderer at 1x resolution; no touchscreen input available |
+| PlayStation 1 | PCSX ReARMed | `run_ahead_frames = "0"`, `rewind_enable = "false"` | Without JIT, run-ahead doubles interpreter workload — re-enable per-game for light 2D titles. Core options: `pcsx_rearmed_frameskip = Auto`, `pcsx_rearmed_frameskip_threshold = 33`, `pcsx_rearmed_gpu_thread_rendering = Synchronous`, `pcsx_rearmed_psxclock = 57` (lower to 50 per-game for demanding titles) |
+| Nintendo 64 | Mupen64Plus-Next | `run_ahead_frames = "1"`, `rewind_enable = "false"`, `video_frame_delay_auto = "false"`, `audio_latency = "64"` | ~60–70% compatibility; complex titles (Conker, Rogue Squadron) may exhibit issues; rewind freezes emulation; auto frame delay incompatible ([#14201](https://github.com/libretro/RetroArch/issues/14201)). Core options: `mupen64plus-cpucore = cached_interpreter`, `mupen64plus-rsp-plugin = HLE`, `mupen64plus-rdp-plugin = GLideN64`, `mupen64plus-43screensize = 320x240`, `mupen64plus-ThreadedRenderer = True`, `mupen64plus-EnableCopyColorToRDRAM = Async` |
+| Nintendo DS | melonDS DS | `run_ahead_frames = "1"`, `rewind_enable = "false"` | Use software renderer at 1x resolution; no touchscreen input available. Core options: `melonds_threaded_renderer = enabled` |
 
 ### Tier 3 — Limited / Experimental
 
@@ -371,15 +359,13 @@ Significant compatibility or performance constraints. Disable all latency featur
 
 | System | Core | Overrides | Notes |
 |--------|------|-----------|-------|
-| Sega Saturn | Yabause | `preemptive_frames_enable = "false"`, `run_ahead_frames = "0"`, `rewind_enable = "false"`, `video_shader_enable = "false"` | Significant compatibility issues |
-| PSP | PPSSPP | `video_driver = "gl"`, `preemptive_frames_enable = "false"`, `run_ahead_frames = "0"`, `rewind_enable = "false"`, `video_shader_enable = "false"` | Metal/Vulkan crashes ([#18050](https://github.com/libretro/RetroArch/issues/18050)); core options: `ppsspp_vertex_cache = enabled`, `ppsspp_separate_io_thread = enabled`, `internal_resolution = 1x` |
-| Nintendo 3DS | Azahar | `preemptive_frames_enable = "false"`, `run_ahead_frames = "0"`, `rewind_enable = "false"`, `video_shader_enable = "false"` | Added experimentally in v1.22.x nightly builds (2026); Azahar 2125.0 at RC1 as of March 2026 |
+| Sega Saturn | Beetle Saturn | `preemptive_frames_enable = "false"`, `run_ahead_frames = "0"`, `rewind_enable = "false"`, `video_shader_enable = "false"` | Only viable Saturn core on tvOS — Yabause/Kronos requires OpenGL 4.3 compute shaders, unavailable on Metal. Beetle Saturn uses a pure software renderer. |
+| PSP | PPSSPP | `video_driver = "gl"`, `preemptive_frames_enable = "false"`, `run_ahead_frames = "0"`, `rewind_enable = "false"`, `video_shader_enable = "false"` | Metal/Vulkan crashes ([#18050](https://github.com/libretro/RetroArch/issues/18050)); Metal→GL driver switch is unstable ([#4804](https://github.com/libretro/RetroArch/issues/4804)). Core options: `ppsspp_vertex_cache = enabled`, `ppsspp_separate_io_thread = enabled`, `ppsspp_internal_resolution = 1x`, `ppsspp_fast_memory = enabled`, `ppsspp_frameskip = 1`, `ppsspp_auto_frameskip = enabled`, `ppsspp_gpu_hardware_transform = enabled`, `ppsspp_software_skinning = enabled`, `ppsspp_ignore_bad_memory_access = enabled`, `ppsspp_cache_full_iso_in_ram = enabled`, `ppsspp_psp_model = psp_2000_3000` |
+| Nintendo 3DS | Azahar | `preemptive_frames_enable = "false"`, `run_ahead_frames = "0"`, `rewind_enable = "false"`, `video_shader_enable = "false"` | Added experimentally in v1.22.x nightly builds (2026); Azahar 2125.0 at RC1 as of March 2026. Core options: `citra_use_hw_renderer = enabled`, `citra_use_hw_shaders = enabled`, `citra_use_hw_shader_cache = enabled`, `citra_resolution_factor = 1`, `citra_texture_filter = none`. Core option keys may use `azahar_` prefix — verify on device. |
 
 ### Systems not supported (JIT required)
 
 Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version of RetroArch cannot execute JIT-compiled code. This is an Apple policy constraint, not a hardware limitation.
-
-
 ## 11. Known Issues
 
 | # | Issue | Ref | Status | Workaround |
@@ -394,8 +380,7 @@ Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version
 | 8 | Threaded video crashes RetroArch on tvOS | [#14978](https://github.com/libretro/RetroArch/issues/14978) | Persists | Keep `video_threaded` omitted; upstream fix targets Mesa/GL only, not Metal |
 | 9 | Cloud Sync conflicts between tvOS and macOS | [#16727](https://github.com/libretro/RetroArch/issues/16727) | Partial | DS_Store filter + foreground re-sync added; close content before quitting |
 | 10 | Bluetooth controller jitter over HDMI | — | Reports | Replace HDMI cable if input latency is inconsistent |
-
-
+| 11 | PPSSPP GL driver switch crashes | [#4804](https://github.com/libretro/RetroArch/issues/4804), [#16536](https://github.com/libretro/RetroArch/issues/16536) | Open (2016) | Metal→GL per-core switch is architecturally unstable. Alternatives: test Metal in current builds, dedicated GL-only config via `--config`, or standalone PPSSPP app |
 ## 12. Setup Checklist
 
 ### Install and configure
@@ -420,16 +405,26 @@ Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version
 ### Display and performance
 
 - [ ] Apple TV output: 4K SDR 60 Hz
+- [ ] Match Frame Rate: OFF (tvOS Settings → Video and Audio → Match Content)
 - [ ] Match Dynamic Range: OFF
 - [ ] tvOS Audio Format: Stereo
 - [ ] tvOS Reduce Loud Sounds: OFF
 - [ ] TV Game Mode enabled
 - [ ] Chroma 4:4:4 / RGB Full enabled on TV
 - [ ] `aspect_ratio_index` verified as Core Provided
+- [ ] `video_refresh_rate` calibrated (Settings → Video → Output → Estimated Screen Refresh Rate)
+- [ ] `vrr_runloop_enable` ON (Sync to Exact Content Framerate)
 - [ ] Automatic Frame Delay enabled
 - [ ] Frame Rest enabled
 - [ ] Input Poll Type Behavior set to Late
 - [ ] Max Swapchain Images set to 2 (verify on Metal)
+
+### Data safety
+
+- [ ] `autosave_interval` set to 30
+- [ ] `savestate_auto_save` and `savestate_auto_load` enabled
+- [ ] `savestate_file_compression` enabled
+- [ ] `config_save_on_exit` set to false (save explicitly after intentional changes)
 
 ### Shaders and sync
 
@@ -439,10 +434,11 @@ Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version
 
 ### Per-core overrides
 
-- [ ] N64: auto frame delay and rewind disabled
-- [ ] PSP: GL driver selected, all latency features disabled, core options configured (vertex cache, IO thread, 1x resolution)
-
-
+- [ ] N64: auto frame delay and rewind disabled; cached interpreter, HLE RSP, GLideN64, threaded renderer
+- [ ] PS1: run-ahead disabled (re-enable per-game for 2D); auto frameskip, GPU threading
+- [ ] PSP: GL driver selected, all latency features disabled, core options configured (vertex cache, IO thread, fast memory, frameskip, 1x resolution)
+- [ ] Saturn: Beetle Saturn core selected (not Yabause)
+- [ ] 3DS: hardware renderer and shader cache enabled
 ## Appendix A: 4th Gen Projections
 
 > **Note:** Based on rumoured specifications as of March 2026. Apple has not announced this product. Projections assume the App Store JIT restriction persists.
@@ -475,8 +471,6 @@ Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version
 | 500 KB persistent storage | tvOS platform limit |
 | No VRR for gaming | QMS only (media frame-rate switching) |
 | Siri Remote not a gamepad | Hardware limitation |
-
-
 ## Files in This Repository
 
 | File | Description |
@@ -485,8 +479,6 @@ Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version
 | `CHANGELOG` | Release history (kernel.org style) |
 | `retroarch.cfg` | Drop-in configuration for Apple TV 4K 3rd Gen |
 | `LICENSE` | MIT License |
-
-
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
