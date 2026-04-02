@@ -1,10 +1,10 @@
 # RetroArch on Apple TV 4K
 
-![version](https://img.shields.io/badge/version-2.15-blue)
+![version](https://img.shields.io/badge/version-2.16-blue)
 ![RetroArch](https://img.shields.io/badge/RetroArch-v1.22.x-green)
 ![license](https://img.shields.io/badge/license-MIT-yellow)
 
-**RetroArch v1.22.x** · **tvOS 18+** · **Apple TV 4K 3rd Gen (64 GB Wi-Fi · j255ap · A2737)** · **April 2026** · **Rev. 14**
+**RetroArch v1.22.x** · **tvOS 18+** · **Apple TV 4K 3rd Gen (64 GB Wi-Fi · j255ap · A2737)** · **April 2026** · **Rev. 15**
 
 A comprehensive guide to installing and configuring RetroArch on the Apple TV 4K 3rd Generation. Covers installation, ROM and BIOS management, controller pairing, performance tuning, CRT shader selection, and iCloud save synchronization. A companion `retroarch.cfg` with all recommended settings is included.
 
@@ -42,7 +42,7 @@ Detailed instructions for each step follow below.
 13. [Appendix A: 4th Gen Projections](#appendix-a-4th-gen-projections)
 ## 1. Prerequisites
 
-Minimum recommended version: **RetroArch v1.20.0** (required for WebDAV, automatic frame delay, and integer scaling enhancements). Versions before v1.19.1 lack automatic config backup and asset re-extraction.
+Minimum recommended version: **RetroArch v1.20.0** (required for WebDAV, automatic frame delay, and integer scaling enhancements). Automatic config backup was added in v1.16.0 and asset re-extraction in v1.19.0.
 
 ### Hardware
 
@@ -86,7 +86,7 @@ tvOS guarantees only **500 KB** of persistent storage per app. All other data �
 
 ### Automatic config backup
 
-Since v1.19.1, RetroArch stores `retroarch.cfg` in NSUserDefaults (the 500 KB persistent area). Shader assets are re-extracted automatically when detected as missing.
+Since v1.16.0, RetroArch stores `retroarch.cfg` in NSUserDefaults (the 500 KB persistent area). Since v1.19.0, shader assets are re-extracted automatically when detected as missing.
 
 ### Recommended setup
 
@@ -364,7 +364,7 @@ Significant compatibility or performance constraints. Disable all latency featur
 |--------|------|-----------|-------|
 | Sega Saturn | Beetle Saturn | `preemptive_frames_enable = "false"`, `run_ahead_frames = "0"`, `rewind_enable = "false"`, `video_shader_enable = "false"`, `video_frame_delay_auto = "false"`, `video_threaded = "true"`, `audio_latency = "64"` | Only viable Saturn core on tvOS — Yabause/Kronos requires OpenGL 4.3 compute shaders, unavailable on Metal. Beetle Saturn uses a pure software renderer. Core options: `beetle_saturn_cdimagecache = enabled`, `beetle_saturn_midsync = disabled` |
 | PSP | PPSSPP | `video_driver = "gl"`, `preemptive_frames_enable = "false"`, `run_ahead_frames = "0"`, `rewind_enable = "false"`, `video_shader_enable = "false"`, `video_frame_delay_auto = "false"`, `video_threaded = "true"`, `audio_latency = "64"` | Metal/Vulkan crashes ([#18050](https://github.com/libretro/RetroArch/issues/18050)); Metal→GL driver switch is unstable ([#4804](https://github.com/libretro/RetroArch/issues/4804)); test Metal in current builds and remove GL override if stable. Core options: `ppsspp_vertex_cache = enabled`, `ppsspp_separate_io_thread = enabled`, `ppsspp_internal_resolution = 1x`, `ppsspp_fast_memory = disabled`, `ppsspp_texture_scaling_level = 1`, `ppsspp_frameskip = 1`, `ppsspp_auto_frameskip = enabled`, `ppsspp_gpu_hardware_transform = enabled`, `ppsspp_software_skinning = enabled`, `ppsspp_ignore_bad_memory_access = enabled`, `ppsspp_cache_full_iso_in_ram = enabled`, `ppsspp_psp_model = psp_2000_3000`. Note: `fast_memory` is crash-prone without JIT — re-enable per-game with testing |
-| Nintendo 3DS | Azahar | `preemptive_frames_enable = "false"`, `run_ahead_frames = "0"`, `rewind_enable = "false"`, `video_shader_enable = "false"`, `video_frame_delay_auto = "false"`, `video_threaded = "true"`, `audio_latency = "64"` | Added experimentally in v1.22.x nightly builds (2026); Azahar 2125.0 at RC1 as of March 2026. Core options: `citra_use_hw_renderer = enabled`, `citra_use_hw_shaders = enabled`, `citra_use_hw_shader_cache = enabled`, `citra_resolution_factor = 1`, `citra_texture_filter = none`, `azahar_use_cpu_jit = disabled`, `azahar_use_shader_jit = disabled`, `azahar_is_new_3ds = New 3DS`. Core option keys may use `azahar_` prefix — verify on device. |
+| Nintendo 3DS | Azahar | `preemptive_frames_enable = "false"`, `run_ahead_frames = "0"`, `rewind_enable = "false"`, `video_shader_enable = "false"`, `video_frame_delay_auto = "false"`, `video_threaded = "true"`, `audio_latency = "64"` | Added experimentally in v1.22.x nightly builds (2026); Azahar 2125.0 at Alpha 4 as of March 2026. Core options: `citra_use_hw_renderer = enabled`, `citra_use_hw_shaders = enabled`, `citra_use_hw_shader_cache = enabled`, `citra_resolution_factor = 1`, `citra_texture_filter = none`, `azahar_use_cpu_jit = disabled`, `azahar_use_shader_jit = disabled`, `azahar_is_new_3ds = New 3DS`. Core option keys may use `azahar_` prefix — verify on device. |
 
 ### Systems not supported (JIT required)
 
@@ -454,7 +454,7 @@ Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version
 | SoC | A15 Bionic (5 nm, 5-core CPU) | A17 Pro (3 nm, 6-core CPU) |
 | GPU | 5-core, no hardware RT | 6-core, hardware ray tracing |
 | RAM | 4 GB | 8 GB |
-| Wireless | Wi-Fi 6, BT 5.0 | Wi-Fi 7, BT 6 (Apple N1) |
+| Wireless | Wi-Fi 6, BT 5.0 | Wi-Fi 6E/7 (Apple N1) |
 | Process | 5 nm (TSMC N5P) | 3 nm (TSMC N3B) |
 
 ### Projected tier changes

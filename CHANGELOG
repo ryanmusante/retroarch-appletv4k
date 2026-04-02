@@ -2,6 +2,24 @@ retroarch-appletv4k changelog
 
 2026-04-01  Ryan Musante
 
+	Tagged as v2.16
+
+	* Fact-check corrections against upstream sources
+	* README.md: §3 config backup "v1.19.1" → "v1.16.0"; asset
+	  re-extraction attributed to v1.19.0 (verified against CHANGES.md)
+	* README.md: §1 Prerequisites: sync version references to match §3
+	* README.md: §10 Azahar 2125.0 "at RC1" → "at Alpha 4"
+	  (verified against azahar-emu GitHub releases)
+	* README.md: Appendix A 4th Gen wireless "Wi-Fi 7, BT 6" →
+	  "Wi-Fi 6E/7" (MacRumors: 6E confirmed, 7 possible)
+	* retroarch.cfg: savestate_thumbnail_enable comment: remove
+	  misleading "v1.21.0+" (feature predates v1.21.0; that release
+	  only default-enabled it on x86_64)
+	* README.md: Bump version 2.15 → 2.16, rev.14 → rev.15
+	* retroarch.cfg: Sync source reference to rev.15
+
+2026-04-01  Ryan Musante
+
 	Tagged as v2.15
 
 	* Audit corrections: A15 GPU core count, preemptive frames version,
