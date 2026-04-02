@@ -1,10 +1,10 @@
 # RetroArch on Apple TV 4K
 
-![version](https://img.shields.io/badge/version-2.14-blue)
+![version](https://img.shields.io/badge/version-2.15-blue)
 ![RetroArch](https://img.shields.io/badge/RetroArch-v1.22.x-green)
 ![license](https://img.shields.io/badge/license-MIT-yellow)
 
-**RetroArch v1.22.x** · **tvOS 18+** · **Apple TV 4K 3rd Gen (64 GB Wi-Fi · j255ap · A2737)** · **April 2026** · **Rev. 13**
+**RetroArch v1.22.x** · **tvOS 18+** · **Apple TV 4K 3rd Gen (64 GB Wi-Fi · j255ap · A2737)** · **April 2026** · **Rev. 14**
 
 A comprehensive guide to installing and configuring RetroArch on the Apple TV 4K 3rd Generation. Covers installation, ROM and BIOS management, controller pairing, performance tuning, CRT shader selection, and iCloud save synchronization. A companion `retroarch.cfg` with all recommended settings is included.
 
@@ -189,7 +189,7 @@ The Apple TV supports up to four simultaneous Bluetooth controllers. The Siri Re
 
 | Controller | Pairing Method | Status |
 |-----------|---------------|--------|
-| PS5 DualSense / Edge | PS + Create buttons | **Recommended** — full support, BT 5.1 low latency |
+| PS5 DualSense / Edge | PS + Create buttons | **Recommended** — full support, BT 5.1 (link limited to Apple TV's BT 5.0) |
 | Xbox Series X/S Wireless | Xbox + Connect button | **Recommended** — full support |
 | PS4 DualShock 4 | PS + Share buttons | Excellent — most stable |
 | 8BitDo Pro 2 / Ultimate | Mode D/A + Pair button | Excellent — multi-platform |
@@ -246,7 +246,7 @@ The PS/Xbox home button opens tvOS Control Center, not RetroArch's menu. A contr
 | Setting | Value | Notes |
 |---------|-------|-------|
 | Sync to Exact Content Framerate | OFF | Apple TV is fixed 60 Hz; ON disables Dynamic Rate Control and causes judder. OFF restores DRC via `audio_rate_control_delta` |
-| Preemptive Frames | ON, 1 frame | Lower-cost run-ahead method (v1.16.0+); `run_ahead_frames` sets count. Disable per-core for Tier 2–3. |
+| Preemptive Frames | ON, 1 frame | Lower-cost run-ahead method (v1.15.0+); `run_ahead_frames` sets count. Disable per-core for Tier 2–3. |
 | Automatic Frame Delay | ON | Disable per-core for N64 (see [Supported Systems and Per-Core Overrides](#10-supported-systems-and-per-core-overrides)) |
 | Input Poll Type Behavior | Late | — |
 
@@ -376,7 +376,7 @@ Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version
 | 1 | PPSSPP crashes with Vulkan/Metal driver | [#18050](https://github.com/libretro/RetroArch/issues/18050) | Open | `video_driver = "gl"` per-core override |
 | 2 | Switch Pro B button exits app | [#18286](https://github.com/libretro/RetroArch/issues/18286) | Open | Avoid Switch Pro Controller |
 | 3 | Ghost inputs with multiple controllers | [#18447](https://github.com/libretro/RetroArch/issues/18447) | Open | Use single controller or test carefully |
-| 4 | iCloud Sync crash on tvOS 18.6 | — | Reports | Disable Cloud Sync temporarily |
+| 4 | iCloud Sync crash on tvOS 18.6 | — | Community reports | Disable Cloud Sync temporarily; re-enable after tvOS update |
 | 5 | Mupen64Plus-Next per-core rewind feature request | [#18300](https://github.com/libretro/RetroArch/issues/18300) | Open | Disable rewind per-core for N64 |
 | 6 | Mupen64Plus-Next auto frame delay incompatible | [#14201](https://github.com/libretro/RetroArch/issues/14201) | Open | Disable auto frame delay per-core; refactored in v1.20.0 |
 | 7 | N64 rendering glitches (game-specific) | [#16598](https://github.com/libretro/RetroArch/issues/16598) | Open | Per-game overrides |
@@ -452,7 +452,7 @@ Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version
 | Spec | 3rd Gen (2022) | 4th Gen (rumoured) |
 |------|---------------|-------------------|
 | SoC | A15 Bionic (5 nm, 5-core CPU) | A17 Pro (3 nm, 6-core CPU) |
-| GPU | 4-core, no hardware RT | 6-core, hardware ray tracing |
+| GPU | 5-core, no hardware RT | 6-core, hardware ray tracing |
 | RAM | 4 GB | 8 GB |
 | Wireless | Wi-Fi 6, BT 5.0 | Wi-Fi 7, BT 6 (Apple N1) |
 | Process | 5 nm (TSMC N5P) | 3 nm (TSMC N3B) |

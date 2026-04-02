@@ -2,6 +2,26 @@ retroarch-appletv4k changelog
 
 2026-04-01  Ryan Musante
 
+	Tagged as v2.15
+
+	* Audit corrections (hardware spec verification + libretro source check)
+	* README.md: Appendix A hardware comparison: GPU "4-core" → "5-core"
+	  (Apple TV 4K 3rd Gen has the 5-core GPU variant of A15; confirmed
+	  Wikipedia, The Apple Wiki, EveryMac)
+	* README.md: §7 Latency: Preemptive Frames "v1.16.0+" → "v1.15.0+"
+	  (feature debuted in RetroArch v1.15.0, March 2023)
+	* README.md: §6 Controllers: DualSense "BT 5.1 low latency" →
+	  "BT 5.1 (link limited to Apple TV's BT 5.0)" (Apple TV is BT 5.0;
+	  connection negotiates to lower common version)
+	* README.md: §11 Known Issues #4: iCloud Sync crash status "Reports" →
+	  "Community reports"; expand workaround
+	* README.md: Bump version 2.14 → 2.15, rev.13 → rev.14
+	* retroarch.cfg: Preemptive Frames comment "v1.16.0+" → "v1.15.0+"
+	* retroarch.cfg: Sync source reference to rev.14
+	* Add MIT LICENSE file (referenced by README but missing from archive)
+
+2026-04-01  Ryan Musante
+
 	Tagged as v2.14
 
 	* Apply optimization spec v6 (frame pacing, latency stack, per-core audit)
