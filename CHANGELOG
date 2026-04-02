@@ -1,65 +1,72 @@
 retroarch-appletv4k changelog
 
+2026-04-02  Ryan Musante
+
+	Tagged as v2.17
+
+	* Apply optimization audit (31 findings, deep research against
+	  RetroArch v1.20–v1.22.1 sources)
+	* retroarch.cfg: Add 23 keys (45 → 68 active); new SECURITY and
+	  LOGGING sections; correct video_refresh_rate 59.950001 → 59.940060
+	  (NTSC 60000/1001); add network_cmd_enable=false (zero-auth command
+	  interface on UDP 55355); add ppsspp_cpu_core="IR Interpreter" to
+	  per-core reference; add fastforward_ratio, menu_throttle_framerate,
+	  video_use_metal_arg_buffers, run_ahead_enabled, input_joypad_driver,
+	  input_rumble_gain, and 12 hardening/logging keys
+	* retroarch.cfg: Remove 91-line REFERENCE block (duplicated README
+	  §10/§12); condense multi-line comments; 264 → 161 lines
+	* retroarch.cfg: Add CONFLICT header note for shader + integer scaling
+	* README.md: Add §7 Additional settings table (security, input, menu,
+	  logging); add §8 integer scaling conflict callout; add §4 WebDAV
+	  security warning; add §10/§12 ppsspp_cpu_core; add §12 Security and
+	  Menu/logging checklist items; update §7 Video/Latency tables; update
+	  Refresh Rate to note 59.94 Hz seed; trim VRR/DRC paragraph
+	* README.md: Bump version 2.16 → 2.17, rev.15 → rev.16
+
 2026-04-01  Ryan Musante
 
-	Tagged as v2.16
+	Tagged as v2.14, v2.15, v2.16
 
+	v2.16:
 	* Fact-check corrections against upstream sources
 	* README.md: §3 config backup "v1.19.1" → "v1.16.0"; asset
 	  re-extraction attributed to v1.19.0 (verified against CHANGES.md)
-	* README.md: §1 Prerequisites: sync version references to match §3
-	* README.md: §10 Azahar 2125.0 "at RC1" → "at Alpha 4"
-	  (verified against azahar-emu GitHub releases)
-	* README.md: Appendix A 4th Gen wireless "Wi-Fi 7, BT 6" →
-	  "Wi-Fi 6E/7" (MacRumors: 6E confirmed, 7 possible)
-	* retroarch.cfg: savestate_thumbnail_enable comment: remove
-	  misleading "v1.21.0+" (feature predates v1.21.0; that release
-	  only default-enabled it on x86_64)
-	* README.md: Bump version 2.15 → 2.16, rev.14 → rev.15
-	* retroarch.cfg: Sync source reference to rev.15
+	* README.md: §1 sync version references; §10 Azahar "RC1" → "Alpha 4"
+	* README.md: Appendix A "Wi-Fi 7, BT 6" → "Wi-Fi 6E/7"
+	* retroarch.cfg: Remove misleading "v1.21.0+" from savestate_thumbnail
 
-2026-04-01  Ryan Musante
-
-	Tagged as v2.15
-
+	v2.15:
 	* Audit corrections: A15 GPU core count, preemptive frames version,
 	  DualSense BT link negotiation, iCloud crash status wording
 	* Add MIT LICENSE file (referenced by README but missing from archive)
 
-2026-04-01  Ryan Musante
-
-	Tagged as v2.14
-
-	* Apply optimization spec v6 (frame pacing, latency stack, per-core audit)
-	* retroarch.cfg: Remove video_frame_rest; fix vrr_runloop, video_swap_interval;
-	  add video_refresh_rate, audio_max_timing_skew, cloud sync exclusions,
-	  savestate thumbnails (41 → 45 active keys)
+	v2.14:
+	* Apply optimization spec v6 (frame pacing, latency stack, per-core)
+	* retroarch.cfg: Remove video_frame_rest; fix vrr_runloop,
+	  video_swap_interval; add video_refresh_rate, audio_max_timing_skew,
+	  cloud sync exclusions, savestate thumbnails (41 → 45 active keys)
 	* retroarch.cfg: Rewrite per-core appendix with threaded video, audio
 	  latency, and core options for all 12 cores across Tiers 1–3
-	* README.md: Rewrite §7 latency/TV output sections; restructure §8
-	  shader table by GPU cost; expand §10 per-core overrides and §12 checklist
+	* README.md: Rewrite §7 latency/TV output; restructure §8 shader table
+	  by GPU cost; expand §10 per-core overrides and §12 checklist
 
 2026-03-31  Ryan Musante
 
-	Tagged as v2.13
+	Tagged as v2.11, v2.12, v2.13
 
+	v2.13:
 	* Apply optimization spec v5 (performance and gaming audit)
-	* retroarch.cfg: Add 13 global keys (28 → 41); add core options for all
-	  12 cores; replace Yabause with Beetle Saturn; strip decorative formatting
-	* README.md: Add TOC sub-entries; rewrite VRR/DRC/Match Frame Rate guidance;
-	  expand Tier 1–3 overrides with core options; add issues #11, #4804
+	* retroarch.cfg: Add 13 global keys (28 → 41); add core options for
+	  all 12 cores; replace Yabause with Beetle Saturn; strip decorative
+	  formatting
+	* README.md: Rewrite VRR/DRC/Match Frame Rate guidance; expand Tier 1–3
+	  overrides with core options; add issues #11, #4804
 
-2026-03-31  Ryan Musante
+	v2.12:
+	* README.md: Restructure 14 → 13 sections; merge Per-Core Overrides
+	  into Supported Systems (§10); inline issue links; standardize callouts
 
-	Tagged as v2.12
-
-	* README.md: Restructure 14 → 13 sections; merge Per-Core Overrides into
-	  Supported Systems (§10); inline GitHub issue links; standardize callouts
-
-2026-03-31  Ryan Musante
-
-	Tagged as v2.11
-
+	v2.11:
 	* README.md: Add shields.io badges; remove horizontal rule decorations
 	* retroarch.cfg: Remove decorative box-drawing and section dividers
 
@@ -72,69 +79,43 @@ retroarch-appletv4k changelog
 
 2026-03-29  Ryan Musante
 
-	Tagged as v2.9
+	Tagged as v2.0, v2.1, v2.2, v2.3, v2.4, v2.5, v2.6, v2.7, v2.8, v2.9
 
+	v2.9:
 	* Apply optimization spec v4 (delta-only)
-	* retroarch.cfg: Add video_frame_rest, input_max_users, content_runtime_log;
-	  audio_latency 48 → 32; refine Tier 2–3 core options
-	* README.md: Add Frame Rest, Integer Overscale, crt-easymode parameters,
+	* retroarch.cfg: Add video_frame_rest, input_max_users,
+	  content_runtime_log; audio_latency 48 → 32; refine Tier 2–3 options
+	* README.md: Add Frame Rest, Integer Overscale, crt-easymode params,
 	  tvOS audio rows; close #16083; annotate #14201/#14978/#16727
 
-2026-03-29  Ryan Musante
+	v2.8:
+	* retroarch.cfg: Condense formatting (267 → 135 lines, keys unchanged)
 
-	Tagged as v2.8
-
-	* retroarch.cfg: Condense formatting (267 → 135 lines, 25 keys unchanged)
-
-2026-03-29  Ryan Musante
-
-	Tagged as v2.7
-
+	v2.7:
 	* README.md: Clean blank Notes columns and empty table cells
 
-2026-03-29  Ryan Musante
-
-	Tagged as v2.6
-
+	v2.6:
 	* retroarch.cfg: Add "(hold)" to FF/Rewind hotkey comments
 	* Remove stale retroarch.cfg.bak
 
-2026-03-29  Ryan Musante
-
-	Tagged as v2.5
-
+	v2.5:
 	* retroarch.cfg: Restructure 17 sections (702 lines) → 9 active + 2
 	  appendices (258 lines); deduplicate reference sections
 
-2026-03-29  Ryan Musante
-
-	Tagged as v2.4
-
+	v2.4:
 	* retroarch.cfg: Sync source reference from PDF to README.md rev.4
 
-2026-03-29  Ryan Musante
-
-	Tagged as v2.3
-
+	v2.3:
 	* README.md: Restructure 18 → 14 sections; add Quick Start; merge
-	  ROM/BIOS/Scanning, UI/Hotkeys/Performance; move 4th Gen to Appendix A
+	  ROM/BIOS/Scanning, UI/Hotkeys/Performance; move 4th Gen to Appendix
 
-2026-03-29  Ryan Musante
-
-	Tagged as v2.2
-
+	v2.2:
 	* Retarget from 128 GB to 64 GB Wi-Fi model (j255ap / A2737)
 
-2026-03-29  Ryan Musante
-
-	Tagged as v2.1
-
+	v2.1:
 	* Remove screenshot references and alternative cores
 
-2026-03-29  Ryan Musante
-
-	Tagged as v2.0
-
+	v2.0:
 	* README.md: Convert PDF guide to GitHub-style markdown with TOC,
 	  ROM folder table, setup checklist, issue links, 4th Gen projections
 	* retroarch.cfg: Sync folder structure to README

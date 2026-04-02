@@ -1,10 +1,10 @@
 # RetroArch on Apple TV 4K
 
-![version](https://img.shields.io/badge/version-2.16-blue)
+![version](https://img.shields.io/badge/version-2.17-blue)
 ![RetroArch](https://img.shields.io/badge/RetroArch-v1.22.x-green)
 ![license](https://img.shields.io/badge/license-MIT-yellow)
 
-**RetroArch v1.22.x** · **tvOS 18+** · **Apple TV 4K 3rd Gen (64 GB Wi-Fi · j255ap · A2737)** · **April 2026** · **Rev. 15**
+**RetroArch v1.22.x** · **tvOS 18+** · **Apple TV 4K 3rd Gen (64 GB Wi-Fi · j255ap · A2737)** · **April 2026** · **Rev. 16**
 
 A comprehensive guide to installing and configuring RetroArch on the Apple TV 4K 3rd Generation. Covers installation, ROM and BIOS management, controller pairing, performance tuning, CRT shader selection, and iCloud save synchronization. A companion `retroarch.cfg` with all recommended settings is included.
 
@@ -31,6 +31,7 @@ Detailed instructions for each step follow below.
    - [Video settings](#video-settings)
    - [Latency reduction](#latency-reduction)
    - [TV output](#tv-output)
+   - [Additional settings](#additional-settings)
 8. [CRT Shaders](#8-crt-shaders)
 9. [iCloud Sync](#9-icloud-sync)
 10. [Supported Systems and Per-Core Overrides](#10-supported-systems-and-per-core-overrides)
@@ -119,6 +120,8 @@ Available in RetroArch v1.20.0+. Port 8080.
 | Windows | File Explorer → right-click This PC → Map Network Drive → `http://appletv.local:8080` |
 
 > **Note:** The 64 GB Wi-Fi model has no Ethernet port. Use 5 GHz Wi-Fi for faster transfers and position the Apple TV near the router.
+
+> ⚠️ **Security:** The built-in web interface and WebDAV server (port 8080) provide **unauthenticated** read/write access to RetroArch's sandboxed filesystem. No configuration settings exist to add authentication, enable TLS, or disable these services. Any device on the same network can read or overwrite saves, states, and configuration. Mitigate with VLAN isolation or router firewall rules restricting access to ports 80 and 8080 on the Apple TV's IP.
 ## 5. ROM and BIOS Setup
 
 ### ROM folder reference
@@ -237,9 +240,12 @@ The PS/Xbox home button opens tvOS Control Center, not RetroArch's menu. A contr
 | Integer Overscale | Optional | Enable for 224p content (NES/SNES) to fill more screen area |
 | Bilinear Filtering | OFF | Required for correct shader rendering |
 | Threaded Video | Omitted | Crashes on tvOS ([#14978](https://github.com/libretro/RetroArch/issues/14978)); enable per-core for Tier 2–3 via overrides |
+| Metal Argument Buffers | ON (test) | v1.22.1+; reduces CPU draw-call overhead on A15. Revert to OFF if visual glitches appear |
+| GPU Screenshot | ON | Captures post-shader framebuffer; required for accurate screenshots with shaders |
+| Crop Overscan | ON | Removes garbage border pixels from retro cores. Core-dependent |
 | Max Swapchain Images | 2 | Verify in Settings → Video → Synchronization |
 | Aspect Ratio | Core Provided | — |
-| Refresh Rate | Calibrate | Settings → Video → Output → Estimated Screen Refresh Rate; run ~8192 frames and accept measured value. DRC requires accuracy within 0.1%. RA 1.21.0 fixed tvOS-specific refresh rate detection. |
+| Refresh Rate | Calibrate | Apple TV outputs at 59.94 Hz (NTSC, 60000/1001). The cfg seeds `video_refresh_rate` at `59.940060`. Run Settings → Video → Output → Estimated Screen Refresh Rate (~8192 frames) and accept the measured value. DRC requires accuracy within 0.1%. RA 1.21.0 fixed tvOS-specific refresh rate detection. |
 
 ### Latency reduction
 
@@ -249,6 +255,8 @@ The PS/Xbox home button opens tvOS Control Center, not RetroArch's menu. A contr
 | Preemptive Frames | ON, 1 frame | Lower-cost run-ahead method (v1.15.0+); `run_ahead_frames` sets count. Disable per-core for Tier 2–3. |
 | Automatic Frame Delay | ON | Disable per-core for N64 (see [Supported Systems and Per-Core Overrides](#10-supported-systems-and-per-core-overrides)) |
 | Input Poll Type Behavior | Late | — |
+| Fast Forward Ratio | 5× | Default uncapped; capped to prevent thermal throttling on passively-cooled A15. Note: fast-forward may not function with Metal driver on tvOS |
+| Static Frame Delay | 0 | Automatic Frame Delay manages this; explicit 0 documents intent. Nonzero value acts as ceiling for auto mode |
 
 ### TV output
 
@@ -262,7 +270,29 @@ The PS/Xbox home button opens tvOS Control Center, not RetroArch's menu. A contr
 | Game Mode | TV settings (HDMI input) | ON |
 | Chroma subsampling | TV settings (HDMI input) | YCbCr 4:4:4 or RGB Full |
 
-Apple TV does not support gaming VRR — only QMS VRR for media frame-rate switching. "Sync to Exact Content Framerate" (`vrr_runloop_enable`) should be **OFF** — despite the VRR name, enabling it disables Dynamic Rate Control (DRC), which is the mechanism that micro-adjusts emulation speed to match the display's actual refresh rate. Without DRC on a fixed 60 Hz panel, the emulator runs at the core's native rate (~60.099 Hz for NES/SNES), producing periodic judder and audio desync. Match Frame Rate (tvOS system setting) should also be **OFF** — it is designed for AVPlayer video playback and has no positive effect on emulation.
+Apple TV supports only QMS VRR (media frame-rate switching), not real-time game VRR. `vrr_runloop_enable` must be **OFF** — enabling it disables Dynamic Rate Control, causing judder and audio desync on the fixed 59.94 Hz panel. Match Frame Rate (tvOS) should also be **OFF** — it targets AVPlayer video playback, not emulation.
+
+### Additional settings
+
+The companion `retroarch.cfg` includes hardening, input, menu performance, and logging settings. All network services are disabled — RetroArch exposes zero-auth interfaces by default.
+
+| Category | Setting | Value | Notes |
+|----------|---------|-------|-------|
+| Security | Network Command Interface | OFF | v1.22.1 enabled on tvOS; UDP 55355, zero auth, accepts destructive commands from any LAN host |
+| Security | Network Remote | OFF | Unauthenticated controller input injection over UDP 55400–55420 |
+| Security | stdin Command Interface | OFF | Same command set via stdin |
+| Security | Camera / Location Access | OFF | Blocks core hardware access requests |
+| Security | On-Demand Thumbnails | OFF | Hangs on game/state load when thumbnail server is slow ([#17242](https://github.com/libretro/RetroArch/issues/17242)) |
+| Input | Joypad Driver | mfi | Apple GCController framework; only viable driver on tvOS |
+| Input | Rumble Gain | 100 | Full haptic feedback for DualSense/Xbox via Core Haptics (tvOS 14+) |
+| Menu | Throttle Framerate | ON | Caps XMB 3D ribbon at 60 fps; prevents uncapped rendering and thermal waste |
+| Menu | Left Thumbnails | OFF | Disables secondary thumbnail pane; halves thumbnail memory on 4 GB device |
+| Menu | Favorites / History Size | 100 / 50 | Defaults are 200; reduced for 4 GB RAM |
+| Logging | Verbosity / File Logging | OFF | Each `os_log` message involves malloc/vsnprintf/free; file writes waste volatile cache |
+| Logging | FPS / Statistics Display | OFF | OSD overlays add per-frame render overhead |
+| Logging | Recording | OFF | Metal recording support incomplete; significant overhead |
+
+See also the [WebDAV security warning](#4-file-transfers) in §4.
 
 ### Netplay
 
@@ -296,6 +326,8 @@ Grouped by GPU cost at 4K output on the passively-cooled A15:
 Use Minimal presets for Tier 2–3 cores where GPU headroom is limited by interpreter overhead. If complex shaders cause frame drops or thermal throttling at 4K, switch Apple TV output to 1080p SDR 60 Hz — the TV's scaler handles upscaling, and GPU load drops significantly.
 
 **Avoid on Apple TV:** CRT-Royale, CRT-Geom-Deluxe, Guest-Dr-Venom, Guest-Advanced, and all Mega Bezel shaders exceed the A15's GPU budget.
+
+> **Integer Scaling Conflict:** Multi-pass CRT shaders that perform their own geometry (crt-geom, crt-hyllian) expect to control the full output resolution. `video_scale_integer = ON` constrains the viewport *before* the shader processes it, resulting in a smaller and potentially distorted image. Set `video_scale_integer = OFF` in per-core overrides where geometry shaders are used. Simple scanline-only shaders (zfast_crt, crt-pi) are unaffected.
 
 **crt-easymode 4K parameters** (community-recommended starting point): Mask Strength 0.18, Mask Type 1, Scanline Strength 0.95, Gamma Input 2.2, Gamma Output 1.8, Brightness 1.10. Adjust Mask Strength to taste for your display.
 
@@ -363,7 +395,7 @@ Significant compatibility or performance constraints. Disable all latency featur
 | System | Core | Overrides | Notes |
 |--------|------|-----------|-------|
 | Sega Saturn | Beetle Saturn | `preemptive_frames_enable = "false"`, `run_ahead_frames = "0"`, `rewind_enable = "false"`, `video_shader_enable = "false"`, `video_frame_delay_auto = "false"`, `video_threaded = "true"`, `audio_latency = "64"` | Only viable Saturn core on tvOS — Yabause/Kronos requires OpenGL 4.3 compute shaders, unavailable on Metal. Beetle Saturn uses a pure software renderer. Core options: `beetle_saturn_cdimagecache = enabled`, `beetle_saturn_midsync = disabled` |
-| PSP | PPSSPP | `video_driver = "gl"`, `preemptive_frames_enable = "false"`, `run_ahead_frames = "0"`, `rewind_enable = "false"`, `video_shader_enable = "false"`, `video_frame_delay_auto = "false"`, `video_threaded = "true"`, `audio_latency = "64"` | Metal/Vulkan crashes ([#18050](https://github.com/libretro/RetroArch/issues/18050)); Metal→GL driver switch is unstable ([#4804](https://github.com/libretro/RetroArch/issues/4804)); test Metal in current builds and remove GL override if stable. Core options: `ppsspp_vertex_cache = enabled`, `ppsspp_separate_io_thread = enabled`, `ppsspp_internal_resolution = 1x`, `ppsspp_fast_memory = disabled`, `ppsspp_texture_scaling_level = 1`, `ppsspp_frameskip = 1`, `ppsspp_auto_frameskip = enabled`, `ppsspp_gpu_hardware_transform = enabled`, `ppsspp_software_skinning = enabled`, `ppsspp_ignore_bad_memory_access = enabled`, `ppsspp_cache_full_iso_in_ram = enabled`, `ppsspp_psp_model = psp_2000_3000`. Note: `fast_memory` is crash-prone without JIT — re-enable per-game with testing |
+| PSP | PPSSPP | `video_driver = "gl"`, `preemptive_frames_enable = "false"`, `run_ahead_frames = "0"`, `rewind_enable = "false"`, `video_shader_enable = "false"`, `video_frame_delay_auto = "false"`, `video_threaded = "true"`, `audio_latency = "64"` | Metal/Vulkan crashes ([#18050](https://github.com/libretro/RetroArch/issues/18050)); Metal→GL driver switch is unstable ([#4804](https://github.com/libretro/RetroArch/issues/4804)); test Metal in current builds and remove GL override if stable. Core options: `ppsspp_cpu_core = IR Interpreter` (fastest non-JIT; JIT crashes on tvOS), `ppsspp_vertex_cache = enabled`, `ppsspp_separate_io_thread = enabled`, `ppsspp_internal_resolution = 1x`, `ppsspp_fast_memory = disabled`, `ppsspp_texture_scaling_level = 1`, `ppsspp_frameskip = 1`, `ppsspp_auto_frameskip = enabled`, `ppsspp_gpu_hardware_transform = enabled`, `ppsspp_software_skinning = enabled`, `ppsspp_ignore_bad_memory_access = enabled`, `ppsspp_cache_full_iso_in_ram = enabled`, `ppsspp_psp_model = psp_2000_3000`. Note: `fast_memory` is crash-prone without JIT — re-enable per-game with testing |
 | Nintendo 3DS | Azahar | `preemptive_frames_enable = "false"`, `run_ahead_frames = "0"`, `rewind_enable = "false"`, `video_shader_enable = "false"`, `video_frame_delay_auto = "false"`, `video_threaded = "true"`, `audio_latency = "64"` | Added experimentally in v1.22.x nightly builds (2026); Azahar 2125.0 at Alpha 4 as of March 2026. Core options: `citra_use_hw_renderer = enabled`, `citra_use_hw_shaders = enabled`, `citra_use_hw_shader_cache = enabled`, `citra_resolution_factor = 1`, `citra_texture_filter = none`, `azahar_use_cpu_jit = disabled`, `azahar_use_shader_jit = disabled`, `azahar_is_new_3ds = New 3DS`. Core option keys may use `azahar_` prefix — verify on device. |
 
 ### Systems not supported (JIT required)
@@ -429,6 +461,19 @@ Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version
 - [ ] `savestate_file_compression` enabled
 - [ ] `config_save_on_exit` set to false (save explicitly after intentional changes)
 
+### Security
+
+- [ ] `network_cmd_enable` OFF (critical — zero-auth command interface on UDP 55355)
+- [ ] `network_remote_enable` OFF
+- [ ] `camera_allow` and `location_allow` OFF
+- [ ] WebDAV (port 8080) access restricted at network level (VLAN/firewall)
+
+### Menu and logging
+
+- [ ] `menu_throttle_framerate` ON (caps XMB at 60 fps)
+- [ ] `log_verbosity` and `log_to_file` OFF
+- [ ] `recording_enable` OFF
+
 ### Shaders and sync
 
 - [ ] CRT shader applied per-core (Quick Menu → Shaders → Save Core Preset)
@@ -440,7 +485,7 @@ Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version
 - [ ] N64: auto frame delay and rewind disabled; cached interpreter, HLE RSP, GLideN64, threaded renderer, threaded video
 - [ ] PS1: run-ahead and preemptive frames disabled (re-enable per-game for 2D); DRC disabled, duping enabled, auto frameskip, GPU threading, threaded video
 - [ ] NDS: run-ahead, preemptive frames, and auto frame delay disabled; JIT disabled, boot directly, threaded video
-- [ ] PSP: GL driver selected, all latency features disabled, threaded video, core options configured (vertex cache, IO thread, fast memory disabled, texture scaling 1, frameskip, 1x resolution)
+- [ ] PSP: GL driver selected, IR Interpreter cpu_core, all latency features disabled, threaded video, core options configured (vertex cache, IO thread, fast memory disabled, texture scaling 1, frameskip, 1x resolution)
 - [ ] Saturn: Beetle Saturn core selected (not Yabause); CD image caching, midsync disabled, threaded video
 - [ ] 3DS: CPU and shader JIT disabled, New 3DS mode, hardware renderer and shader cache enabled, threaded video
 ## Appendix A: 4th Gen Projections
