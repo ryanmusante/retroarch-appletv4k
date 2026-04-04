@@ -1,10 +1,10 @@
 # RetroArch on Apple TV 4K
 
-![version](https://img.shields.io/badge/version-2.17-blue)
+![version](https://img.shields.io/badge/version-2.19-blue)
 ![RetroArch](https://img.shields.io/badge/RetroArch-v1.22.x-green)
 ![license](https://img.shields.io/badge/license-MIT-yellow)
 
-**RetroArch v1.22.x** · **tvOS 18+** · **Apple TV 4K 3rd Gen (64 GB Wi-Fi · j255ap · A2737)** · **April 2026** · **Rev. 16**
+**RetroArch v1.22.x** · **tvOS 18+** · **Apple TV 4K 3rd Gen (64 GB Wi-Fi · j255ap · A2737)** · **April 2026** · **Rev. 18**
 
 A comprehensive guide to installing and configuring RetroArch on the Apple TV 4K 3rd Generation. Covers installation, ROM and BIOS management, controller pairing, performance tuning, CRT shader selection, and iCloud save synchronization. A companion `retroarch.cfg` with all recommended settings is included.
 
@@ -138,7 +138,7 @@ Place ROMs in `Config/ROMs/<folder>/` using the folder names below. These names 
 | Genesis / Mega Drive | `megadrive/` | `.md`, `.gen`, `.bin` | Genesis Plus GX | 1 |
 | Sega CD / Mega CD | `segacd/` | `.cue`, `.chd` | Genesis Plus GX | 1 |
 | Master System | `mastersystem/` | `.sms` | Genesis Plus GX | 1 |
-| PC Engine / TG-16 | `pce/` | `.pce`, `.cue`, `.chd` | Beetle PCE | 1 |
+| PC Engine / TG-16 | `pce/` | `.pce`, `.cue`, `.chd` | Beetle PCE Fast | 1 |
 | Neo Geo | `neogeo/` | `.zip` | FinalBurn Neo | 1 |
 | Arcade (CPS1/2/3) | `fbneo/` | `.zip` | FinalBurn Neo | 1 |
 | PlayStation 1 | `psx/` | `.cue`, `.bin`, `.chd`, `.pbp` | PCSX ReARMed | 2 |
@@ -239,7 +239,7 @@ The PS/Xbox home button opens tvOS Control Center, not RetroArch's menu. A contr
 | Integer Scale | ON | Pixel-perfect output; produces borders at 4K |
 | Integer Overscale | Optional | Enable for 224p content (NES/SNES) to fill more screen area |
 | Bilinear Filtering | OFF | Required for correct shader rendering |
-| Threaded Video | Omitted | Crashes on tvOS ([#14978](https://github.com/libretro/RetroArch/issues/14978)); enable per-core for Tier 2–3 via overrides |
+| Threaded Video | OFF | Crashes on tvOS ([#14978](https://github.com/libretro/RetroArch/issues/14978)); explicit false globally, enable per-core for Tier 2–3 via overrides |
 | Metal Argument Buffers | ON (test) | v1.22.1+; reduces CPU draw-call overhead on A15. Revert to OFF if visual glitches appear |
 | GPU Screenshot | ON | Captures post-shader framebuffer; required for accurate screenshots with shaders |
 | Crop Overscan | ON | Removes garbage border pixels from retro cores. Core-dependent |
@@ -291,6 +291,10 @@ The companion `retroarch.cfg` includes hardening, input, menu performance, and l
 | Logging | Verbosity / File Logging | OFF | Each `os_log` message involves malloc/vsnprintf/free; file writes waste volatile cache |
 | Logging | FPS / Statistics Display | OFF | OSD overlays add per-frame render overhead |
 | Logging | Recording | OFF | Metal recording support incomplete; significant overhead |
+| Audio | Output Rate | 48000 Hz | Matches Apple TV HDMI audio natively; prevents unnecessary resampling |
+| Audio | Resampler Quality | Normal (3) | Kaiser resampler. A15 has headroom for Tier 1; per-core Lower (2) for Tier 2–3 if needed |
+| Video | Threaded Video | OFF | Crashes on tvOS ([#14978](https://github.com/libretro/RetroArch/issues/14978)); explicit false globally, per-core true for Tier 2–3 |
+| Saving | Max Auto-Increment States | 10 | Bounds cache consumption and iCloud sync overhead on 64 GB model |
 
 See also the [WebDAV security warning](#4-file-transfers) in §4.
 
@@ -369,11 +373,11 @@ Full speed with CRT shaders enabled. No per-core workarounds required.
 
 | System | Core | Recommended Overrides |
 |--------|------|-----------------------|
-| NES | Mesen | `run_ahead_frames = "1"`. Core options: `mesen_nospritelimit = On`, `mesen_overclock = Medium`, `mesen_overclock_type = Before NMI`, `mesen_reduce_dmc_popping = On` |
-| SNES | Snes9x | `run_ahead_frames = "1"`. Core options: `snes9x_reduce_sprite_flicker = enabled`, `snes9x_overclock_cycles = Light`. Per-game: `snes9x_overclock = 200` for SuperFX titles (Star Fox, Yoshi's Island, Doom, Stunt Race FX) — doubles GSU clock to near-60 fps; test per title for timing bugs |
-| GB / GBC / GBA | mGBA | `run_ahead_frames = "1"`. Core options: `mgba_color_correction = Game Boy Advance`, `mgba_interframe_blending = Smart`, `mgba_audio_low_pass_filter = ON` |
-| Genesis / MD / CD, Master System | Genesis Plus GX | `run_ahead_frames = "1"`. Core options: `genesis_plus_gx_ym2612 = Nuked (YM2612)`, `genesis_plus_gx_audio_filter = Low-Pass`, `genesis_plus_gx_lowpass_range = 55`, `genesis_plus_gx_no_sprite_limit = enabled`, `genesis_plus_gx_bram = per game` |
-| PC Engine / TG-16 | Beetle PCE | `run_ahead_frames = "1"`. Core options: `pce_fast_cdimagecache = enabled`, `pce_fast_nospritelimit = enabled` |
+| NES | Mesen | `run_ahead_frames = "1"`, `rewind_enable = "false"`, `video_scale_integer_overscale = "true"`. Core options: `mesen_nospritelimit = On`, `mesen_overclock = Medium`, `mesen_overclock_type = Before NMI`, `mesen_reduce_dmc_popping = On` |
+| SNES | Snes9x | `run_ahead_frames = "1"`, `rewind_enable = "false"`, `video_scale_integer_overscale = "true"`. Core options: `snes9x_reduce_sprite_flicker = enabled`, `snes9x_overclock_cycles = Light`. Per-game: `snes9x_overclock = 200` for SuperFX titles (Star Fox, Yoshi's Island, Doom, Stunt Race FX) — doubles GSU clock to near-60 fps; test per title for timing bugs |
+| GB / GBC / GBA | mGBA | `run_ahead_frames = "1"`, `rewind_enable = "false"`. Core options: `mgba_color_correction = Game Boy Advance`, `mgba_interframe_blending = Smart`, `mgba_audio_low_pass_filter = ON` |
+| Genesis / MD / CD, Master System | Genesis Plus GX | `run_ahead_frames = "1"`, `rewind_enable = "false"`. Core options: `genesis_plus_gx_ym2612 = Nuked (YM2612)`, `genesis_plus_gx_audio_filter = Low-Pass`, `genesis_plus_gx_lowpass_range = 55`, `genesis_plus_gx_no_sprite_limit = enabled`, `genesis_plus_gx_bram = per game` |
+| PC Engine / TG-16 | Beetle PCE Fast | `run_ahead_frames = "1"`, `rewind_enable = "false"`. Core options: `pce_fast_cdimagecache = enabled`, `pce_fast_nospritelimit = enabled` |
 | Neo Geo, Arcade (CPS1/2/3) | FinalBurn Neo | `rewind_enable = "false"`, `run_ahead_frames = "1"`. Rewind conflicts with runahead in FBNeo ([#16374](https://github.com/libretro/RetroArch/issues/16374)); run-ahead provides the latency benefit |
 
 Snes9x run-ahead can be set to 2 for titles such as Super Mario World and Zelda if no audio artifacts are observed.
@@ -384,9 +388,9 @@ Most titles at full speed. Per-core overrides recommended.
 
 | System | Core | Overrides | Notes |
 |--------|------|-----------|-------|
-| PlayStation 1 | PCSX ReARMed | `run_ahead_frames = "0"`, `rewind_enable = "false"`, `preemptive_frames_enable = "false"`, `video_threaded = "true"`, `audio_latency = "48"` | Without JIT, run-ahead and preemptive frames double interpreter workload — re-enable per-game for light 2D titles. Core options: `pcsx_rearmed_drc = disabled`, `pcsx_rearmed_duping_enable = enabled`, `pcsx_rearmed_frameskip = Auto`, `pcsx_rearmed_frameskip_threshold = 33`, `pcsx_rearmed_gpu_thread_rendering = Synchronous`, `pcsx_rearmed_psxclock = 57` (lower to 50 per-game for demanding titles) |
-| Nintendo 64 | Mupen64Plus-Next | `run_ahead_frames = "1"`, `rewind_enable = "false"`, `video_frame_delay_auto = "false"`, `audio_latency = "64"`, `video_threaded = "true"` | ~60–70% compatibility; complex titles (Conker, Rogue Squadron) may exhibit issues; rewind freezes emulation; auto frame delay incompatible ([#14201](https://github.com/libretro/RetroArch/issues/14201)). Core options: `mupen64plus-cpucore = cached_interpreter`, `mupen64plus-rsp-plugin = HLE`, `mupen64plus-rdp-plugin = GLideN64`, `mupen64plus-43screensize = 320x240`, `mupen64plus-ThreadedRenderer = True`, `mupen64plus-EnableCopyColorToRDRAM = Async`, `mupen64plus-EnableCopyColorFromRDRAM = Off`, `mupen64plus-EnableCopyDepthToRDRAM = Software`, `mupen64plus-txFilterMode = None` |
-| Nintendo DS | melonDS DS | `run_ahead_frames = "0"`, `rewind_enable = "false"`, `preemptive_frames_enable = "false"`, `video_frame_delay_auto = "false"`, `video_threaded = "true"`, `audio_latency = "48"` | Use software renderer at 1x resolution; no touchscreen input available. Core options: `melonds_threaded_renderer = enabled`, `melonds_ds_jit_enable = disabled`, `melonds_ds_boot_directly = enabled` |
+| PlayStation 1 | PCSX ReARMed | `run_ahead_frames = "0"`, `rewind_enable = "false"`, `preemptive_frames_enable = "false"`, `video_threaded = "true"`, `audio_latency = "48"` | Without JIT, run-ahead and preemptive frames double interpreter workload — re-enable per-game for light 2D titles. Core options: `pcsx_rearmed_drc = disabled`, `pcsx_rearmed_duping_enable = enabled`, `pcsx_rearmed_frameskip = Auto`, `pcsx_rearmed_frameskip_threshold = 33`, `pcsx_rearmed_gpu_thread_rendering = Synchronous`, `pcsx_rearmed_async_cd = enabled`, `pcsx_rearmed_psxclock = 57` (lower to 50 per-game for demanding titles) |
+| Nintendo 64 | Mupen64Plus-Next | `run_ahead_frames = "1"`, `preemptive_frames_enable = "false"`, `rewind_enable = "false"`, `video_frame_delay_auto = "false"`, `audio_latency = "64"`, `video_threaded = "true"` | ~60–70% compatibility; complex titles (Conker, Rogue Squadron) may exhibit issues; rewind freezes emulation; auto frame delay incompatible ([#14201](https://github.com/libretro/RetroArch/issues/14201)). Without JIT, preemptive frames double cached_interpreter workload — re-enable per-game for light titles (Mario 64, Kirby 64). Core options: `mupen64plus-cpucore = cached_interpreter`, `mupen64plus-rsp-plugin = HLE`, `mupen64plus-rdp-plugin = GLideN64`, `mupen64plus-43screensize = 320x240`, `mupen64plus-ThreadedRenderer = True`, `mupen64plus-EnableCopyColorToRDRAM = Async`, `mupen64plus-EnableCopyColorFromRDRAM = Off`, `mupen64plus-EnableCopyDepthToRDRAM = Software`, `mupen64plus-txFilterMode = None`, `mupen64plus-FrameDuping = True`, `mupen64plus-EnableLODEmulation = False` |
+| Nintendo DS | melonDS DS | `run_ahead_frames = "0"`, `rewind_enable = "false"`, `preemptive_frames_enable = "false"`, `video_frame_delay_auto = "false"`, `video_threaded = "true"`, `audio_latency = "48"` | Use software renderer at 1x resolution; no touchscreen input available. Core options: `melonds_threaded_renderer = enabled`, `melonds_ds_jit_enable = disabled`, `melonds_ds_boot_directly = enabled`, `melonds_ds_screen_layout = Top Only` (or Hybrid Top for map/inventory games; per-game override for dual-screen titles) |
 
 ### Tier 3 — Limited / Experimental
 
@@ -412,7 +416,7 @@ Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version
 | 5 | Mupen64Plus-Next per-core rewind feature request | [#18300](https://github.com/libretro/RetroArch/issues/18300) | Open | Disable rewind per-core for N64 |
 | 6 | Mupen64Plus-Next auto frame delay incompatible | [#14201](https://github.com/libretro/RetroArch/issues/14201) | Open | Disable auto frame delay per-core; refactored in v1.20.0 |
 | 7 | N64 rendering glitches (game-specific) | [#16598](https://github.com/libretro/RetroArch/issues/16598) | Open | Per-game overrides |
-| 8 | Threaded video crashes RetroArch on tvOS | [#14978](https://github.com/libretro/RetroArch/issues/14978) | Persists | Keep `video_threaded` omitted globally; enable per-core for Tier 2–3 via override files. Upstream fix targets Mesa/GL only, not Metal |
+| 8 | Threaded video crashes RetroArch on tvOS | [#14978](https://github.com/libretro/RetroArch/issues/14978) | Persists | `video_threaded = "false"` set globally; enable per-core for Tier 2–3 via override files. Upstream fix targets Mesa/GL only, not Metal |
 | 9 | Cloud Sync conflicts between tvOS and macOS | [#16727](https://github.com/libretro/RetroArch/issues/16727) | Partial | DS_Store filter + foreground re-sync added; close content before quitting |
 | 10 | Bluetooth controller jitter over HDMI | — | Reports | Replace HDMI cable if input latency is inconsistent |
 | 11 | PPSSPP GL driver switch crashes | [#4804](https://github.com/libretro/RetroArch/issues/4804), [#16536](https://github.com/libretro/RetroArch/issues/16536) | Open (2016) | Metal→GL per-core switch is architecturally unstable. Alternatives: test Metal in current builds, dedicated GL-only config via `--config`, or standalone PPSSPP app |
@@ -452,6 +456,7 @@ Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version
 - [ ] `vrr_runloop_enable` OFF (Sync to Exact Content Framerate)
 - [ ] Automatic Frame Delay enabled
 - [ ] Input Poll Type Behavior set to Late
+- [ ] `video_threaded` OFF globally (explicit; per-core true for Tier 2–3)
 - [ ] Max Swapchain Images set to 2 (verify on Metal)
 
 ### Data safety
@@ -459,6 +464,7 @@ Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version
 - [ ] `autosave_interval` set to 30
 - [ ] `savestate_auto_save` and `savestate_auto_load` enabled
 - [ ] `savestate_file_compression` enabled
+- [ ] `savestate_max_keep` set to 10
 - [ ] `config_save_on_exit` set to false (save explicitly after intentional changes)
 
 ### Security
@@ -482,9 +488,9 @@ Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version
 
 ### Per-core overrides
 
-- [ ] N64: auto frame delay and rewind disabled; cached interpreter, HLE RSP, GLideN64, threaded renderer, threaded video
-- [ ] PS1: run-ahead and preemptive frames disabled (re-enable per-game for 2D); DRC disabled, duping enabled, auto frameskip, GPU threading, threaded video
-- [ ] NDS: run-ahead, preemptive frames, and auto frame delay disabled; JIT disabled, boot directly, threaded video
+- [ ] N64: preemptive frames, auto frame delay, and rewind disabled; cached interpreter, HLE RSP, GLideN64, threaded renderer, threaded video, FrameDuping on, LOD emulation off
+- [ ] PS1: run-ahead and preemptive frames disabled (re-enable per-game for 2D); DRC disabled, duping enabled, auto frameskip, GPU threading, async CD, threaded video
+- [ ] NDS: run-ahead, preemptive frames, and auto frame delay disabled; JIT disabled, boot directly, screen layout Top Only, threaded video
 - [ ] PSP: GL driver selected, IR Interpreter cpu_core, all latency features disabled, threaded video, core options configured (vertex cache, IO thread, fast memory disabled, texture scaling 1, frameskip, 1x resolution)
 - [ ] Saturn: Beetle Saturn core selected (not Yabause); CD image caching, midsync disabled, threaded video
 - [ ] 3DS: CPU and shader JIT disabled, New 3DS mode, hardware renderer and shader cache enabled, threaded video
@@ -527,6 +533,7 @@ Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version
 | `README.md` | This guide |
 | `CHANGELOG` | Release history (kernel.org style) |
 | `retroarch.cfg` | Drop-in configuration for Apple TV 4K 3rd Gen |
+| `config/` | Per-core override files for Tier 1–2 cores (9 cores) |
 | `LICENSE` | MIT License |
 ## License
 
