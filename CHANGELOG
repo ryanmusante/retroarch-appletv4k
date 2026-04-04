@@ -5,6 +5,11 @@ retroarch-appletv4k changelog
 	Tagged as v2.19
 
 	* Apply optimization audit (11 findings, 3 high / 5 medium / 3 low)
+	* Remove config/ per-core override files (maintained separately);
+	  README.md: update §2, §10, §12, Files table accordingly
+	* README.md: Add §4 Filesystem layout (Apple TV) subsection with
+	  directory tree showing tvOS target paths; cross-reference from
+	  §2 step 4, §3 Recommended setup, and §10 override instructions
 	* retroarch.cfg: Add 4 keys (68 → 72 active):
 	  video_threaded = false (explicit; was omitted, crashes #14978),
 	  audio_output_rate = 48000 (match HDMI native),
@@ -16,14 +21,16 @@ retroarch-appletv4k changelog
 	  add core options: FrameDuping = True, EnableLODEmulation = False
 	* config/PCSX-ReARMed: Add core option pcsx_rearmed_async_cd
 	* config/melonDS DS: Add core option melonds_ds_screen_layout
-	* config/Mesen, config/Snes9x: Add video_scale_integer_overscale
-	  = true (fills more screen area for 224p content at 4K)
+	* config/Mesen, config/Snes9x: Add video_scale_integer_scaling
+	  = 1 (overscale; fills more screen area for 224p content at 4K)
 	* config/{Mesen,Snes9x,mGBA,Genesis Plus GX,Beetle PCE Fast}:
 	  Add rewind_enable = false (defense-in-depth; FBNeo already had it)
 	* README.md: Update §7 video_threaded row (Omitted → OFF);
 	  add 4 rows to Additional settings table; update §10 Tier 1
-	  and Tier 2 override tables; update §11 Known Issues #8
-	  workaround; update §12 Setup Checklist
+	  and Tier 2 override tables; fix override upload path
+	  (Config/config/ → root-level config/); update §2 Installation
+	  step 4; update §11 Known Issues #8 workaround; update §12
+	  Setup Checklist; update Files table
 	* README.md: Bump version 2.18 → 2.19, rev.17 → rev.18
 
 2026-04-02  Ryan Musante

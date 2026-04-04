@@ -76,7 +76,7 @@ No sideloading, developer accounts, or jailbreaking required.
    - Update Core Info Files
    - Update Databases
    - Update Slang Shaders
-4. **Apply configuration:** Upload the companion `retroarch.cfg` via the web interface (see [File Transfers](#4-file-transfers)), then quit and relaunch RetroArch. Do **not** use "Save Current Configuration" before relaunching — it overwrites the uploaded file with the in-memory config.
+4. **Apply configuration:** Upload the companion `retroarch.cfg` to the root of the web interface (see [Filesystem layout](#filesystem-layout-apple-tv)), then quit and relaunch RetroArch. Do **not** use "Save Current Configuration" before relaunching — it overwrites the uploaded file with the in-memory config.
 
 > **Note:** RetroArch v1.20.0 added Bluetooth keyboard support on tvOS for text input, search, and core option editing.
 ## 3. Storage Persistence
@@ -90,6 +90,8 @@ tvOS guarantees only **500 KB** of persistent storage per app. All other data �
 Since v1.16.0, RetroArch stores `retroarch.cfg` in NSUserDefaults (the 500 KB persistent area). Since v1.19.0, shader assets are re-extracted automatically when detected as missing.
 
 ### Recommended setup
+
+Follow the [Filesystem layout](#filesystem-layout-apple-tv) in §4. Create the directory structure via the web interface or WebDAV:
 
 1. Create `ROMs/` and `BIOS/` folders inside `Config/`.
 2. Upload ROM and BIOS files into the appropriate subfolders.
@@ -122,6 +124,34 @@ Available in RetroArch v1.20.0+. Port 8080.
 > **Note:** The 64 GB Wi-Fi model has no Ethernet port. Use 5 GHz Wi-Fi for faster transfers and position the Apple TV near the router.
 
 > ⚠️ **Security:** The built-in web interface and WebDAV server (port 8080) provide **unauthenticated** read/write access to RetroArch's sandboxed filesystem. No configuration settings exist to add authentication, enable TLS, or disable these services. Any device on the same network can read or overwrite saves, states, and configuration. Mitigate with VLAN isolation or router firewall rules restricting access to ports 80 and 8080 on the Apple TV's IP.
+
+### Filesystem layout (Apple TV)
+
+The web interface and WebDAV expose RetroArch's sandboxed root. All paths in this guide are relative to that root. The `Config/` directory is the primary user data area — iCloud syncs its contents (except ROMs). Per-core overrides are created automatically by RetroArch inside `Config/config/` when using Quick Menu → Overrides → Save Core Overrides.
+
+```
+/                              ← web interface / WebDAV root
+├── retroarch.cfg              ← upload here (§2 step 4)
+└── Config/
+    ├── ROMs/                  ← game files, organized by system
+    │   ├── nes/
+    │   ├── snes/
+    │   ├── psx/
+    │   └── ...                   (see §5 ROM folder reference)
+    ├── BIOS/                  ← system BIOS files (case-sensitive)
+    ├── saves/                 ← in-game saves (.srm)
+    ├── states/                ← save states
+    ├── config/                ← per-core overrides (created by RetroArch)
+    │   ├── Mesen/
+    │   │   └── Mesen.cfg
+    │   ├── Snes9x/
+    │   │   └── Snes9x.cfg
+    │   └── ...                   (see §10 for override values)
+    └── shaders_slang/
+        └── crt/               ← CRT shader presets (see §8)
+```
+
+The `retroarch.cfg` references these paths using the `:/` prefix, which maps to the tvOS app content root (e.g., `:/Config/ROMs` = `Config/ROMs/` in the web interface).
 ## 5. ROM and BIOS Setup
 
 ### ROM folder reference
@@ -365,7 +395,7 @@ Synchronize save data across Apple devices signed into the same Apple ID.
 
 The A15 Bionic handles retro emulation effectively, but Apple's App Store restriction on JIT compilation limits performance for demanding systems. Dreamcast, GameCube, Wii, and PS2 require JIT and cannot run through the App Store version.
 
-Override files are stored at `Config/config/<core_name>/<core_name>.cfg`. Create them via Quick Menu → Overrides → Save Core Overrides.
+Override files are stored at `Config/config/<core_name>/<core_name>.cfg` on the Apple TV (see [Filesystem layout](#filesystem-layout-apple-tv)). Create them on-device via Quick Menu → Overrides → Save Core Overrides, then apply the core option values listed in the tables below via Quick Menu → Options.
 
 ### Tier 1 — Flawless
 
@@ -373,8 +403,8 @@ Full speed with CRT shaders enabled. No per-core workarounds required.
 
 | System | Core | Recommended Overrides |
 |--------|------|-----------------------|
-| NES | Mesen | `run_ahead_frames = "1"`, `rewind_enable = "false"`, `video_scale_integer_overscale = "true"`. Core options: `mesen_nospritelimit = On`, `mesen_overclock = Medium`, `mesen_overclock_type = Before NMI`, `mesen_reduce_dmc_popping = On` |
-| SNES | Snes9x | `run_ahead_frames = "1"`, `rewind_enable = "false"`, `video_scale_integer_overscale = "true"`. Core options: `snes9x_reduce_sprite_flicker = enabled`, `snes9x_overclock_cycles = Light`. Per-game: `snes9x_overclock = 200` for SuperFX titles (Star Fox, Yoshi's Island, Doom, Stunt Race FX) — doubles GSU clock to near-60 fps; test per title for timing bugs |
+| NES | Mesen | `run_ahead_frames = "1"`, `rewind_enable = "false"`, `video_scale_integer_scaling = "1"`. Core options: `mesen_nospritelimit = On`, `mesen_overclock = Medium`, `mesen_overclock_type = Before NMI`, `mesen_reduce_dmc_popping = On` |
+| SNES | Snes9x | `run_ahead_frames = "1"`, `rewind_enable = "false"`, `video_scale_integer_scaling = "1"`. Core options: `snes9x_reduce_sprite_flicker = enabled`, `snes9x_overclock_cycles = Light`. Per-game: `snes9x_overclock = 200` for SuperFX titles (Star Fox, Yoshi's Island, Doom, Stunt Race FX) — doubles GSU clock to near-60 fps; test per title for timing bugs |
 | GB / GBC / GBA | mGBA | `run_ahead_frames = "1"`, `rewind_enable = "false"`. Core options: `mgba_color_correction = Game Boy Advance`, `mgba_interframe_blending = Smart`, `mgba_audio_low_pass_filter = ON` |
 | Genesis / MD / CD, Master System | Genesis Plus GX | `run_ahead_frames = "1"`, `rewind_enable = "false"`. Core options: `genesis_plus_gx_ym2612 = Nuked (YM2612)`, `genesis_plus_gx_audio_filter = Low-Pass`, `genesis_plus_gx_lowpass_range = 55`, `genesis_plus_gx_no_sprite_limit = enabled`, `genesis_plus_gx_bram = per game` |
 | PC Engine / TG-16 | Beetle PCE Fast | `run_ahead_frames = "1"`, `rewind_enable = "false"`. Core options: `pce_fast_cdimagecache = enabled`, `pce_fast_nospritelimit = enabled` |
@@ -533,7 +563,6 @@ Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version
 | `README.md` | This guide |
 | `CHANGELOG` | Release history (kernel.org style) |
 | `retroarch.cfg` | Drop-in configuration for Apple TV 4K 3rd Gen |
-| `config/` | Per-core override files for Tier 1–2 cores (9 cores) |
 | `LICENSE` | MIT License |
 ## License
 
