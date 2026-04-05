@@ -1,10 +1,10 @@
 # RetroArch on Apple TV 4K
 
-![version](https://img.shields.io/badge/version-2.20-blue)
+![version](https://img.shields.io/badge/version-2.24-blue)
 ![RetroArch](https://img.shields.io/badge/RetroArch-v1.22.x-green)
 ![license](https://img.shields.io/badge/license-MIT-yellow)
 
-**RetroArch v1.22.x** · **tvOS 18+** · **Apple TV 4K 3rd Gen (64 GB Wi-Fi · j255ap · A2737)** · **April 2026** · **Rev. 19**
+**RetroArch v1.22.x** · **tvOS 26** · **Apple TV 4K 3rd Gen (64 GB Wi-Fi · j255ap · A2737)** · **April 2026** · **Rev. 23**
 
 A comprehensive guide to installing and configuring RetroArch on the Apple TV 4K 3rd Generation. Covers installation, ROM and BIOS management, controller pairing, performance tuning, CRT shader selection, and iCloud save synchronization. A companion `retroarch.cfg` with all recommended settings is included.
 
@@ -138,11 +138,13 @@ The web interface and WebDAV expose RetroArch's sandboxed root. All paths in thi
     ├── BIOS/                  ← system BIOS files (case-sensitive)
     ├── saves/                 ← in-game saves (.srm)
     ├── states/                ← save states
-    ├── config/                ← per-core overrides (created by RetroArch)
+    ├── config/                ← per-core overrides (from retroarch-configs repo)
     │   ├── Mesen/
-    │   │   └── Mesen.cfg
+    │   │   ├── Mesen.cfg         (.cfg = frontend overrides)
+    │   │   └── Mesen.opt         (.opt = core options)
     │   ├── Snes9x/
-    │   │   └── Snes9x.cfg
+    │   │   ├── Snes9x.cfg
+    │   │   └── Snes9x.opt
     │   └── ...                   (see §10 for override values)
     └── shaders_slang/
         └── crt/               ← CRT shader presets (see §8)
@@ -268,7 +270,7 @@ The PS/Xbox home button opens tvOS Control Center, not RetroArch's menu. A contr
 | Integer Scale | ON | Pixel-perfect output; produces borders at 4K |
 | Integer Overscale | Optional | Enable for 224p content (NES/SNES) to fill more screen area |
 | Bilinear Filtering | OFF | Required for correct shader rendering |
-| Threaded Video | OFF | Crashes on tvOS ([#14978](https://github.com/libretro/RetroArch/issues/14978)); explicit false globally, enable per-core for Tier 2–3 via overrides |
+| Threaded Video | OFF | Crashes on tvOS with Metal ([#14978](https://github.com/libretro/RetroArch/issues/14978)); explicit false globally, enable per-core only for GL-based cores (PPSSPP) via overrides |
 | Metal Argument Buffers | ON (test) | v1.22.1+; reduces CPU draw-call overhead on A15. Revert to OFF if visual glitches appear |
 | GPU Screenshot | ON | Captures post-shader framebuffer; required for accurate screenshots with shaders |
 | Crop Overscan | ON | Removes garbage border pixels from retro cores. Core-dependent |
@@ -322,7 +324,7 @@ The companion `retroarch.cfg` includes hardening, input, menu performance, and l
 | Logging | Recording | OFF | Metal recording support incomplete; significant overhead |
 | Audio | Output Rate | 48000 Hz | Matches Apple TV HDMI audio natively; prevents unnecessary resampling |
 | Audio | Resampler Quality | Normal (3) | Kaiser resampler. A15 has headroom for Tier 1; per-core Lower (2) for Tier 2–3 if needed |
-| Video | Threaded Video | OFF | Crashes on tvOS ([#14978](https://github.com/libretro/RetroArch/issues/14978)); explicit false globally, per-core true for Tier 2–3 |
+| Video | Threaded Video | OFF | Crashes on tvOS with Metal ([#14978](https://github.com/libretro/RetroArch/issues/14978)); explicit false globally, per-core true only for GL-based cores (PPSSPP) |
 | Saving | Max Auto-Increment States | 10 | Bounds cache consumption and iCloud sync overhead on 64 GB model |
 
 See also the [WebDAV security warning](#4-file-transfers) in §4.
@@ -336,9 +338,14 @@ CRT shaders simulate scanlines, phosphor glow, and curvature for display charact
 
 ### Applying a shader
 
+Per-core CRT shaders are pre-assigned in the companion [retroarch-configs](https://github.com/ryanmusante/retroarch-configs) override files (`video_shader` in each `.cfg`). No manual steps are required — shaders load automatically when a game launches.
+
+To override or customize a shader manually:
+
 1. Launch a game → Quick Menu (L3 + R3) → Shaders → Video Shaders: **ON**.
 2. Load Preset → `shaders_slang` → `crt` → select a preset.
-3. Save Preset → **Save Core Preset** (applies to all games using that core).
+3. Adjust parameters as needed (see **crt-easymode 4K parameters** below).
+4. Save Preset → **Save Core Preset** (overrides the `.cfg` assignment for that core).
 
 ### Recommended presets
 
@@ -347,7 +354,7 @@ Grouped by GPU cost at 4K output on the passively-cooled A15:
 | GPU Cost | Shader | Best For |
 |----------|--------|----------|
 | Minimal | `zfast_crt.slangp` | All systems, especially PS1/N64/Saturn |
-| Minimal | `crt-pi.slangp` | Heaviest cores; lighter than zfast_crt |
+| Minimal | `crt-pi.slangp` | Heaviest cores; comparable weight to zfast_crt |
 | Minimal | `crt-potato-warm/cool.slangp` | All systems (lookup-texture based) |
 | Low | `crt-easymode.slangp` | NES, SNES, Genesis, GBA |
 | Low | `crt-hyllian.slangp` | SNES, Genesis (Trinitron aesthetic) |
@@ -382,7 +389,7 @@ Synchronize save data across Apple devices signed into the same Apple ID.
 |------|--------|-------|
 | Save files (.srm) | Yes | In-game saves |
 | Save states | Yes | Quick save/load |
-| Configuration | Yes | Core settings, hotkeys, directories |
+| Core settings / overrides | Yes | Per-core .cfg/.opt, hotkeys, directories (NOT retroarch.cfg — upload manually) |
 | Thumbnails | Optional | Consumes iCloud quota |
 | BIOS files | Optional | Enable system file sync |
 | ROM files | **No** | Maintain backups on the transfer computer |
@@ -394,24 +401,24 @@ Synchronize save data across Apple devices signed into the same Apple ID.
 
 The A15 Bionic handles retro emulation effectively, but Apple's App Store restriction on JIT compilation limits performance for demanding systems. Dreamcast, GameCube, Wii, and PS2 require JIT and cannot run through the App Store version.
 
-Per-core override values and core options are documented in the companion override config files (`config/<core_name>/<core_name>.cfg`). Upload them to `Config/config/<core_name>/` on the Apple TV (see [Filesystem layout](#filesystem-layout-apple-tv)). Core options listed in each file's header comments are set on-device via Quick Menu → Options.
+Per-core override values and core options are maintained in the companion [retroarch-configs](https://github.com/ryanmusante/retroarch-configs) repository. Override files (`.cfg`) and core option files (`.opt`) are uploaded to `Config/config/<core_name>/` on the Apple TV (see [Filesystem layout](#filesystem-layout-apple-tv)). Both file types load automatically — no manual entry required.
 
 Tier definitions: **1** = Flawless (full speed, shaders enabled), **2** = Good (most titles at full speed), **3** = Limited/Experimental.
 
 | Tier | System | Core | Override | Notes |
 |------|--------|------|----------|-------|
-| 1 | NES | Mesen | Yes | Overscale for 224p at 4K. Per-game overclock = 200 not needed |
+| 1 | NES | Mesen | Yes | Overscale for 224p at 4K. No per-game overclock needed |
 | 1 | SNES | Snes9x | Yes | Overscale for 224p at 4K. Run-ahead 2 safe for light titles (Super Mario World, Zelda). Per-game: `snes9x_overclock = 200` for SuperFX titles (Star Fox, Yoshi's Island, Doom, Stunt Race FX) |
 | 1 | GB / GBC / GBA | mGBA | Yes | — |
 | 1 | Genesis / MD / CD, Master System | Genesis Plus GX | Yes | — |
 | 1 | PC Engine / TG-16 | Beetle PCE Fast | Yes | — |
 | 1 | Neo Geo, Arcade (CPS1/2/3) | FinalBurn Neo | Yes | Rewind conflicts with runahead ([#16374](https://github.com/libretro/RetroArch/issues/16374)) |
-| 2 | PlayStation 1 | PCSX ReARMed | Yes | No JIT; run-ahead/preemptive frames disabled globally, re-enable per-game for light 2D titles. Lower `psxclock` to 50 per-game for demanding titles |
+| 2 | PlayStation 1 | PCSX ReARMed | Yes | No JIT; run-ahead/preemptive frames disabled per-core, re-enable per-game for light 2D titles. Lower `psxclock` to 50 per-game for demanding titles |
 | 2 | Nintendo 64 | Mupen64Plus-Next | Yes | ~60–70% compatibility; rewind freezes emulation ([#18300](https://github.com/libretro/RetroArch/issues/18300)); auto frame delay incompatible ([#14201](https://github.com/libretro/RetroArch/issues/14201)). Re-enable run-ahead per-game for light titles (Mario 64, Kirby 64) |
-| 2 | Nintendo DS | melonDS DS | Yes | Software renderer at 1x; no touchscreen. Native BIOS optional (built-in HLE works for most games). Internal core option key prefix: `melondsds_` |
+| 2 | Nintendo DS | melonDS DS | Yes | Software renderer at 1x; no touchscreen. Native BIOS optional (built-in HLE works for most games). Internal core option key prefix: `melonds_` (verified from upstream `constants.hpp`) |
 | 3 | Sega Saturn | Beetle Saturn | No | Only viable Saturn core on tvOS (Yabause/Kronos requires OpenGL 4.3 compute shaders). Pure software renderer. All latency features disabled |
-| 3 | PSP | PPSSPP | No | Metal/Vulkan crashes ([#18050](https://github.com/libretro/RetroArch/issues/18050)); GL driver override required. Metal→GL switch unstable ([#4804](https://github.com/libretro/RetroArch/issues/4804)). `fast_memory` crash-prone without JIT |
-| 3 | Nintendo 3DS | Azahar | No | Azahar 2125.0 (stable, March 2026); available via RetroArch core downloader and built-in on iOS/tvOS. JIT forcefully disabled on App Store builds |
+| 3 | PSP | PPSSPP | No | Metal/Vulkan crashes ([#18050](https://github.com/libretro/RetroArch/issues/18050)); GL driver override needed but Metal→GL switch is unstable ([#4804](https://github.com/libretro/RetroArch/issues/4804)) — alternatives: test Metal in current builds, standalone PPSSPP app. `fast_memory` crash-prone without JIT |
+| 3 | Nintendo 3DS | Azahar | No | Azahar 2125.0.1 (stable, March 2026); available via RetroArch core downloader and built-in on iOS/tvOS. JIT forcefully disabled on App Store builds |
 
 ### Systems not supported (JIT required)
 
@@ -427,7 +434,7 @@ Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version
 | 5 | Mupen64Plus-Next per-core rewind feature request | [#18300](https://github.com/libretro/RetroArch/issues/18300) | Open | Disable rewind per-core for N64 |
 | 6 | Mupen64Plus-Next auto frame delay incompatible | [#14201](https://github.com/libretro/RetroArch/issues/14201) | Open | Disable auto frame delay per-core; refactored in v1.20.0 |
 | 7 | N64 rendering glitches (game-specific) | [#16598](https://github.com/libretro/RetroArch/issues/16598) | Open | Per-game overrides |
-| 8 | Threaded video crashes RetroArch on tvOS | [#14978](https://github.com/libretro/RetroArch/issues/14978) | Persists | `video_threaded = "false"` set globally; enable per-core for Tier 2–3 via override files. Upstream fix targets Mesa/GL only, not Metal |
+| 8 | Threaded video crashes RetroArch on tvOS (Metal) | [#14978](https://github.com/libretro/RetroArch/issues/14978) | Persists | `video_threaded = "false"` set globally; enable per-core only for GL-based cores (PPSSPP). Upstream fix targets GL only, not Metal |
 | 9 | Cloud Sync conflicts between tvOS and macOS | [#16727](https://github.com/libretro/RetroArch/issues/16727) | Partial | DS_Store filter + foreground re-sync added; close content before quitting |
 | 10 | Bluetooth controller jitter over HDMI | — | Reports | Replace HDMI cable if input latency is inconsistent |
 | 11 | PPSSPP GL driver switch crashes | [#4804](https://github.com/libretro/RetroArch/issues/4804), [#16536](https://github.com/libretro/RetroArch/issues/16536) | Open (2016) | Metal→GL per-core switch is architecturally unstable. Alternatives: test Metal in current builds, dedicated GL-only config via `--config`, or standalone PPSSPP app |
@@ -462,19 +469,19 @@ Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version
 - [ ] tvOS Reduce Loud Sounds: OFF
 - [ ] TV Game Mode enabled
 - [ ] Chroma 4:4:4 / RGB Full enabled on TV
-- [ ] `aspect_ratio_index` verified as Core Provided
+- [ ] Aspect Ratio set to Core Provided (Settings → Video → Scaling)
 - [ ] `video_refresh_rate` calibrated (Settings → Video → Output → Estimated Screen Refresh Rate)
 - [ ] `vrr_runloop_enable` OFF (Sync to Exact Content Framerate)
 - [ ] Automatic Frame Delay enabled
 - [ ] Input Poll Type Behavior set to Late
-- [ ] `video_threaded` OFF globally (explicit; per-core true for Tier 2–3)
+- [ ] `video_threaded` OFF globally (explicit; per-core true only for GL-based cores)
 - [ ] Max Swapchain Images set to 2 (verify on Metal)
 
 ### Data safety
 
 - [ ] `autosave_interval` set to 30
 - [ ] `savestate_auto_save` and `savestate_auto_load` enabled
-- [ ] `savestate_file_compression` enabled
+- [ ] Save state compression enabled (Settings → Saving)
 - [ ] `savestate_max_keep` set to 10
 - [ ] `config_save_on_exit` set to false (save explicitly after intentional changes)
 
@@ -493,14 +500,14 @@ Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version
 
 ### Shaders and sync
 
-- [ ] CRT shader applied per-core (Quick Menu → Shaders → Save Core Preset)
+- [ ] CRT shaders load automatically from override `.cfg` files (verify via Quick Menu → Shaders)
 - [ ] iCloud Cloud Sync enabled
 - [ ] Quit and relaunch to trigger initial iCloud sync
 
 ### Per-core overrides
 
-- [ ] Tier 1–2 override files uploaded to `Config/config/<core_name>/` (see §10)
-- [ ] Core options from override file headers applied via Quick Menu → Options
+- [ ] Tier 1–2 override files (`.cfg` and `.opt`) uploaded to `Config/config/<core_name>/` (see §10)
+- [ ] Both file types load automatically — verify via Quick Menu → Information
 - [ ] Tier 3 overrides applied manually on-device (no config files provided)
 ## Appendix A: 4th Gen Projections
 

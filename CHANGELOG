@@ -1,5 +1,85 @@
 retroarch-appletv4k changelog
 
+2026-04-05  Ryan Musante
+
+	Tagged as v2.24
+
+	* retroarch.cfg: Remove 8 redundant keys matching tvOS factory
+	  defaults (aspect_ratio_index, input_rumble_gain, sort_savefiles_enable,
+	  sort_savestates_enable, sort_savefiles_by_content_enable,
+	  sort_savestates_by_content_enable, content_runtime_log,
+	  savestate_file_compression); add DEFAULTS header note documenting
+	  retention policy for remaining default-matching keys
+	* README.md: §12 checklist: replace bare key names for removed keys
+	  with menu-path descriptions (aspect_ratio_index, savestate_file_compression)
+	* README.md: Bump version 2.23 → 2.24, rev.22 → rev.23
+	* retroarch.cfg: Sync header: rev.22 → rev.23
+
+2026-04-05  Ryan Musante
+
+	Tagged as v2.23
+
+	* README.md: Update tvOS version from "tvOS 18+" to "tvOS 26";
+	  Apple shipped tvOS 26 in September 2025 (skipping versions
+	  19–25 under new year-based versioning); current is tvOS 26.4
+	* README.md: §10 3DS: Update Azahar from 2125.0 to 2125.0.1
+	  (patch release 2026-03-26; adds NetPass homebrew support,
+	  Android package ID change, Qt6 build fix)
+	* README.md: Bump version 2.22 → 2.23, rev.21 → rev.22
+	* retroarch.cfg: Sync header: tvOS 18+ → tvOS 26, rev.21 → rev.22
+
+2026-04-05  Ryan Musante
+
+	Tagged as v2.22
+
+	* Apply audit (9 findings: 1 high, 2 medium, 6 low)
+	* retroarch.cfg: Fix stale header rev.19 → rev.20; rename AUDIO
+	  section to AUDIO & DYNAMIC RATE CONTROL with note explaining
+	  video_refresh_rate placement; clarify video_threaded comment:
+	  Metal-specific crash, per-core true only for GL-based cores
+	* README.md: §10 PS1: fix "disabled globally" → "disabled
+	  per-core" for preemptive frames (global cfg enables them)
+	* README.md: §7, §10, §11, §12: qualify threaded video crash as
+	  Metal-specific; restrict per-core guidance from blanket
+	  "Tier 2–3" to "GL-based cores (PPSSPP)" only
+	* README.md: §10 PPSSPP: resolve contradictory "required" /
+	  "unstable" wording; surface alternatives (test Metal, standalone
+	  app) from §11 into §10
+	* README.md: §8 crt-pi: change "lighter than zfast_crt" →
+	  "comparable weight to zfast_crt"
+	* README.md: §9 iCloud sync table: rename "Configuration" label
+	  to "Core settings / overrides"; add "(NOT retroarch.cfg)"
+	* README.md: §10 NES: drop Snes9x-specific "= 200" from
+	  overclock note
+	* CHANGELOG: v2.17 entry: document video_frame_rest removal
+	  (obsoleted upstream by Frame Delay refactor)
+	* README.md: Bump version 2.21 → 2.22, rev.20 → rev.21
+
+2026-04-05  Ryan Musante
+
+	Tagged as v2.21
+
+	* README.md: §10 melonDS DS: fix core option key prefix from
+	  melondsds_ to melonds_ (verified from JesseTG/melonds-ds
+	  constants.hpp upstream source)
+	* README.md: §10 intro: reference both .cfg and .opt files;
+	  note both load automatically; remove stale instruction to
+	  manually apply core options from header comments
+	* README.md: §10 intro: add cross-reference link to companion
+	  retroarch-configs repository
+	* README.md: §3 Filesystem layout: add .opt files alongside
+	  .cfg in directory tree; update comment from "created by
+	  RetroArch" to "from retroarch-configs repo"
+	* README.md: §8 Applying a shader: note shaders are pre-assigned
+	  in retroarch-configs .cfg files and load automatically; retain
+	  manual steps for overriding or customizing shader parameters
+	* README.md: §12 Setup Checklist: update shader item from manual
+	  Save Core Preset step to auto-load verification
+	* README.md: §12 Setup Checklist: update per-core overrides
+	  items to reference both .cfg and .opt; note auto-loading;
+	  remove manual Quick Menu → Options step
+	* README.md: Bump version 2.20 → 2.21, rev.19 → rev.20
+
 2026-04-04  Ryan Musante
 
 	Tagged as v2.20
@@ -76,7 +156,8 @@ retroarch-appletv4k changelog
 	  v1.20–v1.22.1 sources)
 	* retroarch.cfg: Add 23 keys (45 → 68 active); add SECURITY
 	  and LOGGING sections; correct video_refresh_rate to 59.940060
-	  (NTSC 60000/1001); condense 264 → 161 lines
+	  (NTSC 60000/1001); remove video_frame_rest (obsoleted upstream
+	  by Frame Delay refactor); condense 264 → 161 lines
 	* README.md: Add §7 Additional settings, §8 integer scaling
 	  conflict, §4 WebDAV security warning
 
