@@ -2,6 +2,33 @@ retroarch-appletv4k changelog
 
 2026-04-05  Ryan Musante
 
+	Tagged as v2.27
+
+	* README.md: §7 Video settings: remove Threaded Video row
+	  (redundant with Additional settings table)
+	* README.md: §7 Additional settings: remove Rumble Gain row
+	  (removed from cfg in v2.24 as redundant default)
+	* README.md: §7 Hotkeys: annotate Rewind binding as disabled
+	  globally, per-core only
+	* README.md: §11 Known Issues: merge PPSSPP #1 and #11 into
+	  single entry with full GL fallback context; remove stale
+	  tvOS 18.6 iCloud crash #4; renumber 12 → 10
+	* README.md: §12 checklist: replace tvOS/TV settings list with
+	  cross-reference to §7 TV output table; update Network security
+	  to cover both ports 80 and 8080
+	* README.md: Bump version 2.26 → 2.27
+
+2026-04-05  Ryan Musante
+
+	Tagged as v2.26
+
+	* README.md: Remove redundant Rev. counter from header; version
+	  badge is the sole release identifier going forward
+	* retroarch.cfg: Remove rev. from Source header comment
+	* README.md: Bump version 2.25 → 2.26
+
+2026-04-05  Ryan Musante
+
 	Tagged as v2.25
 
 	* README.md: §12 checklist: remove 16 items redundant with

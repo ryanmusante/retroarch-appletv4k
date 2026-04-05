@@ -1,10 +1,10 @@
 # RetroArch on Apple TV 4K
 
-![version](https://img.shields.io/badge/version-2.25-blue)
+![version](https://img.shields.io/badge/version-2.27-blue)
 ![RetroArch](https://img.shields.io/badge/RetroArch-v1.22.x-green)
 ![license](https://img.shields.io/badge/license-MIT-yellow)
 
-**RetroArch v1.22.x** · **tvOS 26** · **Apple TV 4K 3rd Gen (64 GB Wi-Fi · j255ap · A2737)** · **April 2026** · **Rev. 24**
+**RetroArch v1.22.x** · **tvOS 26** · **Apple TV 4K 3rd Gen (64 GB Wi-Fi · j255ap · A2737)** · **April 2026**
 
 A comprehensive guide to installing and configuring RetroArch on the Apple TV 4K 3rd Generation. Covers installation, ROM and BIOS management, controller pairing, performance tuning, CRT shader selection, and iCloud save synchronization. A companion `retroarch.cfg` with all recommended settings is included.
 
@@ -254,7 +254,7 @@ The PS/Xbox home button opens tvOS Control Center, not RetroArch's menu. A contr
 | Save State | Select + R1 |
 | Load State | Select + L1 |
 | Fast Forward | Select + R2 (hold) |
-| Rewind | Select + L2 (hold) |
+| Rewind | Select + L2 (hold; disabled globally, per-core only) |
 | State Slot + | Select + D-Pad Right |
 | State Slot − | Select + D-Pad Left |
 | Close Content | Select + Start |
@@ -270,7 +270,6 @@ The PS/Xbox home button opens tvOS Control Center, not RetroArch's menu. A contr
 | Integer Scale | ON | Pixel-perfect output; produces borders at 4K |
 | Integer Overscale | Optional | Enable for 224p content (NES/SNES) to fill more screen area |
 | Bilinear Filtering | OFF | Required for correct shader rendering |
-| Threaded Video | OFF | Crashes on tvOS with Metal ([#14978](https://github.com/libretro/RetroArch/issues/14978)); explicit false globally, enable per-core only for GL-based cores (PPSSPP) via overrides |
 | Metal Argument Buffers | ON (test) | v1.22.1+; reduces CPU draw-call overhead on A15. Revert to OFF if visual glitches appear |
 | GPU Screenshot | ON | Captures post-shader framebuffer; required for accurate screenshots with shaders |
 | Crop Overscan | ON | Removes garbage border pixels from retro cores. Core-dependent |
@@ -315,7 +314,6 @@ The companion `retroarch.cfg` includes hardening, input, menu performance, and l
 | Security | Camera / Location Access | OFF | Blocks core hardware access requests |
 | Security | On-Demand Thumbnails | OFF | Hangs on game/state load when thumbnail server is slow ([#17242](https://github.com/libretro/RetroArch/issues/17242)) |
 | Input | Joypad Driver | mfi | Apple GCController framework; only viable driver on tvOS |
-| Input | Rumble Gain | 100 | Full haptic feedback for DualSense/Xbox via Core Haptics (tvOS 14+) |
 | Menu | Throttle Framerate | ON | Caps XMB 3D ribbon at 60 fps; prevents uncapped rendering and thermal waste |
 | Menu | Left Thumbnails | OFF | Disables secondary thumbnail pane; halves thumbnail memory on 4 GB device |
 | Menu | Favorites / History Size | 100 / 50 | Defaults are 200; reduced for 4 GB RAM |
@@ -427,18 +425,16 @@ Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version
 
 | # | Issue | Ref | Status | Workaround |
 |---|-------|-----|--------|------------|
-| 1 | PPSSPP crashes with Vulkan/Metal driver | [#18050](https://github.com/libretro/RetroArch/issues/18050) | Open | `video_driver = "gl"` per-core override |
+| 1 | PPSSPP Metal/Vulkan crash and unstable GL fallback | [#18050](https://github.com/libretro/RetroArch/issues/18050), [#4804](https://github.com/libretro/RetroArch/issues/4804), [#16536](https://github.com/libretro/RetroArch/issues/16536) | Open | Metal/Vulkan drivers crash PPSSPP. GL per-core override works but Metal→GL driver switch is architecturally unstable (may crash on switch). Alternatives: test Metal in current builds, dedicated GL-only config via `--config`, or standalone PPSSPP app |
 | 2 | Switch Pro B button exits app | [#18286](https://github.com/libretro/RetroArch/issues/18286) | Open | Avoid Switch Pro Controller |
 | 3 | Ghost inputs with multiple controllers | [#18447](https://github.com/libretro/RetroArch/issues/18447) | Open | Use single controller or test carefully |
-| 4 | iCloud Sync crash on tvOS 18.6 | — | Community reports | Disable Cloud Sync temporarily; re-enable after tvOS update |
-| 5 | Mupen64Plus-Next per-core rewind feature request | [#18300](https://github.com/libretro/RetroArch/issues/18300) | Open | Disable rewind per-core for N64 |
-| 6 | Mupen64Plus-Next auto frame delay incompatible | [#14201](https://github.com/libretro/RetroArch/issues/14201) | Open | Disable auto frame delay per-core; refactored in v1.20.0 |
-| 7 | N64 rendering glitches (game-specific) | [#16598](https://github.com/libretro/RetroArch/issues/16598) | Open | Per-game overrides |
-| 8 | Threaded video crashes RetroArch on tvOS (Metal) | [#14978](https://github.com/libretro/RetroArch/issues/14978) | Persists | `video_threaded = "false"` set globally; enable per-core only for GL-based cores (PPSSPP). Upstream fix targets GL only, not Metal |
-| 9 | Cloud Sync conflicts between tvOS and macOS | [#16727](https://github.com/libretro/RetroArch/issues/16727) | Partial | DS_Store filter + foreground re-sync added; close content before quitting |
-| 10 | Bluetooth controller jitter over HDMI | — | Reports | Replace HDMI cable if input latency is inconsistent |
-| 11 | PPSSPP GL driver switch crashes | [#4804](https://github.com/libretro/RetroArch/issues/4804), [#16536](https://github.com/libretro/RetroArch/issues/16536) | Open (2016) | Metal→GL per-core switch is architecturally unstable. Alternatives: test Metal in current builds, dedicated GL-only config via `--config`, or standalone PPSSPP app |
-| 12 | A15 thermal throttling during sustained emulation | — | Hardware | Passively-cooled A15 throttles after 20–90 min sustained load; affects Tier 2–3 most. Ensure open ventilation, use lightweight shaders, prefer native resolution |
+| 4 | Mupen64Plus-Next per-core rewind feature request | [#18300](https://github.com/libretro/RetroArch/issues/18300) | Open | Disable rewind per-core for N64 |
+| 5 | Mupen64Plus-Next auto frame delay incompatible | [#14201](https://github.com/libretro/RetroArch/issues/14201) | Open | Disable auto frame delay per-core; refactored in v1.20.0 |
+| 6 | N64 rendering glitches (game-specific) | [#16598](https://github.com/libretro/RetroArch/issues/16598) | Open | Per-game overrides |
+| 7 | Threaded video crashes RetroArch on tvOS (Metal) | [#14978](https://github.com/libretro/RetroArch/issues/14978) | Persists | `video_threaded = "false"` set globally; enable per-core only for GL-based cores (PPSSPP). Upstream fix targets GL only, not Metal |
+| 8 | Cloud Sync conflicts between tvOS and macOS | [#16727](https://github.com/libretro/RetroArch/issues/16727) | Partial | DS_Store filter + foreground re-sync added; close content before quitting |
+| 9 | Bluetooth controller jitter over HDMI | — | Reports | Replace HDMI cable if input latency is inconsistent |
+| 10 | A15 thermal throttling during sustained emulation | — | Hardware | Passively-cooled A15 throttles after 20–90 min sustained load; affects Tier 2–3 most. Ensure open ventilation, use lightweight shaders, prefer native resolution |
 ## 12. Setup Checklist
 
 > **Note:** Uploading `retroarch.cfg` (§2 step 4) applies all video, audio, latency, security, menu, and logging settings. This checklist covers only actions and settings that the config file cannot control.
@@ -464,13 +460,7 @@ Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version
 
 ### tvOS and TV settings
 
-- [ ] Apple TV output: 4K SDR 60 Hz
-- [ ] Match Frame Rate: OFF (tvOS Settings → Video and Audio → Match Content)
-- [ ] Match Dynamic Range: OFF
-- [ ] tvOS Audio Format: Stereo
-- [ ] tvOS Reduce Loud Sounds: OFF
-- [ ] TV Game Mode enabled
-- [ ] Chroma 4:4:4 / RGB Full enabled on TV
+- [ ] All seven settings in [TV output (§7)](#tv-output) applied
 
 ### In-app calibration
 
@@ -480,7 +470,7 @@ Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version
 
 ### Network security
 
-- [ ] WebDAV (port 8080) access restricted at network level (VLAN/firewall)
+- [ ] Web interface and WebDAV (ports 80 and 8080) access restricted at network level (VLAN/firewall)
 
 ### Verify after relaunch
 
