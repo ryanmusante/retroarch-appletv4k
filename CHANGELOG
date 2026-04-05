@@ -1,5 +1,31 @@
 retroarch-appletv4k changelog
 
+2026-04-04  Ryan Musante
+
+	Tagged as v2.20
+
+	* Fact-check corrections verified against upstream sources
+	* README.md: §10 Restructure: Replace inline override values
+	  and per-tier subtables with single consolidated table; all
+	  override key=value pairs now live exclusively in companion
+	  config files; README retains tier, core, and notes columns
+	* README.md: §10 Tier 3 / 3DS: Update Azahar from "2125.0 at
+	  Alpha 4" to stable 2125.0 (released 2026-03-24); core now
+	  available via RetroArch core downloader and built-in on
+	  iOS/tvOS; fix core option keys from mixed citra_/azahar_
+	  prefix to azahar_ prefix (stable 2125.0 keys)
+	* README.md: §5 BIOS table: Nintendo DS changed from
+	  Required: Yes to Optional; add note that melonDS DS includes
+	  built-in HLE BIOS replacements (native BIOS required only
+	  for firmware boot and GBA Slot-2 connectivity)
+	* README.md: §12 Per-core overrides checklist: Replace
+	  per-core detail lines with config file upload references
+	* config/{Mesen,Snes9x,mGBA,Genesis Plus GX,Beetle PCE Fast,
+	  FinalBurn Neo}: Remove redundant preemptive_frames_enable =
+	  true; inherited from global retroarch.cfg — overrides should
+	  only contain keys that differ from global per libretro docs
+	* README.md: Bump version 2.19 → 2.20, rev.18 → rev.19
+
 2026-04-03  Ryan Musante
 
 	Tagged as v2.19
