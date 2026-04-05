@@ -1,10 +1,10 @@
 # RetroArch on Apple TV 4K
 
-![version](https://img.shields.io/badge/version-2.24-blue)
+![version](https://img.shields.io/badge/version-2.25-blue)
 ![RetroArch](https://img.shields.io/badge/RetroArch-v1.22.x-green)
 ![license](https://img.shields.io/badge/license-MIT-yellow)
 
-**RetroArch v1.22.x** · **tvOS 26** · **Apple TV 4K 3rd Gen (64 GB Wi-Fi · j255ap · A2737)** · **April 2026** · **Rev. 23**
+**RetroArch v1.22.x** · **tvOS 26** · **Apple TV 4K 3rd Gen (64 GB Wi-Fi · j255ap · A2737)** · **April 2026** · **Rev. 24**
 
 A comprehensive guide to installing and configuring RetroArch on the Apple TV 4K 3rd Generation. Covers installation, ROM and BIOS management, controller pairing, performance tuning, CRT shader selection, and iCloud save synchronization. A companion `retroarch.cfg` with all recommended settings is included.
 
@@ -441,6 +441,8 @@ Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version
 | 12 | A15 thermal throttling during sustained emulation | — | Hardware | Passively-cooled A15 throttles after 20–90 min sustained load; affects Tier 2–3 most. Ensure open ventilation, use lightweight shaders, prefer native resolution |
 ## 12. Setup Checklist
 
+> **Note:** Uploading `retroarch.cfg` (§2 step 4) applies all video, audio, latency, security, menu, and logging settings. This checklist covers only actions and settings that the config file cannot control.
+
 ### Install and configure
 
 - [ ] RetroArch installed from tvOS App Store
@@ -456,11 +458,11 @@ Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version
 
 ### Content
 
-- [ ] ROMs placed in `Config/ROMs/<system>/` (see [ROM folder reference](#rom-folder-reference))
+- [ ] ROMs placed in `Config/ROMs/<s>/` (see [ROM folder reference](#rom-folder-reference))
 - [ ] BIOS files placed in `Config/BIOS/` (case-sensitive filenames)
 - [ ] Manual Scan completed per system
 
-### Display and performance
+### tvOS and TV settings
 
 - [ ] Apple TV output: 4K SDR 60 Hz
 - [ ] Match Frame Rate: OFF (tvOS Settings → Video and Audio → Match Content)
@@ -469,40 +471,21 @@ Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version
 - [ ] tvOS Reduce Loud Sounds: OFF
 - [ ] TV Game Mode enabled
 - [ ] Chroma 4:4:4 / RGB Full enabled on TV
+
+### In-app calibration
+
 - [ ] Aspect Ratio set to Core Provided (Settings → Video → Scaling)
-- [ ] `video_refresh_rate` calibrated (Settings → Video → Output → Estimated Screen Refresh Rate)
-- [ ] `vrr_runloop_enable` OFF (Sync to Exact Content Framerate)
-- [ ] Automatic Frame Delay enabled
-- [ ] Input Poll Type Behavior set to Late
-- [ ] `video_threaded` OFF globally (explicit; per-core true only for GL-based cores)
-- [ ] Max Swapchain Images set to 2 (verify on Metal)
-
-### Data safety
-
-- [ ] `autosave_interval` set to 30
-- [ ] `savestate_auto_save` and `savestate_auto_load` enabled
+- [ ] `video_refresh_rate` calibrated to your display (Settings → Video → Output → Estimated Screen Refresh Rate)
 - [ ] Save state compression enabled (Settings → Saving)
-- [ ] `savestate_max_keep` set to 10
-- [ ] `config_save_on_exit` set to false (save explicitly after intentional changes)
 
-### Security
+### Network security
 
-- [ ] `network_cmd_enable` OFF (critical — zero-auth command interface on UDP 55355)
-- [ ] `network_remote_enable` OFF
-- [ ] `camera_allow` and `location_allow` OFF
 - [ ] WebDAV (port 8080) access restricted at network level (VLAN/firewall)
 
-### Menu and logging
-
-- [ ] `menu_throttle_framerate` ON (caps XMB at 60 fps)
-- [ ] `log_verbosity` and `log_to_file` OFF
-- [ ] `recording_enable` OFF
-
-### Shaders and sync
+### Verify after relaunch
 
 - [ ] CRT shaders load automatically from override `.cfg` files (verify via Quick Menu → Shaders)
-- [ ] iCloud Cloud Sync enabled
-- [ ] Quit and relaunch to trigger initial iCloud sync
+- [ ] iCloud Cloud Sync enabled and initial sync triggered (quit and relaunch)
 
 ### Per-core overrides
 

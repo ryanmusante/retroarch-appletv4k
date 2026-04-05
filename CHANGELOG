@@ -2,6 +2,18 @@ retroarch-appletv4k changelog
 
 2026-04-05  Ryan Musante
 
+	Tagged as v2.25
+
+	* README.md: §12 checklist: remove 16 items redundant with
+	  retroarch.cfg drop-in (video, audio, latency, security, menu,
+	  logging settings); restructure into action-only sections (tvOS
+	  and TV settings, In-app calibration, Network security, Verify
+	  after relaunch); add note explaining cfg covers omitted items
+	* README.md: Bump version 2.24 → 2.25, rev.23 → rev.24
+	* retroarch.cfg: Sync header: rev.23 → rev.24
+
+2026-04-05  Ryan Musante
+
 	Tagged as v2.24
 
 	* retroarch.cfg: Remove 8 redundant keys matching tvOS factory
