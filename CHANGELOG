@@ -4,225 +4,119 @@ retroarch-appletv4k changelog
 
 	Tagged as v2.27
 
+	* retroarch.cfg: Remove 8 redundant keys matching tvOS factory
+	  defaults (aspect_ratio_index, input_rumble_gain,
+	  sort_savefiles_enable, sort_savestates_enable,
+	  sort_savefiles_by_content_enable,
+	  sort_savestates_by_content_enable, content_runtime_log,
+	  savestate_file_compression); add DEFAULTS header note
 	* README.md: §7 Video settings: remove Threaded Video row
-	  (redundant with Additional settings table)
-	* README.md: §7 Additional settings: remove Rumble Gain row
-	  (removed from cfg in v2.24 as redundant default)
+	  (redundant with Additional settings); remove Rumble Gain
+	  (removed from cfg as redundant default)
 	* README.md: §7 Hotkeys: annotate Rewind binding as disabled
 	  globally, per-core only
 	* README.md: §11 Known Issues: merge PPSSPP #1 and #11 into
-	  single entry with full GL fallback context; remove stale
-	  tvOS 18.6 iCloud crash #4; renumber 12 → 10
-	* README.md: §12 checklist: replace tvOS/TV settings list with
-	  cross-reference to §7 TV output table; update Network security
-	  to cover both ports 80 and 8080
-	* README.md: Bump version 2.26 → 2.27
-
-2026-04-05  Ryan Musante
-
-	Tagged as v2.26
-
-	* README.md: Remove redundant Rev. counter from header; version
-	  badge is the sole release identifier going forward
+	  single entry; remove stale tvOS 18.6 iCloud crash;
+	  renumber 12 → 10
+	* README.md: §12 checklist: remove 16 items redundant with cfg
+	  drop-in; restructure into action-only sections; replace tvOS
+	  settings with cross-reference to §7 TV output; cover both
+	  ports 80 and 8080 in Network security
+	* README.md: Remove Rev. counter; version badge is sole
+	  release identifier
 	* retroarch.cfg: Remove rev. from Source header comment
-	* README.md: Bump version 2.25 → 2.26
-
-2026-04-05  Ryan Musante
-
-	Tagged as v2.25
-
-	* README.md: §12 checklist: remove 16 items redundant with
-	  retroarch.cfg drop-in (video, audio, latency, security, menu,
-	  logging settings); restructure into action-only sections (tvOS
-	  and TV settings, In-app calibration, Network security, Verify
-	  after relaunch); add note explaining cfg covers omitted items
-	* README.md: Bump version 2.24 → 2.25, rev.23 → rev.24
-	* retroarch.cfg: Sync header: rev.23 → rev.24
-
-2026-04-05  Ryan Musante
-
-	Tagged as v2.24
-
-	* retroarch.cfg: Remove 8 redundant keys matching tvOS factory
-	  defaults (aspect_ratio_index, input_rumble_gain, sort_savefiles_enable,
-	  sort_savestates_enable, sort_savefiles_by_content_enable,
-	  sort_savestates_by_content_enable, content_runtime_log,
-	  savestate_file_compression); add DEFAULTS header note documenting
-	  retention policy for remaining default-matching keys
-	* README.md: §12 checklist: replace bare key names for removed keys
-	  with menu-path descriptions (aspect_ratio_index, savestate_file_compression)
-	* README.md: Bump version 2.23 → 2.24, rev.22 → rev.23
-	* retroarch.cfg: Sync header: rev.22 → rev.23
 
 2026-04-05  Ryan Musante
 
 	Tagged as v2.23
 
-	* README.md: Update tvOS version from "tvOS 18+" to "tvOS 26";
-	  Apple shipped tvOS 26 in September 2025 (skipping versions
-	  19–25 under new year-based versioning); current is tvOS 26.4
-	* README.md: §10 3DS: Update Azahar from 2125.0 to 2125.0.1
-	  (patch release 2026-03-26; adds NetPass homebrew support,
-	  Android package ID change, Qt6 build fix)
-	* README.md: Bump version 2.22 → 2.23, rev.21 → rev.22
-	* retroarch.cfg: Sync header: tvOS 18+ → tvOS 26, rev.21 → rev.22
+	* README.md: Update tvOS version from "tvOS 18+" to "tvOS 26"
+	* README.md: §10 3DS: Update Azahar to 2125.0.1
 
 2026-04-05  Ryan Musante
 
 	Tagged as v2.22
 
 	* Apply audit (9 findings: 1 high, 2 medium, 6 low)
-	* retroarch.cfg: Fix stale header rev.19 → rev.20; rename AUDIO
-	  section to AUDIO & DYNAMIC RATE CONTROL with note explaining
-	  video_refresh_rate placement; clarify video_threaded comment:
-	  Metal-specific crash, per-core true only for GL-based cores
+	* retroarch.cfg: Rename AUDIO section to AUDIO & DYNAMIC RATE
+	  CONTROL; clarify video_threaded as Metal-specific crash
 	* README.md: §10 PS1: fix "disabled globally" → "disabled
-	  per-core" for preemptive frames (global cfg enables them)
-	* README.md: §7, §10, §11, §12: qualify threaded video crash as
-	  Metal-specific; restrict per-core guidance from blanket
-	  "Tier 2–3" to "GL-based cores (PPSSPP)" only
-	* README.md: §10 PPSSPP: resolve contradictory "required" /
-	  "unstable" wording; surface alternatives (test Metal, standalone
-	  app) from §11 into §10
-	* README.md: §8 crt-pi: change "lighter than zfast_crt" →
-	  "comparable weight to zfast_crt"
-	* README.md: §9 iCloud sync table: rename "Configuration" label
-	  to "Core settings / overrides"; add "(NOT retroarch.cfg)"
-	* README.md: §10 NES: drop Snes9x-specific "= 200" from
-	  overclock note
-	* CHANGELOG: v2.17 entry: document video_frame_rest removal
-	  (obsoleted upstream by Frame Delay refactor)
-	* README.md: Bump version 2.21 → 2.22, rev.20 → rev.21
+	  per-core" for preemptive frames
+	* README.md: §7, §10, §11: qualify threaded video crash as
+	  Metal-specific; restrict per-core guidance to GL-based cores
+	* README.md: §10 PPSSPP: resolve contradictory wording;
+	  surface alternatives from §11
+	* README.md: §8 crt-pi: fix weight comparison
+	* README.md: §9 iCloud sync: rename "Configuration" to
+	  "Core settings / overrides"
+	* README.md: §10 NES: drop Snes9x-specific overclock value
 
 2026-04-05  Ryan Musante
 
 	Tagged as v2.21
 
-	* README.md: §10 melonDS DS: fix core option key prefix from
-	  melondsds_ to melonds_ (verified from JesseTG/melonds-ds
-	  constants.hpp upstream source)
-	* README.md: §10 intro: reference both .cfg and .opt files;
-	  note both load automatically; remove stale instruction to
-	  manually apply core options from header comments
-	* README.md: §10 intro: add cross-reference link to companion
-	  retroarch-configs repository
-	* README.md: §3 Filesystem layout: add .opt files alongside
-	  .cfg in directory tree; update comment from "created by
-	  RetroArch" to "from retroarch-configs repo"
-	* README.md: §8 Applying a shader: note shaders are pre-assigned
-	  in retroarch-configs .cfg files and load automatically; retain
-	  manual steps for overriding or customizing shader parameters
-	* README.md: §12 Setup Checklist: update shader item from manual
-	  Save Core Preset step to auto-load verification
-	* README.md: §12 Setup Checklist: update per-core overrides
-	  items to reference both .cfg and .opt; note auto-loading;
-	  remove manual Quick Menu → Options step
-	* README.md: Bump version 2.20 → 2.21, rev.19 → rev.20
+	* README.md: §10 melonDS DS: fix core option key prefix
+	  melondsds_ → melonds_
+	* README.md: §10, §3, §8, §12: add .opt file references;
+	  note auto-loading; add retroarch-configs repo link
 
 2026-04-04  Ryan Musante
 
 	Tagged as v2.20
 
-	* Fact-check corrections verified against upstream sources
-	* README.md: §10 Restructure: Replace inline override values
-	  and per-tier subtables with single consolidated table; all
-	  override key=value pairs now live exclusively in companion
-	  config files; README retains tier, core, and notes columns
-	* README.md: §10 Tier 3 / 3DS: Update Azahar from "2125.0 at
-	  Alpha 4" to stable 2125.0 (released 2026-03-24); core now
-	  available via RetroArch core downloader and built-in on
-	  iOS/tvOS; fix core option keys from mixed citra_/azahar_
-	  prefix to azahar_ prefix (stable 2125.0 keys)
-	* README.md: §5 BIOS table: Nintendo DS changed from
-	  Required: Yes to Optional; add note that melonDS DS includes
-	  built-in HLE BIOS replacements (native BIOS required only
-	  for firmware boot and GBA Slot-2 connectivity)
-	* README.md: §12 Per-core overrides checklist: Replace
-	  per-core detail lines with config file upload references
-	* config/{Mesen,Snes9x,mGBA,Genesis Plus GX,Beetle PCE Fast,
-	  FinalBurn Neo}: Remove redundant preemptive_frames_enable =
-	  true; inherited from global retroarch.cfg — overrides should
-	  only contain keys that differ from global per libretro docs
-	* README.md: Bump version 2.19 → 2.20, rev.18 → rev.19
+	* README.md: §10: replace inline override values with single
+	  consolidated table; override key=value pairs now live in
+	  companion config files
+	* README.md: §10 3DS: Azahar stable 2125.0; core available
+	  via downloader and built-in on iOS/tvOS
+	* README.md: §5 Nintendo DS BIOS: Required → Optional (HLE)
+	* config/Tier 1: remove redundant preemptive_frames_enable
 
 2026-04-03  Ryan Musante
 
 	Tagged as v2.19
 
-	* Apply optimization audit (11 findings, 3 high / 5 medium / 3 low)
-	* Remove config/ per-core override files (maintained separately);
-	  README.md: update §2, §10, §12, Files table accordingly
-	* README.md: Add §4 Filesystem layout (Apple TV) subsection with
-	  directory tree showing tvOS target paths; cross-reference from
-	  §2 step 4, §3 Recommended setup, and §10 override instructions
-	* retroarch.cfg: Add 4 keys (68 → 72 active):
-	  video_threaded = false (explicit; was omitted, crashes #14978),
-	  audio_output_rate = 48000 (match HDMI native),
-	  audio_resampler_quality = 3 (Normal/Kaiser for Tier 1 headroom),
-	  savestate_max_keep = 10 (bound cache on 64 GB model);
-	  update header: remove video_threaded from OMITTED list
-	* config/Mupen64Plus-Next: Add preemptive_frames_enable = false
-	  (cached_interpreter without JIT; matches PS1 rationale);
-	  add core options: FrameDuping = True, EnableLODEmulation = False
-	* config/PCSX-ReARMed: Add core option pcsx_rearmed_async_cd
-	* config/melonDS DS: Add core option melonds_ds_screen_layout
-	* config/Mesen, config/Snes9x: Add video_scale_integer_scaling
-	  = 1 (overscale; fills more screen area for 224p content at 4K)
-	* config/{Mesen,Snes9x,mGBA,Genesis Plus GX,Beetle PCE Fast}:
-	  Add rewind_enable = false (defense-in-depth; FBNeo already had it)
-	* README.md: Update §7 video_threaded row (Omitted → OFF);
-	  add 4 rows to Additional settings table; update §10 Tier 1
-	  and Tier 2 override tables; fix override upload path
-	  (Config/config/ → root-level config/); update §2 Installation
-	  step 4; update §11 Known Issues #8 workaround; update §12
-	  Setup Checklist; update Files table
-	* README.md: Bump version 2.18 → 2.19, rev.17 → rev.18
+	* Apply optimization audit (11 findings)
+	* Remove config/ per-core overrides (maintained separately)
+	* README.md: Add §4 Filesystem layout subsection
+	* retroarch.cfg: Add 4 keys (68 → 72): video_threaded,
+	  audio_output_rate, audio_resampler_quality,
+	  savestate_max_keep
+	* config/Mupen64Plus-Next: Add preemptive_frames_enable=false
+	* config/Mesen, Snes9x: Add overscale for 224p at 4K
+	* config/Tier 1: Add rewind_enable=false (defense-in-depth)
 
 2026-04-02  Ryan Musante
 
 	Tagged as v2.18
 
-	* Add per-core override config files for Tier 1–2 (9 cores):
-	  Mesen, Snes9x, mGBA, Genesis Plus GX, Beetle PCE Fast,
-	  FinalBurn Neo, PCSX-ReARMed, Mupen64Plus-Next, melonDS DS
-	* README.md: Fix "Beetle PCE" → "Beetle PCE Fast" in ROM folder
-	  and Tier 1 tables; add config/ to Files table
-	* README.md: Bump version 2.17 → 2.18, rev.16 → rev.17
+	* Add per-core override config files for Tier 1–2 (9 cores)
 
 	Tagged as v2.17
 
-	* Apply optimization audit (31 findings against RetroArch
-	  v1.20–v1.22.1 sources)
-	* retroarch.cfg: Add 23 keys (45 → 68 active); add SECURITY
-	  and LOGGING sections; correct video_refresh_rate to 59.940060
-	  (NTSC 60000/1001); remove video_frame_rest (obsoleted upstream
-	  by Frame Delay refactor); condense 264 → 161 lines
-	* README.md: Add §7 Additional settings, §8 integer scaling
-	  conflict, §4 WebDAV security warning
+	* Apply optimization audit (31 findings against v1.20–v1.22.1)
+	* retroarch.cfg: Add 23 keys (45 → 68); add SECURITY and
+	  LOGGING sections; correct video_refresh_rate to 59.940060;
+	  remove video_frame_rest (obsoleted upstream)
 
 2026-04-01  Ryan Musante
 
 	Tagged as v2.14, v2.15, v2.16
 
-	* Fact-check corrections against upstream sources (config
-	  backup version, asset re-extraction version, Azahar status,
-	  Appendix A wireless spec, savestate_thumbnail version tag)
-	* Add MIT LICENSE file (missing from archive)
-	* Apply optimization spec v6 (frame pacing, latency stack,
-	  per-core); retroarch.cfg: add video_refresh_rate,
-	  audio_max_timing_skew, cloud sync exclusions, savestate
-	  thumbnails (41 → 45 active keys); rewrite per-core appendix
+	* Fact-check corrections against upstream sources
+	* Add MIT LICENSE file
+	* Apply optimization spec v6; retroarch.cfg: add
+	  video_refresh_rate, audio_max_timing_skew, cloud sync
+	  exclusions, savestate thumbnails (41 → 45 active keys)
 
 2026-03-31  Ryan Musante
 
 	Tagged as v2.11, v2.12, v2.13
 
-	* Apply optimization spec v5; retroarch.cfg: add 13 global
-	  keys (28 → 41) and core options for 12 cores; replace
-	  Yabause with Beetle Saturn
+	* Apply optimization spec v5; retroarch.cfg: add 13 keys
+	  (28 → 41); replace Yabause with Beetle Saturn
 	* README.md: Restructure 14 → 13 sections; merge Per-Core
-	  Overrides into Supported Systems (§10); add shields.io
-	  badges; remove decorative formatting
+	  Overrides into §10; add badges; remove decorative formatting
 
 2026-03-30  Ryan Musante
 
@@ -237,16 +131,13 @@ retroarch-appletv4k changelog
 
 	* v2.5–v2.9: Apply optimization spec v4; add video_frame_rest,
 	  input_max_users, content_runtime_log; audio_latency 48 → 32;
-	  restructure 17 sections → 9 active + 2 appendices (258 lines);
-	  condense to 135 lines; remove stale .bak
-	* v2.0–v2.4: Convert PDF guide to GitHub-style markdown with
-	  TOC, ROM folder table, setup checklist, issue links, 4th Gen
-	  projections; retarget to 64 GB Wi-Fi model (j255ap / A2737);
-	  sync retroarch.cfg folder structure to README
+	  restructure; condense to 135 lines; remove stale .bak
+	* v2.0–v2.4: Convert PDF to GitHub markdown; retarget to
+	  64 GB Wi-Fi model (j255ap / A2737)
 
 2026-03-28  Ryan Musante
 
 	Tagged as v1.0
 
 	* Initial drop-in configuration (25 active keys, 9 sections)
-	* Source document: retroarch-apple-tv-setup-guide.pdf (16 pages)
+	* Source document: retroarch-apple-tv-setup-guide.pdf
