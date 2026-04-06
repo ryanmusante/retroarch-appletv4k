@@ -1,6 +1,6 @@
 # RetroArch on Apple TV 4K
 
-![version](https://img.shields.io/badge/version-2.28-blue)
+![version](https://img.shields.io/badge/version-2.30-blue)
 ![RetroArch](https://img.shields.io/badge/RetroArch-v1.22.x-green)
 ![license](https://img.shields.io/badge/license-MIT-yellow)
 
@@ -318,12 +318,15 @@ The companion `retroarch.cfg` includes hardening, input, menu performance, and l
 | Menu | Left Thumbnails | OFF | Disables secondary thumbnail pane; halves thumbnail memory on 4 GB device |
 | Menu | Favorites / History Size | 100 / 50 | Defaults are 200; reduced for 4 GB RAM |
 | Logging | Verbosity / File Logging | OFF | Each `os_log` message involves malloc/vsnprintf/free; file writes waste volatile cache |
-| Logging | FPS / Statistics Display | OFF | OSD overlays add per-frame render overhead |
 | Logging | Recording | OFF | Metal recording support incomplete; significant overhead |
 | Audio | Output Rate | 48000 Hz | Matches Apple TV HDMI audio natively; prevents unnecessary resampling |
 | Audio | Resampler Quality | Normal (3) | Kaiser resampler. A15 has headroom for Tier 1; per-core Lower (2) for Tier 2–3 if needed |
-| Video | Threaded Video | OFF | Crashes on tvOS with Metal ([#14978](https://github.com/libretro/RetroArch/issues/14978)); explicit false globally, per-core true only for GL-based cores (PPSSPP) |
+| Video | Threaded Video | OFF | Crashes on tvOS with Metal ([#14978](https://github.com/libretro/RetroArch/issues/14978)); explicit false globally, per-core true for interpreter-bound cores (N64, PS1, DS) and GL-based cores (PPSSPP) |
 | Saving | Max Auto-Increment States | 10 | Bounds cache consumption and iCloud sync overhead on 64 GB model |
+| Saving | Save State Compression | ON | ~90% size reduction; reduces iCloud sync bandwidth and tvOS cache pressure |
+| Saving | SaveRAM Compression | ON | Reduces SRAM cache footprint and iCloud sync volume |
+| Menu | Playlist Compression | ON | ~90% file size reduction; reduces cache writes on volatile tvOS storage |
+| Latency | Run-Ahead Hide Warnings | ON | Per-core overrides already disable for incompatible cores; suppresses noise |
 
 See also the [WebDAV security warning](#4-file-transfers) in §4.
 
@@ -431,7 +434,7 @@ Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version
 | 4 | Mupen64Plus-Next per-core rewind feature request | [#18300](https://github.com/libretro/RetroArch/issues/18300) | Open | Disable rewind per-core for N64 |
 | 5 | Mupen64Plus-Next auto frame delay incompatible | [#14201](https://github.com/libretro/RetroArch/issues/14201) | Open | Disable auto frame delay per-core; refactored in v1.20.0 |
 | 6 | N64 rendering glitches (game-specific) | [#16598](https://github.com/libretro/RetroArch/issues/16598) | Open | Per-game overrides |
-| 7 | Threaded video crashes RetroArch on tvOS (Metal) | [#14978](https://github.com/libretro/RetroArch/issues/14978) | Persists | `video_threaded = "false"` set globally; enable per-core only for GL-based cores (PPSSPP). Upstream fix targets GL only, not Metal |
+| 7 | Threaded video crashes RetroArch on tvOS (Metal) | [#14978](https://github.com/libretro/RetroArch/issues/14978) | Persists | `video_threaded = "false"` set globally; per-core true for interpreter-bound cores (N64, PS1, DS) and GL-based cores (PPSSPP). Upstream fix targets GL only, not Metal |
 | 8 | Cloud Sync conflicts between tvOS and macOS | [#16727](https://github.com/libretro/RetroArch/issues/16727) | Partial | DS_Store filter + foreground re-sync added; close content before quitting |
 | 9 | Bluetooth controller jitter over HDMI | — | Reports | Replace HDMI cable if input latency is inconsistent |
 | 10 | A15 thermal throttling during sustained emulation | — | Hardware | Passively-cooled A15 throttles after 20–90 min sustained load; affects Tier 2–3 most. Ensure open ventilation, use lightweight shaders, prefer native resolution |
@@ -466,7 +469,6 @@ Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version
 
 - [ ] Aspect Ratio set to Core Provided (Settings → Video → Scaling)
 - [ ] `video_refresh_rate` calibrated to your display (Settings → Video → Output → Estimated Screen Refresh Rate)
-- [ ] Save state compression enabled (Settings → Saving)
 
 ### Network security
 
