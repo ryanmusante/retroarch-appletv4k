@@ -2,7 +2,7 @@
 
 ![version](https://img.shields.io/badge/version-2.30-blue)
 ![RetroArch](https://img.shields.io/badge/RetroArch-v1.22.x-green)
-![license](https://img.shields.io/badge/license-MIT-yellow)
+![license](https://img.shields.io/badge/license-MIT-green)
 
 **RetroArch v1.22.x** · **tvOS 26** · **Apple TV 4K 3rd Gen (64 GB Wi-Fi · j255ap · A2737)** · **April 2026**
 
