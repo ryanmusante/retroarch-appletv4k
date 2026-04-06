@@ -17,6 +17,9 @@ A comprehensive guide to installing and configuring RetroArch on the Apple TV 4K
 5. Scan ROMs (Manual Scan) and launch a game.
 
 Detailed instructions for each step follow below.
+
+[changelog](CHANGELOG.md)
+
 ## Table of Contents
 
 1. [Prerequisites](#1-prerequisites)
@@ -38,6 +41,7 @@ Detailed instructions for each step follow below.
 11. [Known Issues](#11-known-issues)
 12. [Setup Checklist](#12-setup-checklist)
 13. [Appendix A: 4th Gen Projections](#appendix-a-4th-gen-projections)
+
 ## 1. Prerequisites
 
 Minimum recommended version: **RetroArch v1.20.0** (required for WebDAV, automatic frame delay, and integer scaling enhancements). Automatic config backup was added in v1.16.0 and asset re-extraction in v1.19.0.
@@ -62,6 +66,7 @@ Minimum recommended version: **RetroArch v1.20.0** (required for WebDAV, automat
 | BIOS files | Required for PS1, Sega CD, Saturn, Neo Geo (see [ROM and BIOS Setup](#5-rom-and-bios-setup)) |
 
 > **Legal Notice:** Only use ROM and BIOS files for games and hardware you legally own. Downloading copyrighted material you do not own is illegal in most jurisdictions.
+
 ## 2. Installation
 
 No sideloading, developer accounts, or jailbreaking required.
@@ -76,6 +81,7 @@ No sideloading, developer accounts, or jailbreaking required.
 4. **Apply configuration:** Upload the companion `retroarch.cfg` to the root of the web interface (see [Filesystem layout](#filesystem-layout-apple-tv)), then quit and relaunch RetroArch. Do **not** use "Save Current Configuration" before relaunching — it overwrites the uploaded file with the in-memory config.
 
 > **Note:** RetroArch v1.20.0 added Bluetooth keyboard support on tvOS for text input, search, and core option editing.
+
 ## 3. Storage Persistence
 
 > ⚠️ **Critical:** Understanding tvOS storage behavior is essential to preventing data loss.
@@ -97,6 +103,7 @@ Follow the [Filesystem layout](#filesystem-layout-apple-tv) in §4. Create the d
 5. Enable **iCloud Cloud Sync:** Settings → Saving → Cloud Sync → Enable → Backend: iCloud.
 
 ROM files are never synced by iCloud. Always maintain backups on the transfer computer. Keep the ROM library lean to reduce cache pressure on the 64 GB model.
+
 ## 4. File Transfers
 
 tvOS has no Files app. All transfers use RetroArch's built-in network servers. RetroArch must remain running during all transfers.
@@ -151,6 +158,7 @@ The web interface and WebDAV expose RetroArch's sandboxed root. All paths in thi
 ```
 
 The `retroarch.cfg` references these paths using the `:/` prefix, which maps to the tvOS app content root (e.g., `:/Config/ROMs` = `Config/ROMs/` in the web interface).
+
 ## 5. ROM and BIOS Setup
 
 ### ROM folder reference
@@ -208,6 +216,7 @@ Use Manual Scan to build playlists:
 5. **Start Scan.** Repeat for each system.
 
 Playlists appear under Main Menu → Playlists.
+
 ## 6. Controllers
 
 The Apple TV supports up to four simultaneous Bluetooth controllers. The Siri Remote navigates menus only and cannot be used as a gamepad.
@@ -231,6 +240,7 @@ The Apple TV supports up to four simultaneous Bluetooth controllers. The Siri Re
 | Nintendo Switch Pro | Sync button | **Avoid** — B button exits app ([#18286](https://github.com/libretro/RetroArch/issues/18286)) |
 
 > **Warning:** Ghost inputs from controllers 2+ may bleed into controller 1 in multi-controller setups. Test before relying on multiplayer ([#18447](https://github.com/libretro/RetroArch/issues/18447)).
+
 ## 7. Configuration
 
 ### User interface
@@ -333,6 +343,7 @@ See also the [WebDAV security warning](#4-file-transfers) in §4.
 ### Netplay
 
 RetroArch supports peer-to-peer Netplay with up to 16 players and spectators. A low-latency network is recommended (5 GHz Wi-Fi or Ethernet on the 128 GB model). Only cores with serialization (save state) support are compatible.
+
 ## 8. CRT Shaders
 
 CRT shaders simulate scanlines, phosphor glow, and curvature for display characteristics representative of period-accurate hardware.
@@ -373,6 +384,7 @@ Use Minimal presets for Tier 2–3 cores where GPU headroom is limited by interp
 **crt-easymode 4K parameters** (community-recommended starting point): Mask Strength 0.18, Mask Type 1, Scanline Strength 0.95, Gamma Input 2.2, Gamma Output 1.8, Brightness 1.10. Adjust Mask Strength to taste for your display.
 
 > **Note:** If `shaders_slang/crt/` appears empty after an update, re-run Online Updater → Update Slang Shaders. If that fails, upload presets manually via WebDAV to `Config/shaders_slang/crt/`.
+
 ## 9. iCloud Sync
 
 Synchronize save data across Apple devices signed into the same Apple ID.
@@ -398,6 +410,7 @@ Synchronize save data across Apple devices signed into the same Apple ID.
 `retroarch.cfg` does **not** sync via Cloud Sync — upload it manually to each device. The iCloud Drive backend (PR #17814) is available on macOS/iOS but not Apple TV; continue using the CloudKit backend.
 
 > **Note:** Close content and return to the main menu before quitting RetroArch to prevent sync conflicts between devices ([#16727](https://github.com/libretro/RetroArch/issues/16727)).
+
 ## 10. Supported Systems and Per-Core Overrides
 
 The A15 Bionic handles retro emulation effectively, but Apple's App Store restriction on JIT compilation limits performance for demanding systems. Dreamcast, GameCube, Wii, and PS2 require JIT and cannot run through the App Store version.
@@ -424,6 +437,7 @@ Tier definitions: **1** = Flawless (full speed, shaders enabled), **2** = Good (
 ### Systems not supported (JIT required)
 
 Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version of RetroArch cannot execute JIT-compiled code. This is an Apple policy constraint, not a hardware limitation.
+
 ## 11. Known Issues
 
 | # | Issue | Ref | Status | Workaround |
@@ -438,6 +452,7 @@ Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version
 | 8 | Cloud Sync conflicts between tvOS and macOS | [#16727](https://github.com/libretro/RetroArch/issues/16727) | Partial | DS_Store filter + foreground re-sync added; close content before quitting |
 | 9 | Bluetooth controller jitter over HDMI | — | Reports | Replace HDMI cable if input latency is inconsistent |
 | 10 | A15 thermal throttling during sustained emulation | — | Hardware | Passively-cooled A15 throttles after 20–90 min sustained load; affects Tier 2–3 most. Ensure open ventilation, use lightweight shaders, prefer native resolution |
+
 ## 12. Setup Checklist
 
 > **Note:** Uploading `retroarch.cfg` (§2 step 4) applies all video, audio, latency, security, menu, and logging settings. This checklist covers only actions and settings that the config file cannot control.
@@ -484,6 +499,7 @@ Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version
 - [ ] Tier 1–2 override files (`.cfg` and `.opt`) uploaded to `Config/config/<core_name>/` (see §10)
 - [ ] Both file types load automatically — verify via Quick Menu → Information
 - [ ] Tier 3 overrides applied manually on-device (no config files provided)
+
 ## Appendix A: 4th Gen Projections
 
 > **Note:** Based on rumoured specifications as of March 2026. Apple has not announced this product. Projections assume the App Store JIT restriction persists.
@@ -516,14 +532,16 @@ Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version
 | 500 KB persistent storage | tvOS platform limit |
 | No VRR for gaming | QMS only (media frame-rate switching) |
 | Siri Remote not a gamepad | Hardware limitation |
+
 ## Files in This Repository
 
 | File | Description |
 |------|-------------|
 | `README.md` | This guide |
-| `CHANGELOG` | Release history (kernel.org style) |
+| [`CHANGELOG.md`](CHANGELOG.md) | Release history (kernel.org style) |
 | `retroarch.cfg` | Drop-in configuration for Apple TV 4K 3rd Gen |
 | `LICENSE` | MIT License |
+
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
