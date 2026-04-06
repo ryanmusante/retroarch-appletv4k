@@ -1,6 +1,6 @@
 # RetroArch on Apple TV 4K
 
-![version](https://img.shields.io/badge/version-2.27-blue)
+![version](https://img.shields.io/badge/version-2.28-blue)
 ![RetroArch](https://img.shields.io/badge/RetroArch-v1.22.x-green)
 ![license](https://img.shields.io/badge/license-MIT-yellow)
 
@@ -268,7 +268,7 @@ The PS/Xbox home button opens tvOS Control Center, not RetroArch's menu. A contr
 | Video driver | Metal | Best performance on Apple silicon |
 | V-Sync | ON | — |
 | Integer Scale | ON | Pixel-perfect output; produces borders at 4K |
-| Integer Overscale | Optional | Enable for 224p content (NES/SNES) to fill more screen area |
+| Integer Overscale | Optional | Enable for 224p content (NES/SNES/Genesis) to fill more screen area |
 | Bilinear Filtering | OFF | Required for correct shader rendering |
 | Metal Argument Buffers | ON (test) | v1.22.1+; reduces CPU draw-call overhead on A15. Revert to OFF if visual glitches appear |
 | GPU Screenshot | ON | Captures post-shader framebuffer; required for accurate screenshots with shaders |
@@ -408,7 +408,7 @@ Tier definitions: **1** = Flawless (full speed, shaders enabled), **2** = Good (
 | 1 | NES | Mesen | Yes | Overscale for 224p at 4K. No per-game overclock needed |
 | 1 | SNES | Snes9x | Yes | Overscale for 224p at 4K. Run-ahead 2 safe for light titles (Super Mario World, Zelda). Per-game: `snes9x_overclock = 200` for SuperFX titles (Star Fox, Yoshi's Island, Doom, Stunt Race FX) |
 | 1 | GB / GBC / GBA | mGBA | Yes | — |
-| 1 | Genesis / MD / CD, Master System | Genesis Plus GX | Yes | — |
+| 1 | Genesis / MD / CD, Master System | Genesis Plus GX | Yes | Overscale for 224p at 4K. Master System (192p) may need per-content-directory override |
 | 1 | PC Engine / TG-16 | Beetle PCE Fast | Yes | — |
 | 1 | Neo Geo, Arcade (CPS1/2/3) | FinalBurn Neo | Yes | Rewind conflicts with runahead ([#16374](https://github.com/libretro/RetroArch/issues/16374)) |
 | 2 | PlayStation 1 | PCSX ReARMed | Yes | No JIT; run-ahead/preemptive frames disabled per-core, re-enable per-game for light 2D titles. Lower `psxclock` to 50 per-game for demanding titles |

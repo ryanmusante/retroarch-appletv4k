@@ -2,6 +2,20 @@ retroarch-appletv4k changelog
 
 2026-04-05  Ryan Musante
 
+	Tagged as v2.28
+
+	* Apply optimization audit (6 findings)
+	* retroarch.cfg: Add 2 keys (64 → 66): savestate_auto_index
+	  (required for savestate_max_keep), block_sram_overwrite
+	  (prevents SRAM regression on state load; melonDS DS #245)
+	* retroarch.cfg: Fix video_threaded comment to include
+	  interpreter-bound cores; fix overscale comment to include
+	  Genesis (now has overscale in retroarch-configs v1.4)
+	* README.md: §7, §10: add Genesis to overscale references;
+	  note Master System (192p) per-content-directory caveat
+
+2026-04-05  Ryan Musante
+
 	Tagged as v2.27
 
 	* retroarch.cfg: Remove 8 redundant keys matching tvOS factory
