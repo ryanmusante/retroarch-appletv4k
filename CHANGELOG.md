@@ -1,17 +1,14 @@
 retroarch-appletv4k changelog
 
-
 2026-04-05  Ryan Musante
 
 - Tagged as v2.30
 - retroarch.cfg: add compression and runahead keys (65→69), remove 5 tvOS defaults (69→65, net +4−5).
 - retroarch.cfg: document preemptive frames / runahead relationship.
 - README: update §7 additional settings and §12 checklist.
-
 - Tagged as v2.29
 - Sync README §7, §11 video_threaded with retroarch.cfg.
 - retroarch.cfg: clarify per-core overrides vs Tier 3 guidance.
-
 - Tagged as v2.21 – v2.28
 - retroarch.cfg: add savestate_auto_index, block_sram_overwrite; remove 8 tvOS defaults (72→64).
 - README: consolidate §7–§12; update tvOS 26, Azahar 2125.0.1; fix melonDS key prefix.

@@ -544,6 +544,6 @@ Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE).
+[MIT](LICENSE)
 
 RetroArch is a separate project licensed under GPL v3. This guide and configuration file are independent community resources.
