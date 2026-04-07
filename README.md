@@ -1,6 +1,6 @@
 # RetroArch on Apple TV 4K
 
-![version](https://img.shields.io/badge/version-2.30-blue)
+![version](https://img.shields.io/badge/version-2.32-blue)
 ![RetroArch](https://img.shields.io/badge/RetroArch-v1.22.x-green)
 ![license](https://img.shields.io/badge/license-MIT-green)
 
@@ -329,7 +329,7 @@ The companion `retroarch.cfg` includes hardening, input, menu performance, and l
 | Menu | Favorites / History Size | 100 / 50 | Defaults are 200; reduced for 4 GB RAM |
 | Logging | Verbosity / File Logging | OFF | Each `os_log` message involves malloc/vsnprintf/free; file writes waste volatile cache |
 | Logging | Recording | OFF | Metal recording support incomplete; significant overhead |
-| Audio | Output Rate | 48000 Hz | Matches Apple TV HDMI audio natively; prevents unnecessary resampling |
+| Audio | `audio_out_rate` | 48000 Hz | Matches Apple TV HDMI audio natively; prevents unnecessary resampling |
 | Audio | Resampler Quality | Normal (3) | Kaiser resampler. A15 has headroom for Tier 1; per-core Lower (2) for Tier 2–3 if needed |
 | Video | Threaded Video | OFF | Crashes on tvOS with Metal ([#14978](https://github.com/libretro/RetroArch/issues/14978)); explicit false globally, per-core true for interpreter-bound cores (N64, PS1, DS) and GL-based cores (PPSSPP) |
 | Saving | Max Auto-Increment States | 10 | Bounds cache consumption and iCloud sync overhead on 64 GB model |

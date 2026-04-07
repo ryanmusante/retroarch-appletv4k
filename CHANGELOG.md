@@ -1,5 +1,28 @@
 retroarch-appletv4k changelog
 
+2026-04-06  Ryan Musante
+
+- Tagged as v2.32
+- retroarch.cfg: fix 4 invalid keys silently ignored by RetroArch parser:
+  audio_output_rate → audio_out_rate;
+  cloud_sync_enable_thumbnails → cloud_sync_sync_thumbs;
+  cloud_sync_enable_system → cloud_sync_sync_system.
+  Verified against libretro/RetroArch configuration.c (SETTING_UINT
+  audio_out_rate) and configuration.h (bool cloud_sync_sync_thumbs,
+  cloud_sync_sync_system).
+- retroarch.cfg: add explicit cloud_sync_sync_saves="true" and
+  cloud_sync_sync_configs="true" to pin documented intent.
+- retroarch.cfg: add video_crop_overscan="true" to resolve README §7
+  video table drift (was listed but absent from cfg).
+- README: sync §7 additional settings table to corrected audio_out_rate key.
+- Net key delta: 65 → 68 active keys (+3 added; 3 renamed in place).
+
+2026-04-06  Ryan Musante
+
+- Tagged as v2.31
+- retroarch.cfg: L47 video_max_swapchain_images comment — note 3 on 120 Hz panels.
+- Audit cycle closed: all v2.30 findings verified against repo; no key/value changes.
+
 2026-04-05  Ryan Musante
 
 - Tagged as v2.30
