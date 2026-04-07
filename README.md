@@ -1,6 +1,6 @@
 # RetroArch on Apple TV 4K
 
-![version](https://img.shields.io/badge/version-2.32-blue)
+![version](https://img.shields.io/badge/version-2.33-blue)
 ![RetroArch](https://img.shields.io/badge/RetroArch-v1.22.x-green)
 ![license](https://img.shields.io/badge/license-MIT-green)
 
@@ -180,7 +180,7 @@ Place ROMs in `Config/ROMs/<folder>/` using the folder names below. These names 
 | Arcade (CPS1/2/3) | `fbneo/` | `.zip` | FinalBurn Neo | 1 |
 | PlayStation 1 | `psx/` | `.cue`, `.bin`, `.chd`, `.pbp` | PCSX ReARMed | 2 |
 | Nintendo 64 | `n64/` | `.n64`, `.z64`, `.v64` | Mupen64Plus-Next | 2 |
-| Nintendo DS | `nds/` | `.nds` | melonDS DS | 2 |
+| Nintendo DS | `nds/` | `.nds` | melonDS DS | 3 |
 | Sega Saturn | `saturn/` | `.cue`, `.chd` | Beetle Saturn | 3 |
 | PSP | `psp/` | `.iso`, `.cso` | PPSSPP | 3 |
 | Nintendo 3DS | `3ds/` | `.3ds`, `.cia` | Azahar | 3 |
@@ -331,7 +331,7 @@ The companion `retroarch.cfg` includes hardening, input, menu performance, and l
 | Logging | Recording | OFF | Metal recording support incomplete; significant overhead |
 | Audio | `audio_out_rate` | 48000 Hz | Matches Apple TV HDMI audio natively; prevents unnecessary resampling |
 | Audio | Resampler Quality | Normal (3) | Kaiser resampler. A15 has headroom for Tier 1; per-core Lower (2) for Tier 2–3 if needed |
-| Video | Threaded Video | OFF | Crashes on tvOS with Metal ([#14978](https://github.com/libretro/RetroArch/issues/14978)); explicit false globally, per-core true for interpreter-bound cores (N64, PS1, DS) and GL-based cores (PPSSPP) |
+| Video | Threaded Video | OFF | Crashes on tvOS with Metal ([#14978](https://github.com/libretro/RetroArch/issues/14978)); explicit false globally, per-core true for interpreter-bound cores (N64, PS1, DS) via retroarch-configs overrides. PPSSPP (Tier 3) is configured manually on-device |
 | Saving | Max Auto-Increment States | 10 | Bounds cache consumption and iCloud sync overhead on 64 GB model |
 | Saving | Save State Compression | ON | ~90% size reduction; reduces iCloud sync bandwidth and tvOS cache pressure |
 | Saving | SaveRAM Compression | ON | Reduces SRAM cache footprint and iCloud sync volume |
@@ -429,7 +429,7 @@ Tier definitions: **1** = Flawless (full speed, shaders enabled), **2** = Good (
 | 1 | Neo Geo, Arcade (CPS1/2/3) | FinalBurn Neo | Yes | Rewind conflicts with runahead ([#16374](https://github.com/libretro/RetroArch/issues/16374)) |
 | 2 | PlayStation 1 | PCSX ReARMed | Yes | No JIT; run-ahead/preemptive frames disabled per-core, re-enable per-game for light 2D titles. Lower `psxclock` to 50 per-game for demanding titles |
 | 2 | Nintendo 64 | Mupen64Plus-Next | Yes | ~60–70% compatibility; rewind freezes emulation ([#18300](https://github.com/libretro/RetroArch/issues/18300)); auto frame delay incompatible ([#14201](https://github.com/libretro/RetroArch/issues/14201)). Re-enable run-ahead per-game for light titles (Mario 64, Kirby 64) |
-| 2 | Nintendo DS | melonDS DS | Yes | Software renderer at 1x; no touchscreen. Native BIOS optional (built-in HLE works for most games). Internal core option key prefix: `melonds_` (verified from upstream `constants.hpp`) |
+| 3 | Nintendo DS | melonDS DS | Yes | Compromised: software renderer at 1×; no touchscreen on tvOS — touch-required titles (Phoenix Wright, Hotel Dusk, Trauma Center) unplayable. Native BIOS optional (built-in HLE works for most games). Internal core option key prefix: `melonds_` (verified from upstream `constants.hpp`) |
 | 3 | Sega Saturn | Beetle Saturn | No | Only viable Saturn core on tvOS (Yabause/Kronos requires OpenGL 4.3 compute shaders). Pure software renderer. All latency features disabled |
 | 3 | PSP | PPSSPP | No | Metal/Vulkan crashes ([#18050](https://github.com/libretro/RetroArch/issues/18050)); GL driver override needed but Metal→GL switch is unstable ([#4804](https://github.com/libretro/RetroArch/issues/4804)) — alternatives: test Metal in current builds, standalone PPSSPP app. `fast_memory` crash-prone without JIT |
 | 3 | Nintendo 3DS | Azahar | No | Azahar 2125.0.1 (stable, March 2026); available via RetroArch core downloader and built-in on iOS/tvOS. JIT forcefully disabled on App Store builds |
@@ -448,7 +448,7 @@ Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version
 | 4 | Mupen64Plus-Next per-core rewind feature request | [#18300](https://github.com/libretro/RetroArch/issues/18300) | Open | Disable rewind per-core for N64 |
 | 5 | Mupen64Plus-Next auto frame delay incompatible | [#14201](https://github.com/libretro/RetroArch/issues/14201) | Open | Disable auto frame delay per-core; refactored in v1.20.0 |
 | 6 | N64 rendering glitches (game-specific) | [#16598](https://github.com/libretro/RetroArch/issues/16598) | Open | Per-game overrides |
-| 7 | Threaded video crashes RetroArch on tvOS (Metal) | [#14978](https://github.com/libretro/RetroArch/issues/14978) | Persists | `video_threaded = "false"` set globally; per-core true for interpreter-bound cores (N64, PS1, DS) and GL-based cores (PPSSPP). Upstream fix targets GL only, not Metal |
+| 7 | Threaded video crashes RetroArch on tvOS (Metal) | [#14978](https://github.com/libretro/RetroArch/issues/14978) | Persists | `video_threaded = "false"` set globally; per-core true for interpreter-bound cores (N64, PS1, DS) via retroarch-configs overrides. PPSSPP (Tier 3) is configured manually on-device. Upstream fix targets GL only, not Metal |
 | 8 | Cloud Sync conflicts between tvOS and macOS | [#16727](https://github.com/libretro/RetroArch/issues/16727) | Partial | DS_Store filter + foreground re-sync added; close content before quitting |
 | 9 | Bluetooth controller jitter over HDMI | — | Reports | Replace HDMI cable if input latency is inconsistent |
 | 10 | A15 thermal throttling during sustained emulation | — | Hardware | Passively-cooled A15 throttles after 20–90 min sustained load; affects Tier 2–3 most. Ensure open ventilation, use lightweight shaders, prefer native resolution |
@@ -498,7 +498,7 @@ Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version
 
 - [ ] Tier 1–2 override files (`.cfg` and `.opt`) uploaded to `Config/config/<core_name>/` (see §10)
 - [ ] Both file types load automatically — verify via Quick Menu → Information
-- [ ] Tier 3 overrides applied manually on-device (no config files provided)
+- [ ] Tier 3 melonDS DS override files (`.cfg` and `.opt`) uploaded to `Config/config/melonDS DS/` (Beetle Saturn, PPSSPP, Azahar are configured manually on-device — no config files provided)
 
 ## Appendix A: 4th Gen Projections
 
