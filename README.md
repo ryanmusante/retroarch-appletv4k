@@ -1,6 +1,6 @@
 # RetroArch on Apple TV 4K
 
-![version](https://img.shields.io/badge/version-2.33-blue)
+![version](https://img.shields.io/badge/version-2.34-blue)
 ![RetroArch](https://img.shields.io/badge/RetroArch-v1.22.x-green)
 ![license](https://img.shields.io/badge/license-MIT-green)
 
@@ -325,10 +325,8 @@ The companion `retroarch.cfg` includes hardening, input, menu performance, and l
 | Security | On-Demand Thumbnails | OFF | Hangs on game/state load when thumbnail server is slow ([#17242](https://github.com/libretro/RetroArch/issues/17242)) |
 | Input | Joypad Driver | mfi | Apple GCController framework; only viable driver on tvOS |
 | Menu | Throttle Framerate | ON | Caps XMB 3D ribbon at 60 fps; prevents uncapped rendering and thermal waste |
-| Menu | Left Thumbnails | OFF | Disables secondary thumbnail pane; halves thumbnail memory on 4 GB device |
 | Menu | Favorites / History Size | 100 / 50 | Defaults are 200; reduced for 4 GB RAM |
 | Logging | Verbosity / File Logging | OFF | Each `os_log` message involves malloc/vsnprintf/free; file writes waste volatile cache |
-| Logging | Recording | OFF | Metal recording support incomplete; significant overhead |
 | Audio | `audio_out_rate` | 48000 Hz | Matches Apple TV HDMI audio natively; prevents unnecessary resampling |
 | Audio | Resampler Quality | Normal (3) | Kaiser resampler. A15 has headroom for Tier 1; per-core Lower (2) for Tier 2–3 if needed |
 | Video | Threaded Video | OFF | Crashes on tvOS with Metal ([#14978](https://github.com/libretro/RetroArch/issues/14978)); explicit false globally, per-core true for interpreter-bound cores (N64, PS1, DS) via retroarch-configs overrides. PPSSPP (Tier 3) is configured manually on-device |

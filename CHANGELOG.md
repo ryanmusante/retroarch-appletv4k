@@ -1,5 +1,31 @@
 retroarch-appletv4k changelog
 
+2026-04-09  Ryan Musante
+
+- v2.34: CRIT — rename savefile_file_compression → save_file_compression
+  (configuration.c:1842). The older key did not exist and was silently
+  ignored — SRAM .srm files were NOT being compressed prior to this release
+  despite the stated intent. Existing saves re-compress on next write.
+- v2.34: CRIT — rename cloud_sync_backend → cloud_sync_driver
+  (SETTING_ARRAY, configuration.c:1617). The older key did not exist and
+  was silently ignored; iCloud was the only tvOS backend so behavior did
+  not change, but the line is now functional rather than cosmetic.
+- v2.34: CRIT — delete recording_enable = "false". There is no such
+  RetroArch setting — recording is a runtime hotkey only, verified absent
+  in configuration.c v1.22.x. Moved to the OMITTED header note.
+- v2.34: delete menu_left_thumbnails = "0"; DEFAULT_MENU_LEFT_THUMBNAILS_DEFAULT
+  is already 0 (config.def.h:1664), so the line was redundant under the
+  file's own "purely redundant keys are omitted" policy.
+- v2.34: rewrite audio_rate_control_delta comment — prior wording implied
+  raising audio_max_timing_skew would help PAL 50 Hz content sync on a
+  60 Hz display. It will not: DRC only corrects sub-percent refresh drift.
+- v2.34: rewrite preemptive_frames_enable header comment to document the
+  effective Tier 1 layering (global 1-frame → Tier 1 overrides raise to
+  2-frame preemptive → Tier 2-3 overrides disable entirely). Prior comment
+  said "0 for Tier 2-3" but omitted that Tier 1 runs 2-frame, not 1.
+- v2.34: README Additional settings table — drop Recording row (no such
+  key) and Left Thumbnails row (now default); version badge 2.33 → 2.34.
+
 2026-04-06  Ryan Musante
 
 - v2.33: melonDS DS Tier 2 → Tier 3 (sync with retroarch-configs v1.7).
