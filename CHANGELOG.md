@@ -1,5 +1,11 @@
 retroarch-appletv4k changelog
 
+2026-04-11  Ryan Musante
+
+- v2.35: sync README, changelog, and `retroarch.cfg` after removing path-based directory assignments from the shipped config.
+- v2.35: remove `rgui_browser_directory`, `system_directory`, `savefile_directory`, and `savestate_directory`; README now documents those paths as manual UI settings.
+- v2.35: drop the remaining per-core path note from `retroarch.cfg`; README is now the sole layout reference.
+
 2026-04-09  Ryan Musante
 
 - v2.34: CRIT — rename savefile_file_compression → save_file_compression

@@ -1,12 +1,12 @@
 # RetroArch on Apple TV 4K
 
-![version](https://img.shields.io/badge/version-2.34-blue)
+![version](https://img.shields.io/badge/version-2.35-blue)
 ![RetroArch](https://img.shields.io/badge/RetroArch-v1.22.x-green)
 ![license](https://img.shields.io/badge/license-MIT-green)
 
 **RetroArch v1.22.x** · **tvOS 26** · **Apple TV 4K 3rd Gen (64 GB Wi-Fi · j255ap · A2737)** · **April 2026**
 
-A comprehensive guide to installing and configuring RetroArch on the Apple TV 4K 3rd Generation. Covers installation, ROM and BIOS management, controller pairing, performance tuning, CRT shader selection, and iCloud save synchronization. A companion `retroarch.cfg` with all recommended settings is included.
+A comprehensive guide to installing and configuring RetroArch on the Apple TV 4K 3rd Generation. Covers installation, ROM and BIOS management, controller pairing, performance tuning, CRT shader selection, and iCloud save synchronization. A companion `retroarch.cfg` with the recommended global settings is included; path-based directory assignments remain manual.
 
 ### Quick Start
 
@@ -98,8 +98,8 @@ Follow the [Filesystem layout](#filesystem-layout-apple-tv) in §4. Create the d
 
 1. Create `ROMs/` and `BIOS/` folders inside `Config/`.
 2. Upload ROM and BIOS files into the appropriate subfolders.
-3. Set **File Browser** to `Config/ROMs/` (Settings → Directory).
-4. Set **System/BIOS** to `Config/BIOS/` (Settings → Directory).
+3. Set **File Browser** to `Config/ROMs/` (Settings → Directory). The companion `retroarch.cfg` does **not** set this path.
+4. Set **System/BIOS** to `Config/BIOS/` (Settings → Directory). The companion `retroarch.cfg` does **not** set this path.
 5. Enable **iCloud Cloud Sync:** Settings → Saving → Cloud Sync → Enable → Backend: iCloud.
 
 ROM files are never synced by iCloud. Always maintain backups on the transfer computer. Keep the ROM library lean to reduce cache pressure on the 64 GB model.
@@ -157,7 +157,7 @@ The web interface and WebDAV expose RetroArch's sandboxed root. All paths in thi
         └── crt/               ← CRT shader presets (see §8)
 ```
 
-The `retroarch.cfg` references these paths using the `:/` prefix, which maps to the tvOS app content root (e.g., `:/Config/ROMs` = `Config/ROMs/` in the web interface).
+The guide uses the `Config/` path names shown above because that is how the web interface and WebDAV expose the sandbox. The companion `retroarch.cfg` intentionally leaves directory-path assignments unset, so File Browser and System/BIOS must be set once in the UI.
 
 ## 5. ROM and BIOS Setup
 
@@ -400,7 +400,7 @@ Synchronize save data across Apple devices signed into the same Apple ID.
 |------|--------|-------|
 | Save files (.srm) | Yes | In-game saves |
 | Save states | Yes | Quick save/load |
-| Core settings / overrides | Yes | Per-core .cfg/.opt, hotkeys, directories (NOT retroarch.cfg — upload manually) |
+| Core settings / overrides | Yes | Per-core .cfg/.opt, hotkeys, and directory settings set in the UI (NOT retroarch.cfg — upload manually) |
 | Thumbnails | Optional | Consumes iCloud quota |
 | BIOS files | Optional | Enable system file sync |
 | ROM files | **No** | Maintain backups on the transfer computer |
