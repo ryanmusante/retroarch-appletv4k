@@ -1,6 +1,6 @@
 # RetroArch on Apple TV 4K
 
-![version](https://img.shields.io/badge/version-2.54-blue)
+![version](https://img.shields.io/badge/version-2.56-blue)
 ![RetroArch](https://img.shields.io/badge/RetroArch-v1.22.x-green)
 ![license](https://img.shields.io/badge/license-MIT-green)
 
@@ -143,8 +143,6 @@ Available in RetroArch v1.20.0+. Port 8080.
     │   ├── psx/
     │   └── ...                   (see §5 ROM folder reference)
     ├── BIOS/                  ← system BIOS files (case-sensitive)
-    ├── saves/                 ← in-game saves (.srm)
-    ├── states/                ← save states
     ├── Mesen/                 ← per-core overrides (from retroarch-configs repo)
     │   ├── Mesen.cfg            (.cfg = frontend overrides)
     │   └── Mesen.opt            (.opt = core options)
@@ -156,7 +154,9 @@ Available in RetroArch v1.20.0+. Port 8080.
         └── crt/               ← CRT shader presets (see §8)
 ```
 
-The web interface and WebDAV expose RetroArch’s sandboxed root. All paths in this guide are relative to that root. The `config/` directory stores user configuration. Per-core overrides auto-load from `config/<core_name>/` and can be created via Quick Menu → Overrides → Save Core Overrides.
+The web interface and WebDAV expose RetroArch's sandboxed root. All paths in this guide are relative to that root. The `config/` directory stores user configuration. Per-core overrides auto-load from `config/<core_name>/` and can be created via Quick Menu → Overrides → Save Core Overrides.
+
+> **Saves and savestates:** The shipped `retroarch.cfg` does not set `savefile_directory` or `savestate_directory`, so RetroArch uses its platform-managed default path on tvOS. With `sort_savefiles_enable` and `sort_savestates_enable` at their upstream defaults of `true`, saves and states are automatically organized into per-core subfolders (e.g. `<default>/Mesen/`, `<default>/Snes9x/`). They are **not** written next to ROMs (`DEFAULT_SAVEFILES_IN_CONTENT_DIR = false` upstream). This path is not directly visible under `config/` via the web interface or WebDAV; use Quick Menu → Overrides → Save Game Overrides or the RetroArch menu's save-state submenu for normal save/load operations. If you need backup-accessible save paths, set `savefile_directory = "config/saves"` and `savestate_directory = "config/states"` explicitly (trade-off: the defaults are platform-optimized, explicit paths put saves on RetroArch's purgeable tvOS cache).
 
 ## 5. ROM and BIOS Setup
 
@@ -347,7 +347,7 @@ CRT shaders simulate scanlines, phosphor glow, and curvature for display charact
 
 ### Applying a shader
 
-As of `retroarch-configs` v1.15, CRT shaders are **no longer pre-assigned** per core. RetroArch's default applies (no shader unless one is loaded globally or via Quick Menu → Shaders → Save Core Preset). Apply CRT shaders manually per core using the steps below.
+As of v2.55, `retroarch.cfg` sets a **global default CRT shader** of `shaders_slang/crt/crt-easymode.slangp`, which every core inherits automatically. The companion `retroarch-configs` v1.23 Tier 2 overrides (`Mupen64Plus-Next.cfg`, `PCSX-ReARMed.cfg`) replace it with the lighter `zfast_crt.slangp` to fit the interpreter + software-RDP GPU budget. No manual steps are required for the defaults to load. To override the preset for a specific core:
 
 1. Launch a game → Quick Menu (L3 + R3) → Shaders → Video Shaders: **ON**.
 2. Load Preset → `shaders_slang` → `crt` → select a preset.
@@ -455,7 +455,7 @@ Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version
 
 ### Verify after relaunch
 
-- [ ] CRT shaders applied manually per core (Quick Menu → Shaders → Save Core Preset) — no longer auto-loaded as of `retroarch-configs` v1.15
+- [ ] CRT shader loads automatically (global `crt-easymode` for Tier 1; Tier 2 overrides to `zfast_crt` per `retroarch-configs` v1.23+). Verify via Quick Menu → Shaders
 
 ### Per-core overrides
 

@@ -1,5 +1,17 @@
 2026-04-12  Ryan Musante
 
+- v2.56: README §4 Filesystem layout — remove aspirational `config/saves/` and `config/states/` directories from the diagram. Those paths were documented but never enforced by `retroarch.cfg` (no `savefile_directory` / `savestate_directory` keys set since v2.35 removed them). RetroArch upstream default `DEFAULT_SAVEFILES_IN_CONTENT_DIR = false` puts saves in the platform-managed default path, auto-sorted into per-core subfolders via `sort_savefiles_enable = true`. Add explanatory note documenting actual behavior, the tradeoff vs explicit `config/saves/` paths, and how to opt in to backup-accessible paths if desired.
+- v2.56: no `retroarch.cfg` key changes — documentation-only correction aligning README with shipped config reality.
+
+2026-04-12  Ryan Musante
+
+- v2.55: `retroarch.cfg` — add `video_shader = "shaders_slang/crt/crt-easymode.slangp"` as the global default CRT preset. Every core inherits crt-easymode automatically; companion `retroarch-configs` v1.23 Tier 2 overrides replace it with `zfast_crt.slangp` to fit the A15 GPU budget under Angrylion software RDP (N64) and the PSX interpreter. `video_shader_enable` was already set to true; no longer inert.
+- v2.55: README §8 "Applying a shader" — rewrite to reflect the new global default loading automatically, with Tier 2 override note. Setup checklist shader row updated from "applied manually per core" to automatic global + Tier 2 override verification.
+- v2.55: companion `retroarch-configs` bumped to v1.23 (Tier 2 zfast_crt explicit overrides + core summary table refresh).
+- v2.55: retroarch.cfg key count 70 → 71.
+
+2026-04-12  Ryan Musante
+
 - v2.54: PERF — `retroarch.cfg` add 4 explicit `false` values for keys whose upstream defaults are ON and hurt A15 tvOS performance: `netplay_public_announce` (network traffic), `menu_enable_widgets` (animated notification GPU compositing), `video_waitable_swapchains` (non-UWP-Windows default true; adds frame-latency pacing overhead on tvOS Metal). Also added `discord_allow = "false"` explicit (upstream default is already false) for audit symmetry with the security block.
 - v2.54: STYLE — collapse multiline comment runs in `retroarch.cfg` to single-line comments per the same policy applied to `.cfg`/`.opt` files. 56 → 55 comment lines.
 - v2.54: README §7 Additional settings table — add 4 new rows documenting the above explicit values and their rationale.
