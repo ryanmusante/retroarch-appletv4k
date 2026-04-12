@@ -6,7 +6,7 @@
 
 **RetroArch v1.22.x** · **tvOS 26** · **Apple TV 4K 3rd Gen (64 GB Wi-Fi · j255ap · A2737)** · **April 2026**
 
-This package now ships a **conservative baseline** configuration. Global low-latency features that require per-core validation remain disabled in the baseline `retroarch.cfg`, but the companion Tier 1 core overrides explicitly enable Run-Ahead where it has been validated.
+This package now ships a **conservative baseline** configuration. Global low-latency features that require per-core validation remain disabled in the baseline `retroarch.cfg`, but the companion Tier 1 core overrides explicitly enable Run Ahead where it has been validated.
 
 RetroArch setup guide for Apple TV 4K (3rd generation). Covers installation, ROM/BIOS setup, controllers, performance tuning, and CRT shaders. Includes a companion `retroarch.cfg`; File Browser and System/BIOS directory paths are preset to `config/ROMs/` and `config/BIOS/`.
 
@@ -282,7 +282,7 @@ The PS/Xbox home button opens tvOS Control Center, not RetroArch's menu. A contr
 | Setting | Value | Notes |
 |---------|-------|-------|
 | Sync to Exact Content Framerate | OFF (`video_sync_to_exact_content_framerate = "false"`) | Apple TV is fixed-refresh in normal use; keeping this OFF preserves Dynamic Rate Control via `audio_rate_control_delta` |
-| Run-Ahead | OFF by default globally (`run_ahead_enabled = "false"`, `run_ahead_frames = "1"`) | Conservative global baseline. Companion Tier 1 core overrides explicitly set `run_ahead_enabled = "true"` with `run_ahead_frames = "2"`; Tier 2 cores keep it disabled unless re-enabled per game. |
+| Run Ahead | OFF by default globally (`run_ahead_enabled = "false"`, `run_ahead_frames = "1"`) | Conservative global baseline. Companion Tier 1 core overrides explicitly set `run_ahead_enabled = "true"` with `run_ahead_frames = "2"`; Tier 2 cores keep it disabled unless re-enabled per game. |
 | Automatic Frame Delay | OFF | Conservative baseline. Enable per-core only after confirming stable pacing and no missed frames. |
 | Input Poll Type Behavior | Late | — |
 | Fast Forward Ratio | 3× (`fastforward_ratio = "3.0"`) | Reduced from 5× to lower instability and thermal-throttle risk on passively-cooled A15. Note: fast-forward may not function with Metal driver on tvOS |
@@ -325,7 +325,7 @@ The companion `retroarch.cfg` includes hardening, input, menu performance, and l
 | Audio | Resampler Quality | Lower (2) | Slightly lowers latency while preserving acceptable quality on Apple TV 4K |
 | Video | Threaded Video | OFF | Crashes on tvOS with Metal ([#14978](https://github.com/libretro/RetroArch/issues/14978)); explicit false globally, per-core true for interpreter-bound cores (N64, PS1) via retroarch-configs overrides |
 | Menu | Playlist Compression | ON | ~90% file size reduction; reduces cache writes on volatile tvOS storage |
-| Latency | Run-Ahead Hide Warnings | ON | Per-core overrides already disable for incompatible cores; suppresses noise |
+| Latency | Run Ahead Hide Warnings | ON | Per-core overrides already disable for incompatible cores; suppresses noise |
 
 See also the [WebDAV security warning](#4-file-transfers) in §4.
 
@@ -379,20 +379,20 @@ Use Minimal presets for Tier 2 cores where GPU headroom is limited by interprete
 
 The A15 Bionic handles retro emulation effectively, but Apple's App Store restriction on JIT compilation limits performance for demanding systems. Dreamcast, GameCube, Wii, and PS2 require JIT and cannot run through the App Store version.
 
-Per-core override values and core options are maintained in the companion [retroarch-configs](https://github.com/ryanmusante/retroarch-configs) repository. That ZIP ships its files flat under `config/`; after upload, move each `.cfg` / `.opt` file into the matching `config/<core_name>/` directory on the Apple TV (see [Filesystem layout](#filesystem-layout-apple-tv)). Once placed there, both file types load automatically — no manual entry required inside RetroArch. Tier 1 `.cfg` files explicitly enable Run-Ahead per core; the global baseline in this repository does not enable it for all cores.
+Per-core override values and core options are maintained in the companion [retroarch-configs](https://github.com/ryanmusante/retroarch-configs) repository. That ZIP ships its files flat under `config/`; after upload, move each `.cfg` / `.opt` file into the matching `config/<core_name>/` directory on the Apple TV (see [Filesystem layout](#filesystem-layout-apple-tv)). Once placed there, both file types load automatically — no manual entry required inside RetroArch. Tier 1 `.cfg` files explicitly enable Run Ahead per core; the global baseline in this repository does not enable it for all cores.
 
 Tier definitions: **1** = Flawless (full speed, shaders enabled), **2** = Good (most titles at full speed).
 
 | Tier | System | Core | Override | Notes |
 |------|--------|------|----------|-------|
 | 1 | NES | Mesen | Yes | Overscale for 224p at 4K. No per-game overclock needed |
-| 1 | SNES | Snes9x | Yes | Overscale for 224p at 4K. Run-ahead 2 safe for light titles (Super Mario World, Zelda). Per-game: `snes9x_overclock = 200` for SuperFX titles (Star Fox, Yoshi's Island, Doom, Stunt Race FX) |
+| 1 | SNES | Snes9x | Yes | Overscale for 224p at 4K. Run Ahead 2 is safe for light titles (Super Mario World, Zelda). Per-game: `snes9x_overclock = 200` for SuperFX titles (Star Fox, Yoshi's Island, Doom, Stunt Race FX) |
 | 1 | GB / GBC / GBA | mGBA | Yes | — |
-| 1 | Genesis / MD / CD, Master System | Genesis Plus GX | Yes | Overscale for 224p at 4K. Tier 1 companion override enables Run-Ahead per core. Master System (192p) may need per-content-directory override |
+| 1 | Genesis / MD / CD, Master System | Genesis Plus GX | Yes | Overscale for 224p at 4K. Tier 1 companion override enables Run Ahead per core. Master System (192p) may need per-content-directory override |
 | 1 | PC Engine / TG-16 | Beetle PCE Fast | Yes | — |
-| 1 | Neo Geo, Arcade (CPS1/2/3) | FinalBurn Neo | Yes | Rewind conflicts with runahead ([#16374](https://github.com/libretro/RetroArch/issues/16374)) |
-| 2 | PlayStation 1 | PCSX-ReARMed | Yes | No JIT; run-ahead/preemptive frames disabled per-core, re-enable per-game for light 2D titles. Lower `psxclock` to 50 per-game for demanding titles |
-| 2 | Nintendo 64 | Mupen64Plus-Next | Yes | ~60–70% compatibility; companion overrides keep Angrylion software RDP + CXD4 with Slang shaders. Rewind freezes emulation ([#18300](https://github.com/libretro/RetroArch/issues/18300)); auto frame delay incompatible ([#14201](https://github.com/libretro/RetroArch/issues/14201)). Run-Ahead remains disabled by default; re-enable per-game for light titles (Mario 64, Kirby 64) |
+| 1 | Neo Geo, Arcade (CPS1/2/3) | FinalBurn Neo | Yes | Rewind conflicts with Run Ahead ([#16374](https://github.com/libretro/RetroArch/issues/16374)) |
+| 2 | PlayStation 1 | PCSX-ReARMed | Yes | No JIT; Run Ahead / preemptive frames disabled per-core, re-enable per-game for light 2D titles. Lower `psxclock` to 50 per-game for demanding titles |
+| 2 | Nintendo 64 | Mupen64Plus-Next | Yes | ~60–70% compatibility; companion overrides keep Angrylion software RDP + CXD4 with Slang shaders. Rewind freezes emulation ([#18300](https://github.com/libretro/RetroArch/issues/18300)); auto frame delay incompatible ([#14201](https://github.com/libretro/RetroArch/issues/14201)). Run Ahead remains disabled by default; re-enable per-game for light titles (Mario 64, Kirby 64) |
 
 ### Systems not supported (JIT required)
 
@@ -475,7 +475,7 @@ Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version
 | System | Current | Projected | Notes |
 |--------|---------|-----------|-------|
 | N64 | ~60–70% compat | ~75–85% compat | Complex titles still limited without JIT |
-| PS1 | Most titles | All titles | Run-ahead 2 safe globally |
+| PS1 | Most titles | All titles | Run Ahead 2 is safe globally |
 | Dreamcast/GC/Wii/PS2 | Blocked | Blocked | JIT restriction, not hardware |
 
 ### Constraints that do not change
