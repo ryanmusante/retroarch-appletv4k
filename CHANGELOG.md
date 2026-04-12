@@ -1,23 +1,20 @@
+retroarch-appletv4k changelog
+
 2026-04-11  Ryan Musante
 
+- v2.41: restore trimmed README summary, filesystem notes, and saving table
+  rows without reintroducing Cloud Sync guidance.
+- v2.40: clear the inactive `cloud_sync_driver` value and remove the remaining
+  Cloud Sync / iCloud comments from `retroarch.cfg`.
 - v2.39: document Mupen64Plus-Next as using Angrylion software RDP
   plus `cxd4` RSP from the companion retroarch-configs pack.
 - v2.39: align Nintendo 64 README notes with the shipped Mupen64Plus-Next
   override profile.
-
-## v2.37 - 2026-04-11
-
-## v2.38 - 2026-04-11
-- disable all `cloud_sync_sync_*` settings in `retroarch.cfg` for local-only use
-- remove Cloud Sync guidance from `README.md`
-
-
-### Changed
-- reduce `content_favorites_size` from `100` to `10` in `retroarch.cfg`
-- reduce `content_history_size` from `50` to `10` in `retroarch.cfg`
-- sync README menu table to `Favorites / History Size = 10 / 10`
-
-retroarch-appletv4k changelog
+- v2.38: disable all `cloud_sync_sync_*` settings in `retroarch.cfg` for
+  local-only use and remove Cloud Sync guidance from `README.md`.
+- v2.37: reduce `content_favorites_size` from `100` to `10` and
+  `content_history_size` from `50` to `10` in `retroarch.cfg`; sync README
+  menu table to `Favorites / History Size = 10 / 10`.
 
 2026-04-11  Ryan Musante
 

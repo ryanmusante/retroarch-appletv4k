@@ -1,10 +1,13 @@
 # RetroArch on Apple TV 4K
 
-![version](https://img.shields.io/badge/version-2.35-blue)
+![version](https://img.shields.io/badge/version-2.41-blue)
 ![RetroArch](https://img.shields.io/badge/RetroArch-v1.22.x-green)
 ![license](https://img.shields.io/badge/license-MIT-green)
 
 **RetroArch v1.22.x** · **tvOS 26** · **Apple TV 4K 3rd Gen (64 GB Wi-Fi · j255ap · A2737)** · **April 2026**
+
+RetroArch configuration for Apple TV 4K (3rd generation). Covers installation, ROM and BIOS setup, controller pairing, performance tuning, and CRT shader selection. Includes a companion `retroarch.cfg` with recommended global settings; directory paths are set manually.
+
 
 ### Quick Start
 
@@ -148,7 +151,7 @@ Available in RetroArch v1.20.0+. Port 8080.
         └── crt/               ← CRT shader presets (see §8)
 ```
 
-The guide uses the `config/` path names shown above because that is how the web interface and WebDAV expose the sandbox. The companion `retroarch.cfg` intentionally leaves directory-path assignments unset, so File Browser and System/BIOS must be set once in the UI.
+The web interface and WebDAV expose RetroArch’s sandboxed root. All paths in this guide are relative to that root. The `config/` directory stores user configuration. Per-core overrides auto-load from `config/<core>/` and can be created via Quick Menu → Overrides → Save Core Overrides.
 
 ## 5. ROM and BIOS Setup
 
@@ -311,6 +314,9 @@ The companion `retroarch.cfg` includes hardening, input, menu performance, and l
 | Input | Joypad Driver | mfi | Apple GCController framework; only viable driver on tvOS |
 | Menu | Throttle Framerate | ON | Caps XMB 3D ribbon at 60 fps; prevents uncapped rendering and thermal waste |
 | Menu | Favorites / History Size | 10 / 10 | Defaults are 200; reduced for 4 GB RAM |
+| Saving | Max Auto-Increment States | 10 | Limits storage usage |
+| Saving | Save State Compression | ON | Reduces save state size |
+| Saving | SaveRAM Compression | ON | Reduces SRAM size |
 | Logging | Verbosity / File Logging | OFF | Each `os_log` message involves malloc/vsnprintf/free; file writes waste volatile cache |
 | Audio | `audio_out_rate` | 48000 Hz | Matches Apple TV HDMI audio natively; prevents unnecessary resampling |
 | Audio | Resampler Quality | Normal (3) | Kaiser resampler. A15 has headroom for Tier 1; per-core Lower (2) for Tier 2 if needed |
