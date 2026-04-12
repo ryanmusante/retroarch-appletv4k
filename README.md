@@ -172,7 +172,7 @@ Place ROMs in `config/ROMs/<folder>/` using the folder names below. These names 
 | PC Engine / TG-16 | `pce/` | `.pce`, `.cue`, `.chd` | Beetle PCE Fast | 1 |
 | Neo Geo | `neogeo/` | `.zip` | FinalBurn Neo | 1 |
 | Arcade (CPS1/2/3) | `fbneo/` | `.zip` | FinalBurn Neo | 1 |
-| PlayStation 1 | `psx/` | `.cue`, `.bin`, `.chd`, `.pbp` | PCSX ReARMed | 2 |
+| PlayStation 1 | `psx/` | `.cue`, `.bin`, `.chd`, `.pbp` | PCSX-ReARMed | 2 |
 | Nintendo 64 | `n64/` | `.n64`, `.z64`, `.v64` | Mupen64Plus-Next | 2 |
 
 Tier definitions: **1** = Flawless (full speed, shaders enabled), **2** = Good (most titles at full speed). See [Supported Systems and Per-Core Overrides](#10-supported-systems-and-per-core-overrides) for details.
@@ -266,7 +266,7 @@ The PS/Xbox home button opens tvOS Control Center, not RetroArch's menu. A contr
 | Video driver | Metal | Best performance on Apple silicon |
 | V-Sync | ON | — |
 | Integer Scale | ON | Pixel-perfect output; produces borders at 4K |
-| Integer Overscale | Optional | Enable for 224p content (NES/SNES/Genesis) to fill more screen area |
+| Integer Overscale | Optional | Used per-core for NES, SNES, Genesis, PC Engine/TurboGrafx-16, and mGBA (including GBA 240×160) where shipped overrides enable it |
 | Bilinear Filtering | OFF | Required for correct shader rendering |
 | Metal Argument Buffers | ON (test) | v1.22.1+; reduces CPU draw-call overhead on A15. Revert to OFF if visual glitches appear |
 | GPU Screenshot | ON | Captures post-shader framebuffer; required for accurate screenshots with shaders |
@@ -388,7 +388,7 @@ Tier definitions: **1** = Flawless (full speed, shaders enabled), **2** = Good (
 | 1 | Genesis / MD / CD, Master System | Genesis Plus GX | Yes | Overscale for 224p at 4K. Master System (192p) may need per-content-directory override |
 | 1 | PC Engine / TG-16 | Beetle PCE Fast | Yes | — |
 | 1 | Neo Geo, Arcade (CPS1/2/3) | FinalBurn Neo | Yes | Rewind conflicts with runahead ([#16374](https://github.com/libretro/RetroArch/issues/16374)) |
-| 2 | PlayStation 1 | PCSX ReARMed | Yes | No JIT; run-ahead/preemptive frames disabled per-core, re-enable per-game for light 2D titles. Lower `psxclock` to 50 per-game for demanding titles |
+| 2 | PlayStation 1 | PCSX-ReARMed | Yes | No JIT; run-ahead/preemptive frames disabled per-core, re-enable per-game for light 2D titles. Lower `psxclock` to 50 per-game for demanding titles |
 | 2 | Nintendo 64 | Mupen64Plus-Next | Yes | ~60–70% compatibility; companion overrides keep Angrylion software RDP + CXD4 with Slang shaders. Rewind freezes emulation ([#18300](https://github.com/libretro/RetroArch/issues/18300)); auto frame delay incompatible ([#14201](https://github.com/libretro/RetroArch/issues/14201)). Re-enable run-ahead per-game for light titles (Mario 64, Kirby 64) |
 
 ### Systems not supported (JIT required)
