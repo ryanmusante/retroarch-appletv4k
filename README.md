@@ -181,7 +181,6 @@ Place ROMs in `config/ROMs/<folder>/` using the folder names below. These names 
 | Nintendo 64 | `n64/` | `.n64`, `.z64`, `.v64` | Mupen64Plus-Next | 2 |
 | Sega Saturn | `saturn/` | `.cue`, `.chd` | Beetle Saturn | 3 |
 | PSP | `psp/` | `.iso`, `.cso` | PPSSPP | 3 |
-| Nintendo 3DS | `3ds/` | `.3ds`, `.cia` | Azahar | 3 |
 
 Tier definitions: **1** = Flawless (full speed, shaders enabled), **2** = Good (most titles at full speed), **3** = Limited/Experimental. See [Supported Systems and Per-Core Overrides](#10-supported-systems-and-per-core-overrides) for details.
 
@@ -424,7 +423,6 @@ Tier definitions: **1** = Flawless (full speed, shaders enabled), **2** = Good (
 | 2 | Nintendo 64 | Mupen64Plus-Next | Yes | ~60–70% compatibility; rewind freezes emulation ([#18300](https://github.com/libretro/RetroArch/issues/18300)); auto frame delay incompatible ([#14201](https://github.com/libretro/RetroArch/issues/14201)). Re-enable run-ahead per-game for light titles (Mario 64, Kirby 64) |
 | 3 | Sega Saturn | Beetle Saturn | No | Only viable Saturn core on tvOS (Yabause/Kronos requires OpenGL 4.3 compute shaders). Pure software renderer. All latency features disabled |
 | 3 | PSP | PPSSPP | No | Metal/Vulkan crashes ([#18050](https://github.com/libretro/RetroArch/issues/18050)); GL driver override needed but Metal→GL switch is unstable ([#4804](https://github.com/libretro/RetroArch/issues/4804)) — alternatives: test Metal in current builds, standalone PPSSPP app. `fast_memory` crash-prone without JIT |
-| 3 | Nintendo 3DS | Azahar | No | Azahar 2125.0.1 (stable, March 2026); available via RetroArch core downloader and built-in on iOS/tvOS. JIT forcefully disabled on App Store builds |
 
 ### Systems not supported (JIT required)
 
@@ -510,7 +508,6 @@ Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version
 | System | Current | Projected | Notes |
 |--------|---------|-----------|-------|
 | PSP | Tier 3 | Tier 2 | ~30% CPU gain; most 2D/RPG titles playable |
-| 3DS | Experimental | Tier 3 | Lighter titles near full speed |
 | N64 | ~60–70% compat | ~75–85% compat | Complex titles still limited without JIT |
 | PS1 | Most titles | All titles | Run-ahead 2 safe globally |
 | Dreamcast/GC/Wii/PS2 | Blocked | Blocked | JIT restriction, not hardware |

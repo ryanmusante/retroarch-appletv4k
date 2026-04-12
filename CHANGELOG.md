@@ -54,7 +54,7 @@ retroarch-appletv4k changelog
 
 2026-04-04  Ryan Musante
 
-- v2.20: move per-core overrides to retroarch-configs repo; add Azahar 3DS.
+- v2.20: move per-core overrides to retroarch-configs repo.
 
 2026-04-03  Ryan Musante
 
