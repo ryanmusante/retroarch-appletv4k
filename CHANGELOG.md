@@ -5,6 +5,7 @@ retroarch-appletv4k changelog
 - v2.35: sync README, changelog, and `retroarch.cfg` after removing path-based directory assignments from the shipped config.
 - v2.35: remove `rgui_browser_directory`, `system_directory`, `savefile_directory`, and `savestate_directory`; README now documents those paths as manual UI settings.
 - v2.35: drop the remaining per-core path note from `retroarch.cfg`; README is now the sole layout reference.
+- v2.35: README filesystem layout now shows per-core override directories directly under `Config/` (for example `Config/Mesen/`), matching the tested auto-load layout and companion `retroarch-configs` README.
 
 2026-04-09  Ryan Musante
 

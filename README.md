@@ -131,7 +131,7 @@ Available in RetroArch v1.20.0+. Port 8080.
 
 ### Filesystem layout (Apple TV)
 
-The web interface and WebDAV expose RetroArch's sandboxed root. All paths in this guide are relative to that root. The `Config/` directory is the primary user data area — iCloud syncs its contents (except ROMs). Per-core overrides are created automatically by RetroArch inside `Config/config/` when using Quick Menu → Overrides → Save Core Overrides.
+The web interface and WebDAV expose RetroArch's sandboxed root. All paths in this guide are relative to that root. The `Config/` directory is the primary user data area — iCloud syncs its contents (except ROMs). Per-core overrides auto-load from per-core directories under `Config/`. Quick Menu → Overrides → Save Core Overrides creates matching per-core directories there automatically.
 
 ```
 /                              ← web interface / WebDAV root
@@ -145,14 +145,13 @@ The web interface and WebDAV expose RetroArch's sandboxed root. All paths in thi
     ├── BIOS/                  ← system BIOS files (case-sensitive)
     ├── saves/                 ← in-game saves (.srm)
     ├── states/                ← save states
-    ├── config/                ← per-core overrides (from retroarch-configs repo)
-    │   ├── Mesen/
-    │   │   ├── Mesen.cfg         (.cfg = frontend overrides)
-    │   │   └── Mesen.opt         (.opt = core options)
-    │   ├── Snes9x/
-    │   │   ├── Snes9x.cfg
-    │   │   └── Snes9x.opt
-    │   └── ...                   (see §10 for override values)
+    ├── Mesen/                 ← per-core overrides (from retroarch-configs repo)
+    │   ├── Mesen.cfg            (.cfg = frontend overrides)
+    │   └── Mesen.opt            (.opt = core options)
+    ├── Snes9x/
+    │   ├── Snes9x.cfg
+    │   └── Snes9x.opt
+    ├── ...                      (see §10 for override values)
     └── shaders_slang/
         └── crt/               ← CRT shader presets (see §8)
 ```
@@ -413,7 +412,7 @@ Synchronize save data across Apple devices signed into the same Apple ID.
 
 The A15 Bionic handles retro emulation effectively, but Apple's App Store restriction on JIT compilation limits performance for demanding systems. Dreamcast, GameCube, Wii, and PS2 require JIT and cannot run through the App Store version.
 
-Per-core override values and core options are maintained in the companion [retroarch-configs](https://github.com/ryanmusante/retroarch-configs) repository. Override files (`.cfg`) and core option files (`.opt`) are uploaded to `Config/config/<core_name>/` on the Apple TV (see [Filesystem layout](#filesystem-layout-apple-tv)). Both file types load automatically — no manual entry required.
+Per-core override values and core options are maintained in the companion [retroarch-configs](https://github.com/ryanmusante/retroarch-configs) repository. Override files (`.cfg`) and core option files (`.opt`) are uploaded to `Config/<core_name>/` on the Apple TV (see [Filesystem layout](#filesystem-layout-apple-tv)). Both file types load automatically — no manual entry required.
 
 Tier definitions: **1** = Flawless (full speed, shaders enabled), **2** = Good (most titles at full speed), **3** = Limited/Experimental.
 
@@ -494,9 +493,9 @@ Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version
 
 ### Per-core overrides
 
-- [ ] Tier 1–2 override files (`.cfg` and `.opt`) uploaded to `Config/config/<core_name>/` (see §10)
+- [ ] Tier 1–2 override files (`.cfg` and `.opt`) uploaded to `Config/<core_name>/` (see §10)
 - [ ] Both file types load automatically — verify via Quick Menu → Information
-- [ ] Tier 3 melonDS DS override files (`.cfg` and `.opt`) uploaded to `Config/config/melonDS DS/` (Beetle Saturn, PPSSPP, Azahar are configured manually on-device — no config files provided)
+- [ ] Tier 3 melonDS DS override files (`.cfg` and `.opt`) uploaded to `Config/melonDS DS/` (Beetle Saturn, PPSSPP, Azahar are configured manually on-device — no config files provided)
 
 ## Appendix A: 4th Gen Projections
 
