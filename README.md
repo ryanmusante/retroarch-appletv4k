@@ -316,7 +316,7 @@ The companion `retroarch.cfg` includes hardening, input, menu performance, and l
 | Security | On-Demand Thumbnails | OFF | Hangs on game/state load when thumbnail server is slow ([#17242](https://github.com/libretro/RetroArch/issues/17242)) |
 | Input | Joypad Driver | mfi | Apple GCController framework; only viable driver on tvOS |
 | Menu | Throttle Framerate | ON | Caps XMB 3D ribbon at 60 fps; prevents uncapped rendering and thermal waste |
-| Menu | Favorites / History Size | 100 / 50 | Defaults are 200; reduced for 4 GB RAM |
+| Menu | Favorites / History Size | 10 / 10 | Defaults are 200; reduced for 4 GB RAM |
 | Logging | Verbosity / File Logging | OFF | Each `os_log` message involves malloc/vsnprintf/free; file writes waste volatile cache |
 | Audio | `audio_out_rate` | 48000 Hz | Matches Apple TV HDMI audio natively; prevents unnecessary resampling |
 | Audio | Resampler Quality | Normal (3) | Kaiser resampler. A15 has headroom for Tier 1; per-core Lower (2) for Tier 2 if needed |

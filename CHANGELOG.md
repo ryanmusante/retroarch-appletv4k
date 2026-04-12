@@ -1,3 +1,10 @@
+## v2.37 - 2026-04-11
+
+### Changed
+- reduce `content_favorites_size` from `100` to `10` in `retroarch.cfg`
+- reduce `content_history_size` from `50` to `10` in `retroarch.cfg`
+- sync README menu table to `Favorites / History Size = 10 / 10`
+
 retroarch-appletv4k changelog
 
 2026-04-11  Ryan Musante
