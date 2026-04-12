@@ -35,7 +35,6 @@ retroarch-appletv4k changelog
 
 2026-04-06  Ryan Musante
 
-- v2.33: melonDS DS Tier 2 → Tier 3 (sync with retroarch-configs v1.7).
 - v2.33: drop PPSSPP from video_threaded per-core list (no override ships).
 - v2.33: retroarch.cfg L55-56 overscale comment lists all 5 cores (was 3).
 - v2.33: CHANGELOG v2.32 entry "4 invalid keys" → "3" (matches enumeration).
@@ -52,7 +51,6 @@ retroarch-appletv4k changelog
 - v2.29: sync README §7, §11 video_threaded with retroarch.cfg.
 - v2.21–2.28: add savestate_auto_index, block_sram_overwrite; remove 8
   tvOS defaults (72 → 64); consolidate README §7–§12; tvOS 26;
-  Azahar 2125.0.1; fix melonDS key prefix.
 
 2026-04-04  Ryan Musante
 
