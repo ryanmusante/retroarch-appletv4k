@@ -1,6 +1,6 @@
 # RetroArch on Apple TV 4K
 
-![version](https://img.shields.io/badge/version-2.46-blue)
+![version](https://img.shields.io/badge/version-2.51-blue)
 ![RetroArch](https://img.shields.io/badge/RetroArch-v1.22.x-green)
 ![license](https://img.shields.io/badge/license-MIT-green)
 
@@ -39,10 +39,13 @@ Detailed instructions for each step follow below.
    - [TV output](#tv-output)
    - [Additional settings](#additional-settings)
 8. [CRT Shaders](#8-crt-shaders)
-10. [Supported Systems and Per-Core Overrides](#10-supported-systems-and-per-core-overrides)
-11. [Known Issues](#11-known-issues)
-12. [Setup Checklist](#12-setup-checklist)
-13. [Appendix A: 4th Gen Projections](#appendix-a-4th-gen-projections)
+9. [Supported Systems and Per-Core Overrides](#9-supported-systems-and-per-core-overrides)
+10. [Known Issues](#10-known-issues)
+11. [Setup Checklist](#11-setup-checklist)
+12. [Appendix A: 4th Gen Projections](#appendix-a-4th-gen-projections)
+13. [Files in This Repository](#files-in-this-repository)
+14. [Versioning](#versioning)
+15. [License](#license)
 
 ## 1. Prerequisites
 
@@ -148,7 +151,7 @@ Available in RetroArch v1.20.0+. Port 8080.
     ├── Snes9x/
     │   ├── Snes9x.cfg
     │   └── Snes9x.opt
-    ├── ...                      (see §10 for override values)
+    ├── ...                      (see §9 for override values)
     └── shaders_slang/
         └── crt/               ← CRT shader presets (see §8)
 ```
@@ -177,7 +180,7 @@ Place ROMs in `config/ROMs/<folder>/` using the folder names below. These names 
 | PlayStation 1 | `psx/` | `.cue`, `.bin`, `.chd`, `.pbp` | PCSX-ReARMed | 2 |
 | Nintendo 64 | `n64/` | `.n64`, `.z64`, `.v64` | Mupen64Plus-Next | 2 |
 
-Tier definitions: **1** = Flawless (full speed, shaders enabled), **2** = Good (most titles at full speed). See [Supported Systems and Per-Core Overrides](#10-supported-systems-and-per-core-overrides) for details.
+Tier definitions: **1** = Flawless (full speed, shaders enabled), **2** = Good (most titles at full speed). See [Supported Systems and Per-Core Overrides](#9-supported-systems-and-per-core-overrides) for details.
 
 Nintendo 64 uses the companion `retroarch-configs` override pack with `Mupen64Plus-Next` set to the **Angrylion** software renderer, `cxd4` RSP, and Slang shaders.
 
@@ -281,7 +284,7 @@ The PS/Xbox home button opens tvOS Control Center, not RetroArch's menu. A contr
 
 | Setting | Value | Notes |
 |---------|-------|-------|
-| Sync to Exact Content Framerate | OFF (`video_sync_to_exact_content_framerate = "false"`) | Apple TV is fixed-refresh in normal use; keeping this OFF preserves Dynamic Rate Control via `audio_rate_control_delta` |
+| Sync to Exact Content Framerate | OFF (`vrr_runloop_enable = "false"`) | Apple TV is fixed-refresh in normal use; keeping this OFF preserves Dynamic Rate Control via `audio_rate_control_delta` |
 | Run Ahead | OFF by default globally (`run_ahead_enabled = "false"`, `run_ahead_frames = "1"`) | Conservative global baseline. Companion Tier 1 core overrides explicitly set `run_ahead_enabled = "true"` with `run_ahead_frames = "2"`; Tier 2 cores keep it disabled unless re-enabled per game. |
 | Automatic Frame Delay | OFF | Conservative baseline. Enable per-core only after confirming stable pacing and no missed frames. |
 | Input Poll Type Behavior | Late | — |
@@ -339,9 +342,7 @@ CRT shaders simulate scanlines, phosphor glow, and curvature for display charact
 
 ### Applying a shader
 
-Per-core CRT shaders are pre-assigned in the companion [retroarch-configs](https://github.com/ryanmusante/retroarch-configs) override files (`video_shader` in each `.cfg`). No manual steps are required — shaders load automatically when a game launches.
-
-To override or customize a shader manually:
+As of `retroarch-configs` v1.15, CRT shaders are **no longer pre-assigned** per core. RetroArch's default applies (no shader unless one is loaded globally or via Quick Menu → Shaders → Save Core Preset). Apply CRT shaders manually per core using the steps below.
 
 1. Launch a game → Quick Menu (L3 + R3) → Shaders → Video Shaders: **ON**.
 2. Load Preset → `shaders_slang` → `crt` → select a preset.
@@ -375,7 +376,7 @@ Use Minimal presets for Tier 2 cores where GPU headroom is limited by interprete
 > **Note:** If `shaders_slang/crt/` appears empty after an update, re-run Online Updater → Update Slang Shaders. If that fails, upload presets manually via WebDAV to `config/shaders_slang/crt/`.
 
 
-## 10. Supported Systems and Per-Core Overrides
+## 9. Supported Systems and Per-Core Overrides
 
 The A15 Bionic handles retro emulation effectively, but Apple's App Store restriction on JIT compilation limits performance for demanding systems. Dreamcast, GameCube, Wii, and PS2 require JIT and cannot run through the App Store version.
 
@@ -398,7 +399,7 @@ Tier definitions: **1** = Flawless (full speed, shaders enabled), **2** = Good (
 
 Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version of RetroArch cannot execute JIT-compiled code. This is an Apple policy constraint, not a hardware limitation.
 
-## 11. Known Issues
+## 10. Known Issues
 
 | # | Issue | Ref | Status | Workaround |
 |---|-------|-----|--------|------------|
@@ -411,7 +412,7 @@ Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version
 | 8 | Bluetooth controller jitter over HDMI | — | Reports | Replace HDMI cable if input latency is inconsistent |
 | 9 | A15 thermal throttling during sustained emulation | — | Hardware | Passively-cooled A15 throttles after 20–90 min sustained load; affects Tier 2 most. Ensure open ventilation, use lightweight shaders, prefer native resolution |
 
-## 12. Setup Checklist
+## 11. Setup Checklist
 
 > **Note:** Uploading `retroarch.cfg` (§2 step 4) applies all video, audio, latency, security, menu, and logging settings. This checklist covers only actions and settings that the config file cannot control.
 
@@ -449,11 +450,11 @@ Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version
 
 ### Verify after relaunch
 
-- [ ] CRT shaders load automatically from override `.cfg` files (verify via Quick Menu → Shaders)
+- [ ] CRT shaders applied manually per core (Quick Menu → Shaders → Save Core Preset) — no longer auto-loaded as of `retroarch-configs` v1.15
 
 ### Per-core overrides
 
-- [ ] Tier 1–2 override files (`.cfg` and `.opt`) uploaded to `config/<core_name>/` (see §10)
+- [ ] Tier 1–2 override files (`.cfg` and `.opt`) uploaded to `config/<core_name>/` (see §9)
 - [ ] Both file types load automatically — verify via Quick Menu → Information
 
 ## Appendix A: 4th Gen Projections
@@ -495,6 +496,10 @@ Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version
 | [`CHANGELOG.md`](CHANGELOG.md) | Release history (kernel.org style) |
 | `retroarch.cfg` | Drop-in configuration for Apple TV 4K 3rd Gen |
 | `LICENSE` | MIT License |
+
+## Versioning
+
+This repository uses `vMAJOR.MINOR` (no patch component). `MAJOR` increments on incompatible structural changes (filesystem layout, breaking config schema, removed features). `MINOR` increments on every release — additive changes, key additions/removals, documentation syncs, and conservative defaults adjustments. Each release ships with a matching `CHANGELOG.md` entry in kernel.org `date<TAB>name` style.
 
 ## License
 
