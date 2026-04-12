@@ -1,6 +1,11 @@
 retroarch-appletv4k changelog
 
 2026-04-11  Ryan Musante
+- v2.43: sync README and CHANGELOG with the final companion `retroarch-configs` archive layout.
+- v2.43: document that the companion ZIP ships `.cfg` / `.opt` files flat under `config/`, then must be moved manually into `config/<core_name>/` on the Apple TV for auto-loading.
+- v2.43: no `retroarch.cfg` runtime keys changed in this release; documentation-only sync.
+
+2026-04-11  Ryan Musante
 - v2.42: remove stale Cloud Sync README section, set cloud_sync_enable false, and narrow network-interface wording
 
 

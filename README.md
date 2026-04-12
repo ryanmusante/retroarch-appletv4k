@@ -151,7 +151,7 @@ Available in RetroArch v1.20.0+. Port 8080.
         └── crt/               ← CRT shader presets (see §8)
 ```
 
-The web interface and WebDAV expose RetroArch’s sandboxed root. All paths in this guide are relative to that root. The `config/` directory stores user configuration. Per-core overrides auto-load from `config/<core>/` and can be created via Quick Menu → Overrides → Save Core Overrides.
+The web interface and WebDAV expose RetroArch’s sandboxed root. All paths in this guide are relative to that root. The `config/` directory stores user configuration. Per-core overrides auto-load from `config/<core_name>/` and can be created via Quick Menu → Overrides → Save Core Overrides.
 
 ## 5. ROM and BIOS Setup
 
@@ -354,7 +354,7 @@ Grouped by GPU cost at 4K output on the passively-cooled A15:
 | Minimal | `zfast_crt.slangp` | All systems, especially PS1/N64 |
 | Minimal | `crt-pi.slangp` | Heaviest cores; comparable weight to zfast_crt |
 | Minimal | `crt-potato-warm/cool.slangp` | All systems (lookup-texture based) |
-| Low | `crt-easymode.slangp` | NES, SNES, Genesis, GBA |
+| Low | `crt-easymode.slangp` | NES, SNES, Genesis, PC Engine/TurboGrafx-16, GBA |
 | Low | `crt-hyllian.slangp` | SNES, Genesis (Trinitron aesthetic) |
 | Low | `crt-aperture.slangp` | SNES, Genesis (lighter than crt-hyllian) |
 | Low | `fakelottes.slangp` | 16-bit systems (lighter crt-lottes) |
@@ -376,7 +376,7 @@ Use Minimal presets for Tier 2 cores where GPU headroom is limited by interprete
 
 The A15 Bionic handles retro emulation effectively, but Apple's App Store restriction on JIT compilation limits performance for demanding systems. Dreamcast, GameCube, Wii, and PS2 require JIT and cannot run through the App Store version.
 
-Per-core override values and core options are maintained in the companion [retroarch-configs](https://github.com/ryanmusante/retroarch-configs) repository. Override files (`.cfg`) and core option files (`.opt`) are uploaded to `config/<core_name>/` on the Apple TV (see [Filesystem layout](#filesystem-layout-apple-tv)). Both file types load automatically — no manual entry required.
+Per-core override values and core options are maintained in the companion [retroarch-configs](https://github.com/ryanmusante/retroarch-configs) repository. That ZIP ships its files flat under `config/`; after upload, move each `.cfg` / `.opt` file into the matching `config/<core_name>/` directory on the Apple TV (see [Filesystem layout](#filesystem-layout-apple-tv)). Once placed there, both file types load automatically — no manual entry required inside RetroArch.
 
 Tier definitions: **1** = Flawless (full speed, shaders enabled), **2** = Good (most titles at full speed).
 
