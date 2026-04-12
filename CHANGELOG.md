@@ -1,5 +1,11 @@
 2026-04-12  Ryan Musante
 
+- v2.52: README §9 Tier 2 PCSX-ReARMed row — update `psxclock` guidance from "lower to 50 per-game for demanding titles" (which assumed the old broken global of 57) to "global is 100 native; per-game underclock to 75 or 50 for demanding 3D titles" matching the corrected `retroarch-configs` v1.20 baseline.
+- v2.52: companion `retroarch-configs` bumped to v1.20 (Genesis Plus GX MAME YM2612, Mupen64Plus-Next CopyDepthToRDRAM Off, PCSX-ReARMed psxclock 100 + async GPU threading).
+- v2.52: no `retroarch.cfg` runtime keys changed.
+
+2026-04-12  Ryan Musante
+
 - v2.51: CRIT — `retroarch.cfg` L55 delete `video_sync_to_exact_content_framerate = "false"`. There is no such RetroArch key — verified absent from `libretro/RetroArch/configuration.c` and `config.def.h` on master. The string "Sync to exact content framerate" is the menu *label* for the existing `vrr_runloop_enable` key, which is already correctly set to `false` on L57. The bogus key was silently ignored by RetroArch loaders since v2.44; no runtime behavior changes from this deletion.
 - v2.51: README §7 Latency reduction table — correct the key reference for the "Sync to Exact Content Framerate" row from `video_sync_to_exact_content_framerate` to `vrr_runloop_enable`.
 - v2.51: full audit of all 66 `retroarch.cfg` keys against upstream `configuration.c` SETTING_* macros — only the bogus key above flagged; the remaining 65 keys verified valid (`log_verbosity` is read via `config_get_bool` rather than registered through SETTING_*, but is a documented and accepted key).

@@ -1,6 +1,6 @@
 # RetroArch on Apple TV 4K
 
-![version](https://img.shields.io/badge/version-2.51-blue)
+![version](https://img.shields.io/badge/version-2.52-blue)
 ![RetroArch](https://img.shields.io/badge/RetroArch-v1.22.x-green)
 ![license](https://img.shields.io/badge/license-MIT-green)
 
@@ -392,7 +392,7 @@ Tier definitions: **1** = Flawless (full speed, shaders enabled), **2** = Good (
 | 1 | Genesis / MD / CD, Master System | Genesis Plus GX | Yes | Overscale for 224p at 4K. Tier 1 companion override enables Run Ahead per core. Master System (192p) may need per-content-directory override |
 | 1 | PC Engine / TG-16 | Beetle PCE Fast | Yes | — |
 | 1 | Neo Geo, Arcade (CPS1/2/3) | FinalBurn Neo | Yes | Rewind conflicts with Run Ahead ([#16374](https://github.com/libretro/RetroArch/issues/16374)) |
-| 2 | PlayStation 1 | PCSX-ReARMed | Yes | No JIT; Run Ahead / preemptive frames disabled per-core, re-enable per-game for light 2D titles. Lower `psxclock` to 50 per-game for demanding titles |
+| 2 | PlayStation 1 | PCSX-ReARMed | Yes | No JIT; Run Ahead / preemptive frames disabled per-core, re-enable per-game for light 2D titles. Global `psxclock` is `100` (native); per-game underclock to 75 or 50 for demanding 3D titles (Tony Hawk, Spyro 2/3, Tekken 3) |
 | 2 | Nintendo 64 | Mupen64Plus-Next | Yes | ~60–70% compatibility; companion overrides keep Angrylion software RDP + CXD4 with Slang shaders. Rewind freezes emulation ([#18300](https://github.com/libretro/RetroArch/issues/18300)); auto frame delay incompatible ([#14201](https://github.com/libretro/RetroArch/issues/14201)). Run Ahead remains disabled by default; re-enable per-game for light titles (Mario 64, Kirby 64) |
 
 ### Systems not supported (JIT required)
