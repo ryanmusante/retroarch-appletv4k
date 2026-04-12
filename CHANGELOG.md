@@ -1,5 +1,11 @@
 2026-04-12  Ryan Musante
 
+- v2.46: sync `README.md`, `CHANGELOG.md`, and the companion `retroarch-configs` package after enabling Run-Ahead explicitly in all Tier 1 core overrides.
+- v2.46: keep the global baseline conservative (`run_ahead_enabled = "false"`) while documenting that validated Tier 1 companion overrides turn Run-Ahead on per core.
+- v2.46: document `PCSX-ReARMed.cfg` threaded video as a retained core-specific fallback; test `video_threaded = "false"` only if that core shows pacing issues.
+
+2026-04-12  Ryan Musante
+
 - v2.45: switch the package from a global low-latency preset to a conservative baseline; sync `README.md`, `CHANGELOG.md`, and `retroarch.cfg`.
 - v2.45: disable global Run-Ahead (`run_ahead_enabled = "false"`) while keeping `run_ahead_frames = "1"` as a ready preset for later per-core enablement.
 - v2.45: disable Automatic Frame Delay globally (`video_frame_delay_auto = "false"`) and document it as an optional per-core tuning step rather than a baseline default.
