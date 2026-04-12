@@ -28,14 +28,13 @@ retroarch-appletv4k changelog
   60 Hz display. It will not: DRC only corrects sub-percent refresh drift.
 - v2.34: rewrite preemptive_frames_enable header comment to document the
   effective Tier 1 layering (global 1-frame → Tier 1 overrides raise to
-  2-frame preemptive → Tier 2-3 overrides disable entirely). Prior comment
-  said "0 for Tier 2-3" but omitted that Tier 1 runs 2-frame, not 1.
+  2-frame preemptive → Tier 2 overrides disable entirely). Prior comment
+  said "0 for Tier 2" but omitted that Tier 1 runs 2-frame, not 1.
 - v2.34: README Additional settings table — drop Recording row (no such
   key) and Left Thumbnails row (now default); version badge 2.33 → 2.34.
 
 2026-04-06  Ryan Musante
 
-- v2.33: drop PPSSPP from video_threaded per-core list (no override ships).
 - v2.33: retroarch.cfg L55-56 overscale comment lists all 5 cores (was 3).
 - v2.33: CHANGELOG v2.32 entry "4 invalid keys" → "3" (matches enumeration).
 - v2.32: rename 3 invalid keys (audio_output_rate → audio_out_rate;
@@ -73,7 +72,7 @@ retroarch-appletv4k changelog
 
 2026-03-31  Ryan Musante
 
-- v2.11–2.13: add 13 keys (28 → 41); replace Yabause with Beetle Saturn;
+- v2.11–2.13: add 13 keys (28 → 41);
   restructure README 14 → 13 sections; add badges.
 
 2026-03-29  Ryan Musante

@@ -63,7 +63,7 @@ Minimum recommended version: **RetroArch v1.20.0** (required for WebDAV, automat
 | RetroArch | Free from the tvOS App Store |
 | Web browser | Safari, Chrome, Firefox, or Edge on the transfer computer |
 | ROM files | Legally acquired game files for systems you own |
-| BIOS files | Required for PS1, Sega CD, Saturn, Neo Geo (see [ROM and BIOS Setup](#5-rom-and-bios-setup)) |
+| BIOS files | Required for PS1, Sega CD, Neo Geo (see [ROM and BIOS Setup](#5-rom-and-bios-setup)) |
 
 > **Legal Notice:** Only use ROM and BIOS files for games and hardware you legally own. Downloading copyrighted material you do not own is illegal in most jurisdictions.
 
@@ -179,10 +179,8 @@ Place ROMs in `config/ROMs/<folder>/` using the folder names below. These names 
 | Arcade (CPS1/2/3) | `fbneo/` | `.zip` | FinalBurn Neo | 1 |
 | PlayStation 1 | `psx/` | `.cue`, `.bin`, `.chd`, `.pbp` | PCSX ReARMed | 2 |
 | Nintendo 64 | `n64/` | `.n64`, `.z64`, `.v64` | Mupen64Plus-Next | 2 |
-| Sega Saturn | `saturn/` | `.cue`, `.chd` | Beetle Saturn | 3 |
-| PSP | `psp/` | `.iso`, `.cso` | PPSSPP | 3 |
 
-Tier definitions: **1** = Flawless (full speed, shaders enabled), **2** = Good (most titles at full speed), **3** = Limited/Experimental. See [Supported Systems and Per-Core Overrides](#10-supported-systems-and-per-core-overrides) for details.
+Tier definitions: **1** = Flawless (full speed, shaders enabled), **2** = Good (most titles at full speed). See [Supported Systems and Per-Core Overrides](#10-supported-systems-and-per-core-overrides) for details.
 
 ### BIOS files
 
@@ -192,7 +190,6 @@ Most 8/16-bit cores include built-in BIOS support. The following 32-bit+ systems
 |--------|-----------------|-----------|
 | PlayStation 1 | `scph5501.bin` (NA) or `scph1001.bin` | Yes |
 | Sega CD / Mega CD | `bios_CD_U.bin`, `bios_CD_E.bin`, `bios_CD_J.bin` | Yes |
-| Sega Saturn | `sega_101.bin`, `mpr-17933.bin` | Yes |
 | TurboGrafx-CD | `syscard3.pce` | Yes |
 | Neo Geo | `neogeo.zip` | Yes |
 | Game Boy Advance | `gba_bios.bin` | Optional |
@@ -286,7 +283,7 @@ The PS/Xbox home button opens tvOS Control Center, not RetroArch's menu. A contr
 | Setting | Value | Notes |
 |---------|-------|-------|
 | Sync to Exact Content Framerate | OFF | Apple TV is fixed 60 Hz; ON disables Dynamic Rate Control and causes judder. OFF restores DRC via `audio_rate_control_delta` |
-| Preemptive Frames | ON, 1 frame | Lower-cost run-ahead method (v1.15.0+); `run_ahead_frames` sets count. Disable per-core for Tier 2–3. |
+| Preemptive Frames | ON, 1 frame | Lower-cost run-ahead method (v1.15.0+); `run_ahead_frames` sets count. Disable per-core for Tier 2. |
 | Automatic Frame Delay | ON | Disable per-core for N64 (see [Supported Systems and Per-Core Overrides](#10-supported-systems-and-per-core-overrides)) |
 | Input Poll Type Behavior | Late | — |
 | Fast Forward Ratio | 5× | Default uncapped; capped to prevent thermal throttling on passively-cooled A15. Note: fast-forward may not function with Metal driver on tvOS |
@@ -322,8 +319,8 @@ The companion `retroarch.cfg` includes hardening, input, menu performance, and l
 | Menu | Favorites / History Size | 100 / 50 | Defaults are 200; reduced for 4 GB RAM |
 | Logging | Verbosity / File Logging | OFF | Each `os_log` message involves malloc/vsnprintf/free; file writes waste volatile cache |
 | Audio | `audio_out_rate` | 48000 Hz | Matches Apple TV HDMI audio natively; prevents unnecessary resampling |
-| Audio | Resampler Quality | Normal (3) | Kaiser resampler. A15 has headroom for Tier 1; per-core Lower (2) for Tier 2–3 if needed |
-| Video | Threaded Video | OFF | Crashes on tvOS with Metal ([#14978](https://github.com/libretro/RetroArch/issues/14978)); explicit false globally, per-core true for interpreter-bound cores (N64, PS1) via retroarch-configs overrides. PPSSPP (Tier 3) is configured manually on-device |
+| Audio | Resampler Quality | Normal (3) | Kaiser resampler. A15 has headroom for Tier 1; per-core Lower (2) for Tier 2 if needed |
+| Video | Threaded Video | OFF | Crashes on tvOS with Metal ([#14978](https://github.com/libretro/RetroArch/issues/14978)); explicit false globally, per-core true for interpreter-bound cores (N64, PS1) via retroarch-configs overrides |
 | Saving | Max Auto-Increment States | 10 | Bounds cache consumption and iCloud sync overhead on 64 GB model |
 | Saving | Save State Compression | ON | ~90% size reduction; reduces iCloud sync bandwidth and tvOS cache pressure |
 | Saving | SaveRAM Compression | ON | Reduces SRAM cache footprint and iCloud sync volume |
@@ -357,7 +354,7 @@ Grouped by GPU cost at 4K output on the passively-cooled A15:
 
 | GPU Cost | Shader | Best For |
 |----------|--------|----------|
-| Minimal | `zfast_crt.slangp` | All systems, especially PS1/N64/Saturn |
+| Minimal | `zfast_crt.slangp` | All systems, especially PS1/N64 |
 | Minimal | `crt-pi.slangp` | Heaviest cores; comparable weight to zfast_crt |
 | Minimal | `crt-potato-warm/cool.slangp` | All systems (lookup-texture based) |
 | Low | `crt-easymode.slangp` | NES, SNES, Genesis, GBA |
@@ -367,7 +364,7 @@ Grouped by GPU cost at 4K output on the passively-cooled A15:
 | Medium | `crt-geom.slangp` | All 2D systems (scanlines + curvature) |
 | Medium | `crt-lottes-fast.slangp` | 16-bit systems (slot mask + bloom) |
 
-Use Minimal presets for Tier 2–3 cores where GPU headroom is limited by interpreter overhead. If complex shaders cause frame drops or thermal throttling at 4K, switch Apple TV output to 1080p SDR 60 Hz — the TV's scaler handles upscaling, and GPU load drops significantly.
+Use Minimal presets for Tier 2 cores where GPU headroom is limited by interpreter overhead. If complex shaders cause frame drops or thermal throttling at 4K, switch Apple TV output to 1080p SDR 60 Hz — the TV's scaler handles upscaling, and GPU load drops significantly.
 
 **Avoid on Apple TV:** CRT-Royale, CRT-Geom-Deluxe, Guest-Dr-Venom, Guest-Advanced, and all Mega Bezel shaders exceed the A15's GPU budget.
 
@@ -409,7 +406,7 @@ The A15 Bionic handles retro emulation effectively, but Apple's App Store restri
 
 Per-core override values and core options are maintained in the companion [retroarch-configs](https://github.com/ryanmusante/retroarch-configs) repository. Override files (`.cfg`) and core option files (`.opt`) are uploaded to `config/<core_name>/` on the Apple TV (see [Filesystem layout](#filesystem-layout-apple-tv)). Both file types load automatically — no manual entry required.
 
-Tier definitions: **1** = Flawless (full speed, shaders enabled), **2** = Good (most titles at full speed), **3** = Limited/Experimental.
+Tier definitions: **1** = Flawless (full speed, shaders enabled), **2** = Good (most titles at full speed).
 
 | Tier | System | Core | Override | Notes |
 |------|--------|------|----------|-------|
@@ -421,8 +418,6 @@ Tier definitions: **1** = Flawless (full speed, shaders enabled), **2** = Good (
 | 1 | Neo Geo, Arcade (CPS1/2/3) | FinalBurn Neo | Yes | Rewind conflicts with runahead ([#16374](https://github.com/libretro/RetroArch/issues/16374)) |
 | 2 | PlayStation 1 | PCSX ReARMed | Yes | No JIT; run-ahead/preemptive frames disabled per-core, re-enable per-game for light 2D titles. Lower `psxclock` to 50 per-game for demanding titles |
 | 2 | Nintendo 64 | Mupen64Plus-Next | Yes | ~60–70% compatibility; rewind freezes emulation ([#18300](https://github.com/libretro/RetroArch/issues/18300)); auto frame delay incompatible ([#14201](https://github.com/libretro/RetroArch/issues/14201)). Re-enable run-ahead per-game for light titles (Mario 64, Kirby 64) |
-| 3 | Sega Saturn | Beetle Saturn | No | Only viable Saturn core on tvOS (Yabause/Kronos requires OpenGL 4.3 compute shaders). Pure software renderer. All latency features disabled |
-| 3 | PSP | PPSSPP | No | Metal/Vulkan crashes ([#18050](https://github.com/libretro/RetroArch/issues/18050)); GL driver override needed but Metal→GL switch is unstable ([#4804](https://github.com/libretro/RetroArch/issues/4804)) — alternatives: test Metal in current builds, standalone PPSSPP app. `fast_memory` crash-prone without JIT |
 
 ### Systems not supported (JIT required)
 
@@ -432,16 +427,15 @@ Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version
 
 | # | Issue | Ref | Status | Workaround |
 |---|-------|-----|--------|------------|
-| 1 | PPSSPP Metal/Vulkan crash and unstable GL fallback | [#18050](https://github.com/libretro/RetroArch/issues/18050), [#4804](https://github.com/libretro/RetroArch/issues/4804), [#16536](https://github.com/libretro/RetroArch/issues/16536) | Open | Metal/Vulkan drivers crash PPSSPP. GL per-core override works but Metal→GL driver switch is architecturally unstable (may crash on switch). Alternatives: test Metal in current builds, dedicated GL-only config via `--config`, or standalone PPSSPP app |
-| 2 | Switch Pro B button exits app | [#18286](https://github.com/libretro/RetroArch/issues/18286) | Open | Avoid Switch Pro Controller |
-| 3 | Ghost inputs with multiple controllers | [#18447](https://github.com/libretro/RetroArch/issues/18447) | Open | Use single controller or test carefully |
-| 4 | Mupen64Plus-Next per-core rewind feature request | [#18300](https://github.com/libretro/RetroArch/issues/18300) | Open | Disable rewind per-core for N64 |
-| 5 | Mupen64Plus-Next auto frame delay incompatible | [#14201](https://github.com/libretro/RetroArch/issues/14201) | Open | Disable auto frame delay per-core; refactored in v1.20.0 |
-| 6 | N64 rendering glitches (game-specific) | [#16598](https://github.com/libretro/RetroArch/issues/16598) | Open | Per-game overrides |
-| 7 | Threaded video crashes RetroArch on tvOS (Metal) | [#14978](https://github.com/libretro/RetroArch/issues/14978) | Persists | `video_threaded = "false"` set globally; per-core true for interpreter-bound cores (N64, PS1) via retroarch-configs overrides. PPSSPP (Tier 3) is configured manually on-device. Upstream fix targets GL only, not Metal |
-| 8 | Cloud Sync conflicts between tvOS and macOS | [#16727](https://github.com/libretro/RetroArch/issues/16727) | Partial | DS_Store filter + foreground re-sync added; close content before quitting |
-| 9 | Bluetooth controller jitter over HDMI | — | Reports | Replace HDMI cable if input latency is inconsistent |
-| 10 | A15 thermal throttling during sustained emulation | — | Hardware | Passively-cooled A15 throttles after 20–90 min sustained load; affects Tier 2–3 most. Ensure open ventilation, use lightweight shaders, prefer native resolution |
+| 1 | Switch Pro B button exits app | [#18286](https://github.com/libretro/RetroArch/issues/18286) | Open | Avoid Switch Pro Controller |
+| 2 | Ghost inputs with multiple controllers | [#18447](https://github.com/libretro/RetroArch/issues/18447) | Open | Use single controller or test carefully |
+| 3 | Mupen64Plus-Next per-core rewind feature request | [#18300](https://github.com/libretro/RetroArch/issues/18300) | Open | Disable rewind per-core for N64 |
+| 4 | Mupen64Plus-Next auto frame delay incompatible | [#14201](https://github.com/libretro/RetroArch/issues/14201) | Open | Disable auto frame delay per-core; refactored in v1.20.0 |
+| 5 | N64 rendering glitches (game-specific) | [#16598](https://github.com/libretro/RetroArch/issues/16598) | Open | Per-game overrides |
+| 6 | Threaded video crashes RetroArch on tvOS (Metal) | [#14978](https://github.com/libretro/RetroArch/issues/14978) | Persists | `video_threaded = "false"` set globally; per-core true for interpreter-bound cores (N64, PS1) via retroarch-configs overrides. Upstream fix targets GL only, not Metal |
+| 7 | Cloud Sync conflicts between tvOS and macOS | [#16727](https://github.com/libretro/RetroArch/issues/16727) | Partial | DS_Store filter + foreground re-sync added; close content before quitting |
+| 8 | Bluetooth controller jitter over HDMI | — | Reports | Replace HDMI cable if input latency is inconsistent |
+| 9 | A15 thermal throttling during sustained emulation | — | Hardware | Passively-cooled A15 throttles after 20–90 min sustained load; affects Tier 2 most. Ensure open ventilation, use lightweight shaders, prefer native resolution |
 
 ## 12. Setup Checklist
 
@@ -503,11 +497,10 @@ Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version
 | Wireless | Wi-Fi 6, BT 5.0 | Wi-Fi 6E/7 (Apple N1) |
 | Process | 5 nm (TSMC N5P) | 3 nm (TSMC N3B) |
 
-### Projected tier changes
+### Projected performance notes
 
 | System | Current | Projected | Notes |
 |--------|---------|-----------|-------|
-| PSP | Tier 3 | Tier 2 | ~30% CPU gain; most 2D/RPG titles playable |
 | N64 | ~60–70% compat | ~75–85% compat | Complex titles still limited without JIT |
 | PS1 | Most titles | All titles | Run-ahead 2 safe globally |
 | Dreamcast/GC/Wii/PS2 | Blocked | Blocked | JIT restriction, not hardware |
