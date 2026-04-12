@@ -1,6 +1,6 @@
 # RetroArch on Apple TV 4K
 
-![version](https://img.shields.io/badge/version-2.52-blue)
+![version](https://img.shields.io/badge/version-2.54-blue)
 ![RetroArch](https://img.shields.io/badge/RetroArch-v1.22.x-green)
 ![license](https://img.shields.io/badge/license-MIT-green)
 
@@ -286,6 +286,7 @@ The PS/Xbox home button opens tvOS Control Center, not RetroArch's menu. A contr
 |---------|-------|-------|
 | Sync to Exact Content Framerate | OFF (`vrr_runloop_enable = "false"`) | Apple TV is fixed-refresh in normal use; keeping this OFF preserves Dynamic Rate Control via `audio_rate_control_delta` |
 | Run Ahead | OFF by default globally (`run_ahead_enabled = "false"`, `run_ahead_frames = "1"`) | Conservative global baseline. Companion Tier 1 core overrides explicitly set `run_ahead_enabled = "true"` with `run_ahead_frames = "2"`; Tier 2 cores keep it disabled unless re-enabled per game. |
+| Run-Ahead Mode | Single Instance (`run_ahead_secondary_instance = "false"`) | Forces save-state-rewind-in-one-core instead of RetroArch's default dual-instance parallel emulation. Same latency benefit at roughly half the CPU cost; critical for sustained Tier 1 Run-Ahead 2 on the passively-cooled A15. Verified stable across all Tier 1 cores (Mesen, Snes9x, mGBA, Genesis Plus GX, Beetle PCE Fast, FinalBurn Neo). If a specific core later exhibits audio crackle or serialization glitches, flip to `true` as a per-core override for that core only. |
 | Automatic Frame Delay | OFF | Conservative baseline. Enable per-core only after confirming stable pacing and no missed frames. |
 | Input Poll Type Behavior | Late | — |
 | Fast Forward Ratio | 3× (`fastforward_ratio = "3.0"`) | Reduced from 5× to lower instability and thermal-throttle risk on passively-cooled A15. Note: fast-forward may not function with Metal driver on tvOS |
@@ -316,6 +317,10 @@ The companion `retroarch.cfg` includes hardening, input, menu performance, and l
 | Security | stdin Command Interface | OFF | Same command set via stdin |
 | Security | Camera / Location Access | OFF | Blocks core hardware access requests |
 | Security | On-Demand Thumbnails | OFF | Hangs on game/state load when thumbnail server is slow ([#17242](https://github.com/libretro/RetroArch/issues/17242)) |
+| Network | Netplay Public Announce | OFF (`netplay_public_announce = "false"`) | Upstream defaults ON; announces every session to libretro's public netplay server. Unnecessary network traffic for a local-only package |
+| Network | Discord RPC | OFF (`discord_allow = "false"`) | Explicit for audit; already defaults off upstream |
+| Menu | Widgets (Animated Notifications) | OFF (`menu_enable_widgets = "false"`) | Upstream defaults ON; animated toast notifications add extra GPU compositing per-notification. Plain text notifications remain |
+| Video | Waitable Swapchains | OFF (`video_waitable_swapchains = "false"`) | Upstream defaults ON on non-UWP-Windows platforms (includes tvOS/Metal); adds frame-latency pacing overhead. Fixed-refresh tvOS does not benefit |
 | Input | Joypad Driver | mfi | Apple GCController framework; only viable driver on tvOS |
 | Menu | Throttle Framerate | ON | Caps XMB 3D ribbon at 60 fps; prevents uncapped rendering and thermal waste |
 | Menu | Favorites / History Size | 10 / 10 | Defaults are 200; reduced for 4 GB RAM |

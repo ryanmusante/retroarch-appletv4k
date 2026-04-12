@@ -1,5 +1,18 @@
 2026-04-12  Ryan Musante
 
+- v2.54: PERF — `retroarch.cfg` add 4 explicit `false` values for keys whose upstream defaults are ON and hurt A15 tvOS performance: `netplay_public_announce` (network traffic), `menu_enable_widgets` (animated notification GPU compositing), `video_waitable_swapchains` (non-UWP-Windows default true; adds frame-latency pacing overhead on tvOS Metal). Also added `discord_allow = "false"` explicit (upstream default is already false) for audit symmetry with the security block.
+- v2.54: STYLE — collapse multiline comment runs in `retroarch.cfg` to single-line comments per the same policy applied to `.cfg`/`.opt` files. 56 → 55 comment lines.
+- v2.54: README §7 Additional settings table — add 4 new rows documenting the above explicit values and their rationale.
+- v2.54: retroarch.cfg key count 66 → 70.
+
+2026-04-12  Ryan Musante
+
+- v2.53: PERF — `retroarch.cfg` add `run_ahead_secondary_instance = "false"` (RetroArch upstream default is `true`). Forces Single Instance Run-Ahead (save-state rewind within one core) instead of Second Instance (two parallel core instances). Same latency benefit (Run-Ahead 2 still active on all Tier 1 cores) at roughly half the CPU cost. Single Instance tested stable across the Tier 1 set; critical for sustained Run-Ahead 2 + CRT shader on the passively-cooled A15.
+- v2.53: README §7 Latency reduction table — add "Run-Ahead Mode" row documenting Single Instance baseline, tradeoff vs Second Instance, and the per-core escape hatch (`run_ahead_secondary_instance = "true"` override) for any core that later exhibits audio crackle or serialization glitches.
+- v2.53: retroarch.cfg key count 65 → 66.
+
+2026-04-12  Ryan Musante
+
 - v2.52: README §9 Tier 2 PCSX-ReARMed row — update `psxclock` guidance from "lower to 50 per-game for demanding titles" (which assumed the old broken global of 57) to "global is 100 native; per-game underclock to 75 or 50 for demanding 3D titles" matching the corrected `retroarch-configs` v1.20 baseline.
 - v2.52: companion `retroarch-configs` bumped to v1.20 (Genesis Plus GX MAME YM2612, Mupen64Plus-Next CopyDepthToRDRAM Off, PCSX-ReARMed psxclock 100 + async GPU threading).
 - v2.52: no `retroarch.cfg` runtime keys changed.
