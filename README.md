@@ -1,12 +1,14 @@
 # RetroArch on Apple TV 4K
 
-![version](https://img.shields.io/badge/version-2.42-blue)
+![version](https://img.shields.io/badge/version-2.45-blue)
 ![RetroArch](https://img.shields.io/badge/RetroArch-v1.22.x-green)
 ![license](https://img.shields.io/badge/license-MIT-green)
 
 **RetroArch v1.22.x** · **tvOS 26** · **Apple TV 4K 3rd Gen (64 GB Wi-Fi · j255ap · A2737)** · **April 2026**
 
-RetroArch setup guide for Apple TV 4K (3rd generation). Covers installation, ROM/BIOS setup, controllers, performance tuning, and CRT shaders. Includes a companion `retroarch.cfg`; directory paths are set manually.
+This package now ships a **conservative baseline** configuration. Global low-latency features that require per-core validation remain available, but are disabled by default.
+
+RetroArch setup guide for Apple TV 4K (3rd generation). Covers installation, ROM/BIOS setup, controllers, performance tuning, and CRT shaders. Includes a companion `retroarch.cfg`; File Browser and System/BIOS directory paths are preset to `config/ROMs/` and `config/BIOS/`.
 
 
 ### Quick Start
@@ -98,8 +100,8 @@ Follow the [Filesystem layout](#filesystem-layout-apple-tv) in §4. Create the d
 
 1. Create `ROMs/` and `BIOS/` folders inside `config/`.
 2. Upload ROM and BIOS files into the appropriate subfolders.
-3. Set **File Browser** to `config/ROMs/` (Settings → Directory). The companion `retroarch.cfg` does **not** set this path.
-4. Set **System/BIOS** to `config/BIOS/` (Settings → Directory). The companion `retroarch.cfg` does **not** set this path.
+3. The companion `retroarch.cfg` sets **File Browser** to `config/ROMs/`. Verify under Settings → Directory after upload.
+4. The companion `retroarch.cfg` sets **System/BIOS** to `config/BIOS/`. Verify under Settings → Directory after upload.
 
 ## 4. File Transfers
 
@@ -271,7 +273,7 @@ The PS/Xbox home button opens tvOS Control Center, not RetroArch's menu. A contr
 | Metal Argument Buffers | ON (test) | v1.22.1+; reduces CPU draw-call overhead on A15. Revert to OFF if visual glitches appear |
 | GPU Screenshot | ON | Captures post-shader framebuffer; required for accurate screenshots with shaders |
 | Crop Overscan | ON | Removes garbage border pixels from retro cores. Core-dependent |
-| Max Swapchain Images | 2 | Verify in Settings → Video → Synchronization |
+| Max Swapchain Images | 3 | Conservative baseline for pacing stability on fixed-refresh tvOS; lower only after testing |
 | Aspect Ratio | Core Provided | — |
 | Refresh Rate | Calibrate | Apple TV outputs at 59.94 Hz (NTSC, 60000/1001). The cfg seeds `video_refresh_rate` at `59.940060`. Run Settings → Video → Output → Estimated Screen Refresh Rate (~8192 frames) and accept the measured value. DRC requires accuracy within 0.1%. RA 1.21.0 fixed tvOS-specific refresh rate detection. |
 
@@ -279,12 +281,12 @@ The PS/Xbox home button opens tvOS Control Center, not RetroArch's menu. A contr
 
 | Setting | Value | Notes |
 |---------|-------|-------|
-| Sync to Exact Content Framerate | OFF | Apple TV is fixed 60 Hz; ON disables Dynamic Rate Control and causes judder. OFF restores DRC via `audio_rate_control_delta` |
-| Preemptive Frames | ON, 1 frame | Lower-cost run-ahead method (v1.15.0+); `run_ahead_frames` sets count. Disable per-core for Tier 2. |
-| Automatic Frame Delay | ON | Disable per-core for N64 (see [Supported Systems and Per-Core Overrides](#10-supported-systems-and-per-core-overrides)) |
+| Sync to Exact Content Framerate | OFF (`video_sync_to_exact_content_framerate = "false"`) | Apple TV is fixed-refresh in normal use; keeping this OFF preserves Dynamic Rate Control via `audio_rate_control_delta` |
+| Run-Ahead | OFF by default (`run_ahead_enabled = "false"`, `run_ahead_frames = "1"`) | Conservative baseline. Enable per-core or per-game only after validating save-state support and performance headroom. |
+| Automatic Frame Delay | OFF | Conservative baseline. Enable per-core only after confirming stable pacing and no missed frames. |
 | Input Poll Type Behavior | Late | — |
-| Fast Forward Ratio | 5× | Default uncapped; capped to prevent thermal throttling on passively-cooled A15. Note: fast-forward may not function with Metal driver on tvOS |
-| Static Frame Delay | 0 | Automatic Frame Delay manages this; explicit 0 documents intent. Nonzero value acts as ceiling for auto mode |
+| Fast Forward Ratio | 3× (`fastforward_ratio = "3.0"`) | Reduced from 5× to lower instability and thermal-throttle risk on passively-cooled A15. Note: fast-forward may not function with Metal driver on tvOS |
+| Static Frame Delay | 0 | Explicit baseline; nonzero values should be tested per-core. |
 
 ### TV output
 
@@ -319,7 +321,8 @@ The companion `retroarch.cfg` includes hardening, input, menu performance, and l
 | Saving | SaveRAM Compression | ON | Reduces SRAM size |
 | Logging | Verbosity / File Logging | OFF | Each `os_log` message involves malloc/vsnprintf/free; file writes waste volatile cache |
 | Audio | `audio_out_rate` | 48000 Hz | Matches Apple TV HDMI audio natively; prevents unnecessary resampling |
-| Audio | Resampler Quality | Normal (3) | Kaiser resampler. A15 has headroom for Tier 1; per-core Lower (2) for Tier 2 if needed |
+| Audio | Audio Latency | 64 ms | Conservative baseline for broad compatibility; lower only after testing per core |
+| Audio | Resampler Quality | Lower (2) | Slightly lowers latency while preserving acceptable quality on Apple TV 4K |
 | Video | Threaded Video | OFF | Crashes on tvOS with Metal ([#14978](https://github.com/libretro/RetroArch/issues/14978)); explicit false globally, per-core true for interpreter-bound cores (N64, PS1) via retroarch-configs overrides |
 | Menu | Playlist Compression | ON | ~90% file size reduction; reduces cache writes on volatile tvOS storage |
 | Latency | Run-Ahead Hide Warnings | ON | Per-core overrides already disable for incompatible cores; suppresses noise |
@@ -437,7 +440,7 @@ Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version
 
 ### In-app calibration
 
-- [ ] Aspect Ratio set to Core Provided (Settings → Video → Scaling)
+- [ ] Aspect Ratio verified as Core Provided (preset by `aspect_ratio_index = "22"`)
 - [ ] `video_refresh_rate` calibrated to your display (Settings → Video → Output → Estimated Screen Refresh Rate)
 
 ### Network security

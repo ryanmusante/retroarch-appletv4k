@@ -1,3 +1,18 @@
+2026-04-12  Ryan Musante
+
+- v2.45: switch the package from a global low-latency preset to a conservative baseline; sync `README.md`, `CHANGELOG.md`, and `retroarch.cfg`.
+- v2.45: disable global Run-Ahead (`run_ahead_enabled = "false"`) while keeping `run_ahead_frames = "1"` as a ready preset for later per-core enablement.
+- v2.45: disable Automatic Frame Delay globally (`video_frame_delay_auto = "false"`) and document it as an optional per-core tuning step rather than a baseline default.
+- v2.45: raise `video_max_swapchain_images` from `2` to `3` and `audio_latency` from `32` to `64` for a safer fixed-refresh tvOS baseline.
+
+2026-04-12  Ryan Musante
+
+- v2.44: sync `README.md`, `CHANGELOG.md`, and `retroarch.cfg` after the low-latency profile update.
+- v2.44: switch the global latency method from Preemptive Frames to classic Run-Ahead (`run_ahead_enabled = "true"`, `run_ahead_frames = "1"`, `preemptive_frames_enable = "false"`).
+- v2.44: reintroduce explicit directory assignments in `retroarch.cfg` (`system_directory = "config/BIOS"`, `rgui_browser_directory = "config/ROMs"`) and update README text to match.
+- v2.44: add explicit `aspect_ratio_index = "22"` and `video_sync_to_exact_content_framerate = "false"` for deterministic video behavior.
+- v2.44: lower `audio_resampler_quality` from `3` to `2` and `fastforward_ratio` from `5.0` to `3.0`; sync README tables to those values.
+
 retroarch-appletv4k changelog
 
 2026-04-11  Ryan Musante
