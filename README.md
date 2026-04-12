@@ -1,6 +1,6 @@
 # RetroArch on Apple TV 4K
 
-![version](https://img.shields.io/badge/version-2.56-blue)
+![version](https://img.shields.io/badge/version-2.59-blue)
 ![RetroArch](https://img.shields.io/badge/RetroArch-v1.22.x-green)
 ![license](https://img.shields.io/badge/license-MIT-green)
 
@@ -9,7 +9,6 @@
 This package now ships a **conservative baseline** configuration. Global low-latency features that require per-core validation remain disabled in the baseline `retroarch.cfg`, but the companion Tier 1 core overrides explicitly enable Run Ahead where it has been validated.
 
 RetroArch setup guide for Apple TV 4K (3rd generation). Covers installation, ROM/BIOS setup, controllers, performance tuning, and CRT shaders. Includes a companion `retroarch.cfg`; File Browser and System/BIOS directory paths are preset to `config/ROMs/` and `config/BIOS/`.
-
 
 ### Quick Start
 
@@ -42,10 +41,9 @@ Detailed instructions for each step follow below.
 9. [Supported Systems and Per-Core Overrides](#9-supported-systems-and-per-core-overrides)
 10. [Known Issues](#10-known-issues)
 11. [Setup Checklist](#11-setup-checklist)
-12. [Appendix A: 4th Gen Projections](#appendix-a-4th-gen-projections)
-13. [Files in This Repository](#files-in-this-repository)
-14. [Versioning](#versioning)
-15. [License](#license)
+12. [Files in This Repository](#files-in-this-repository)
+13. [Versioning](#versioning)
+14. [License](#license)
 
 ## 1. Prerequisites
 
@@ -69,8 +67,6 @@ Minimum recommended version: **RetroArch v1.20.0** (required for WebDAV, automat
 | Web browser | Safari, Chrome, Firefox, or Edge on the transfer computer |
 | ROM files | Legally acquired game files for systems you own |
 | BIOS files | Required for PS1, Sega CD, Neo Geo (see [ROM and BIOS Setup](#5-rom-and-bios-setup)) |
-
-> **Legal Notice:** Only use ROM and BIOS files for games and hardware you legally own. Downloading copyrighted material you do not own is illegal in most jurisdictions.
 
 ## 2. Installation
 
@@ -143,6 +139,8 @@ Available in RetroArch v1.20.0+. Port 8080.
     │   ├── psx/
     │   └── ...                   (see §5 ROM folder reference)
     ├── BIOS/                  ← system BIOS files (case-sensitive)
+    ├── saves/                 ← in-game saves (.srm), sorted per core
+    ├── states/                ← save states, sorted per core
     ├── Mesen/                 ← per-core overrides (from retroarch-configs repo)
     │   ├── Mesen.cfg            (.cfg = frontend overrides)
     │   └── Mesen.opt            (.opt = core options)
@@ -156,7 +154,7 @@ Available in RetroArch v1.20.0+. Port 8080.
 
 The web interface and WebDAV expose RetroArch's sandboxed root. All paths in this guide are relative to that root. The `config/` directory stores user configuration. Per-core overrides auto-load from `config/<core_name>/` and can be created via Quick Menu → Overrides → Save Core Overrides.
 
-> **Saves and savestates:** The shipped `retroarch.cfg` does not set `savefile_directory` or `savestate_directory`, so RetroArch uses its platform-managed default path on tvOS. With `sort_savefiles_enable` and `sort_savestates_enable` at their upstream defaults of `true`, saves and states are automatically organized into per-core subfolders (e.g. `<default>/Mesen/`, `<default>/Snes9x/`). They are **not** written next to ROMs (`DEFAULT_SAVEFILES_IN_CONTENT_DIR = false` upstream). This path is not directly visible under `config/` via the web interface or WebDAV; use Quick Menu → Overrides → Save Game Overrides or the RetroArch menu's save-state submenu for normal save/load operations. If you need backup-accessible save paths, set `savefile_directory = "config/saves"` and `savestate_directory = "config/states"` explicitly (trade-off: the defaults are platform-optimized, explicit paths put saves on RetroArch's purgeable tvOS cache).
+> **Saves and savestates:** `retroarch.cfg` sets `savefile_directory = "config/saves"` and `savestate_directory = "config/states"`, backup-accessible via WebDAV. With `sort_savefiles_enable` / `sort_savestates_enable` at their upstream defaults of `true`, both are auto-organized into per-core subfolders (e.g. `config/saves/Mesen/`, `config/states/Snes9x/`).
 
 ## 5. ROM and BIOS Setup
 
@@ -200,15 +198,7 @@ Neo Geo requires `neogeo.zip` in **both** `config/BIOS/` and `config/ROMs/neogeo
 
 ### Scanning games
 
-Use Manual Scan to build playlists:
-
-1. Main Menu → Import Content → Manual Scan.
-2. **Content Directory:** Browse to the ROMs folder, select a system subfolder.
-3. **System Name:** Choose the matching platform.
-4. **Default Core:** Select the emulation core.
-5. **Start Scan.** Repeat for each system.
-
-Playlists appear under Main Menu → Playlists.
+Use **Main Menu → Import Content → Manual Scan** — point at each system subfolder in `config/ROMs/`, choose the matching system/core, start scan. Playlists appear under Main Menu → Playlists.
 
 ## 6. Controllers
 
@@ -236,13 +226,6 @@ The Apple TV supports up to four simultaneous Bluetooth controllers. The Siri Re
 
 ## 7. Configuration
 
-### User interface
-
-RetroArch defaults to Ozone. For a console-style crossbar interface optimized for TV navigation, switch to XMB:
-
-1. Settings → Drivers → Menu → **XMB**.
-2. Quit and relaunch RetroArch.
-
 ### Hotkeys
 
 The PS/Xbox home button opens tvOS Control Center, not RetroArch's menu. A controller combo is required to access the Quick Menu.
@@ -269,7 +252,6 @@ The PS/Xbox home button opens tvOS Control Center, not RetroArch's menu. A contr
 | Setting | Value | Notes |
 |---------|-------|-------|
 | Video driver | Metal | Best performance on Apple silicon |
-| V-Sync | ON | — |
 | Integer Scale | ON | Pixel-perfect output; produces borders at 4K |
 | Integer Overscale | Optional | Used per-core for NES, SNES, Genesis, PC Engine/TurboGrafx-16, and mGBA (including GBA 240×160) where shipped overrides enable it |
 | Bilinear Filtering | OFF | Required for correct shader rendering |
@@ -277,8 +259,7 @@ The PS/Xbox home button opens tvOS Control Center, not RetroArch's menu. A contr
 | GPU Screenshot | ON | Captures post-shader framebuffer; required for accurate screenshots with shaders |
 | Crop Overscan | ON | Removes garbage border pixels from retro cores. Core-dependent |
 | Max Swapchain Images | 3 | Conservative baseline for pacing stability on fixed-refresh tvOS; lower only after testing |
-| Aspect Ratio | Core Provided | — |
-| Refresh Rate | Calibrate | Apple TV outputs at 59.94 Hz (NTSC, 60000/1001). The cfg seeds `video_refresh_rate` at `59.940060`. Run Settings → Video → Output → Estimated Screen Refresh Rate (~8192 frames) and accept the measured value. DRC requires accuracy within 0.1%. RA 1.21.0 fixed tvOS-specific refresh rate detection. |
+| Refresh Rate | Calibrate | Cfg seeds `video_refresh_rate = 59.940060` (NTSC). Run Settings → Video → Output → Estimated Screen Refresh Rate and accept the measured value. |
 
 ### Latency reduction
 
@@ -288,7 +269,6 @@ The PS/Xbox home button opens tvOS Control Center, not RetroArch's menu. A contr
 | Run Ahead | OFF by default globally (`run_ahead_enabled = "false"`, `run_ahead_frames = "1"`) | Conservative global baseline. Companion Tier 1 core overrides explicitly set `run_ahead_enabled = "true"` with `run_ahead_frames = "2"`; Tier 2 cores keep it disabled unless re-enabled per game. |
 | Run-Ahead Mode | Single Instance (`run_ahead_secondary_instance = "false"`) | Forces save-state-rewind-in-one-core instead of RetroArch's default dual-instance parallel emulation. Same latency benefit at roughly half the CPU cost; critical for sustained Tier 1 Run-Ahead 2 on the passively-cooled A15. Verified stable across all Tier 1 cores (Mesen, Snes9x, mGBA, Genesis Plus GX, Beetle PCE Fast, FinalBurn Neo). If a specific core later exhibits audio crackle or serialization glitches, flip to `true` as a per-core override for that core only. |
 | Automatic Frame Delay | OFF | Conservative baseline. Enable per-core only after confirming stable pacing and no missed frames. |
-| Input Poll Type Behavior | Late | — |
 | Fast Forward Ratio | 3× (`fastforward_ratio = "3.0"`) | Reduced from 5× to lower instability and thermal-throttle risk on passively-cooled A15. Note: fast-forward may not function with Metal driver on tvOS |
 | Static Frame Delay | 0 | Explicit baseline; nonzero values should be tested per-core. |
 
@@ -312,10 +292,7 @@ The companion `retroarch.cfg` includes hardening, input, menu performance, and l
 
 | Category | Setting | Value | Notes |
 |----------|---------|-------|-------|
-| Security | Network Command Interface | OFF | v1.22.1 enabled on tvOS; UDP 55355, zero auth, accepts destructive commands from any LAN host |
-| Security | Network Remote | OFF | Unauthenticated controller input injection over UDP 55400–55420 |
-| Security | stdin Command Interface | OFF | Same command set via stdin |
-| Security | Camera / Location Access | OFF | Blocks core hardware access requests |
+| Security | Network/stdin Command interfaces + Camera/Location access | OFF | Zero-auth UDP command/remote channels (ports 55355 / 55400–55420) and core hardware access requests — all disabled on tvOS despite the sandbox |
 | Security | On-Demand Thumbnails | OFF | Hangs on game/state load when thumbnail server is slow ([#17242](https://github.com/libretro/RetroArch/issues/17242)) |
 | Network | Netplay Public Announce | OFF (`netplay_public_announce = "false"`) | Upstream defaults ON; announces every session to libretro's public netplay server. Unnecessary network traffic for a local-only package |
 | Network | Discord RPC | OFF (`discord_allow = "false"`) | Explicit for audit; already defaults off upstream |
@@ -342,8 +319,6 @@ See also the [WebDAV security warning](#4-file-transfers) in §4.
 RetroArch supports peer-to-peer Netplay with up to 16 players and spectators. A low-latency network is recommended (5 GHz Wi-Fi or Ethernet on the 128 GB model). Only cores with serialization (save state) support are compatible.
 
 ## 8. CRT Shaders
-
-CRT shaders simulate scanlines, phosphor glow, and curvature for display characteristics representative of period-accurate hardware.
 
 ### Applying a shader
 
@@ -380,7 +355,6 @@ Use Minimal presets for Tier 2 cores where GPU headroom is limited by interprete
 
 > **Note:** If `shaders_slang/crt/` appears empty after an update, re-run Online Updater → Update Slang Shaders. If that fails, upload presets manually via WebDAV to `config/shaders_slang/crt/`.
 
-
 ## 9. Supported Systems and Per-Core Overrides
 
 The A15 Bionic handles retro emulation effectively, but Apple's App Store restriction on JIT compilation limits performance for demanding systems. Dreamcast, GameCube, Wii, and PS2 require JIT and cannot run through the App Store version.
@@ -414,8 +388,6 @@ Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version
 | 4 | Mupen64Plus-Next auto frame delay incompatible | [#14201](https://github.com/libretro/RetroArch/issues/14201) | Open | Disable auto frame delay per-core; refactored in v1.20.0 |
 | 5 | N64 rendering glitches (game-specific) | [#16598](https://github.com/libretro/RetroArch/issues/16598) | Open | Per-game overrides |
 | 6 | Threaded video crashes RetroArch on tvOS (Metal) | [#14978](https://github.com/libretro/RetroArch/issues/14978) | Persists | `video_threaded = "false"` set globally; per-core true for interpreter-bound cores (N64, PS1) via retroarch-configs overrides. Keep the PCSX-ReARMed override unless you observe pacing issues; test disabling it only for that core. Upstream fix targets GL only, not Metal |
-| 8 | Bluetooth controller jitter over HDMI | — | Reports | Replace HDMI cable if input latency is inconsistent |
-| 9 | A15 thermal throttling during sustained emulation | — | Hardware | Passively-cooled A15 throttles after 20–90 min sustained load; affects Tier 2 most. Ensure open ventilation, use lightweight shaders, prefer native resolution |
 
 ## 11. Setup Checklist
 
@@ -461,37 +433,6 @@ Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version
 
 - [ ] Tier 1–2 override files (`.cfg` and `.opt`) uploaded to `config/<core_name>/` (see §9)
 - [ ] Both file types load automatically — verify via Quick Menu → Information
-
-## Appendix A: 4th Gen Projections
-
-> **Note:** Based on rumoured specifications as of March 2026. Apple has not announced this product. Projections assume the App Store JIT restriction persists.
-
-### Hardware comparison
-
-| Spec | 3rd Gen (2022) | 4th Gen (rumoured) |
-|------|---------------|-------------------|
-| SoC | A15 Bionic (5 nm, 5-core CPU) | A17 Pro (3 nm, 6-core CPU) |
-| GPU | 5-core, no hardware RT | 6-core, hardware ray tracing |
-| RAM | 4 GB | 8 GB |
-| Wireless | Wi-Fi 6, BT 5.0 | Wi-Fi 6E/7 (Apple N1) |
-| Process | 5 nm (TSMC N5P) | 3 nm (TSMC N3B) |
-
-### Projected performance notes
-
-| System | Current | Projected | Notes |
-|--------|---------|-----------|-------|
-| N64 | ~60–70% compat | ~75–85% compat | Complex titles still limited without JIT |
-| PS1 | Most titles | All titles | Run Ahead 2 is safe globally |
-| Dreamcast/GC/Wii/PS2 | Blocked | Blocked | JIT restriction, not hardware |
-
-### Constraints that do not change
-
-| Constraint | Reason |
-|-----------|--------|
-| App Store JIT restriction | Apple policy, not hardware |
-| 500 KB persistent storage | tvOS platform limit |
-| No VRR for gaming | QMS only (media frame-rate switching) |
-| Siri Remote not a gamepad | Hardware limitation |
 
 ## Files in This Repository
 

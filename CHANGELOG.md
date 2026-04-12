@@ -1,5 +1,20 @@
 2026-04-12  Ryan Musante
 
+- v2.59: STYLE — shorten every comment in `retroarch.cfg` without removing any. 43 comments tightened, 638 bytes saved. All 60 comments preserved, every line now under 80 chars. 60 → 60 comment lines, 73 → 73 key lines.
+
+2026-04-12  Ryan Musante
+
+- v2.58: README trim — drop Legal Notice blockquote in §1 (A1; duplicated inline elsewhere); drop §7 User interface XMB subsection (A3; cosmetic); trim §7 Refresh Rate notes to the calibration action (A4); drop empty-Notes rows V-Sync, Aspect Ratio, Input Poll Type Behavior (A5/A6/A7); consolidate 4 §7 Additional settings Security rows into 1 (A8); drop CRT shaders definition sentence in §8 intro (A9); drop Known Issues #8 (HDMI cable advice — not RetroArch-specific) and #9 (A15 thermal — duplicated elsewhere) (A11/A12); drop entire Appendix A 4th Gen Projections (A13; speculation about unreleased hardware); compress §5 Scanning games 7-step procedure to 1 line (A14). TOC renumbered: Files/Versioning/License entries 13/14/15 → 12/13/14.
+- v2.58: 31924 → 29183 bytes (8.6% size reduction), zero loss of actionable content.
+
+2026-04-12  Ryan Musante
+
+- v2.57: `retroarch.cfg` — add explicit `savefile_directory = "config/saves"` and `savestate_directory = "config/states"`. Saves and states are now backup-accessible via WebDAV under the sandboxed root. With `sort_savefiles_enable` / `sort_savestates_enable` at their upstream defaults of true, both are auto-organized into per-core subfolders (e.g. `config/saves/Mesen/`). Reverts the v2.35 removal of these keys. Note: existing saves in RetroArch's platform-managed default path will not auto-migrate — copy them into `config/saves/<core>/` manually if needed.
+- v2.57: README §4 Filesystem layout — restore `saves/` and `states/` entries to the diagram and trim the verbose "Saves and savestates" note from ~10 sentences down to 2, reflecting the new explicit-path behavior.
+- v2.57: retroarch.cfg key count 71 → 73.
+
+2026-04-12  Ryan Musante
+
 - v2.56: README §4 Filesystem layout — remove aspirational `config/saves/` and `config/states/` directories from the diagram. Those paths were documented but never enforced by `retroarch.cfg` (no `savefile_directory` / `savestate_directory` keys set since v2.35 removed them). RetroArch upstream default `DEFAULT_SAVEFILES_IN_CONTENT_DIR = false` puts saves in the platform-managed default path, auto-sorted into per-core subfolders via `sort_savefiles_enable = true`. Add explanatory note documenting actual behavior, the tradeoff vs explicit `config/saves/` paths, and how to opt in to backup-accessible paths if desired.
 - v2.56: no `retroarch.cfg` key changes — documentation-only correction aligning README with shipped config reality.
 
