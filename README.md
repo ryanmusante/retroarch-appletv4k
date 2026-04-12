@@ -96,10 +96,10 @@ Since v1.16.0, RetroArch stores `retroarch.cfg` in NSUserDefaults (the 500 KB pe
 
 Follow the [Filesystem layout](#filesystem-layout-apple-tv) in §4. Create the directory structure via the web interface or WebDAV:
 
-1. Create `ROMs/` and `BIOS/` folders inside `Config/`.
+1. Create `ROMs/` and `BIOS/` folders inside `config/`.
 2. Upload ROM and BIOS files into the appropriate subfolders.
-3. Set **File Browser** to `Config/ROMs/` (Settings → Directory). The companion `retroarch.cfg` does **not** set this path.
-4. Set **System/BIOS** to `Config/BIOS/` (Settings → Directory). The companion `retroarch.cfg` does **not** set this path.
+3. Set **File Browser** to `config/ROMs/` (Settings → Directory). The companion `retroarch.cfg` does **not** set this path.
+4. Set **System/BIOS** to `config/BIOS/` (Settings → Directory). The companion `retroarch.cfg` does **not** set this path.
 5. Enable **iCloud Cloud Sync:** Settings → Saving → Cloud Sync → Enable → Backend: iCloud.
 
 ROM files are never synced by iCloud. Always maintain backups on the transfer computer. Keep the ROM library lean to reduce cache pressure on the 64 GB model.
@@ -112,7 +112,7 @@ tvOS has no Files app. All transfers use RetroArch's built-in network servers. R
 
 1. Ensure the transfer computer and Apple TV are on the same network.
 2. Browse to the URL from the Welcome popup (e.g., `http://192.168.x.x` or `http://appletv.local`).
-3. Navigate into the `Config` folder.
+3. Navigate into the `config` folder.
 4. Create `ROMs` and `BIOS` folders with subfolders per system (see [ROM and BIOS Setup](#5-rom-and-bios-setup)).
 5. Drag and drop files into the appropriate subfolder.
 
@@ -131,12 +131,12 @@ Available in RetroArch v1.20.0+. Port 8080.
 
 ### Filesystem layout (Apple TV)
 
-The web interface and WebDAV expose RetroArch's sandboxed root. All paths in this guide are relative to that root. The `Config/` directory is the primary user data area — iCloud syncs its contents (except ROMs). Per-core overrides auto-load from per-core directories under `Config/`. Quick Menu → Overrides → Save Core Overrides creates matching per-core directories there automatically.
+The web interface and WebDAV expose RetroArch's sandboxed root. All paths in this guide are relative to that root. The `config/` directory is the primary user data area — iCloud syncs its contents (except ROMs). Per-core overrides auto-load from per-core directories under `config/`. Quick Menu → Overrides → Save Core Overrides creates matching per-core directories there automatically.
 
 ```
 /                              ← web interface / WebDAV root
 ├── retroarch.cfg              ← upload here (§2 step 4)
-└── Config/
+└── config/
     ├── ROMs/                  ← game files, organized by system
     │   ├── nes/
     │   ├── snes/
@@ -156,13 +156,13 @@ The web interface and WebDAV expose RetroArch's sandboxed root. All paths in thi
         └── crt/               ← CRT shader presets (see §8)
 ```
 
-The guide uses the `Config/` path names shown above because that is how the web interface and WebDAV expose the sandbox. The companion `retroarch.cfg` intentionally leaves directory-path assignments unset, so File Browser and System/BIOS must be set once in the UI.
+The guide uses the `config/` path names shown above because that is how the web interface and WebDAV expose the sandbox. The companion `retroarch.cfg` intentionally leaves directory-path assignments unset, so File Browser and System/BIOS must be set once in the UI.
 
 ## 5. ROM and BIOS Setup
 
 ### ROM folder reference
 
-Place ROMs in `Config/ROMs/<folder>/` using the folder names below. These names match RetroArch's database scanner and are used for Manual Scan.
+Place ROMs in `config/ROMs/<folder>/` using the folder names below. These names match RetroArch's database scanner and are used for Manual Scan.
 
 | System | ROM Folder | Extensions | Core | Tier |
 |--------|-----------|------------|------|------|
@@ -188,7 +188,7 @@ Tier definitions: **1** = Flawless (full speed, shaders enabled), **2** = Good (
 
 ### BIOS files
 
-Most 8/16-bit cores include built-in BIOS support. The following 32-bit+ systems require external BIOS files placed in `Config/BIOS/`.
+Most 8/16-bit cores include built-in BIOS support. The following 32-bit+ systems require external BIOS files placed in `config/BIOS/`.
 
 | System | Required File(s) | Required? |
 |--------|-----------------|-----------|
@@ -200,7 +200,7 @@ Most 8/16-bit cores include built-in BIOS support. The following 32-bit+ systems
 | Nintendo DS | `bios7.bin`, `bios9.bin`, `firmware.bin` | Optional |
 | Game Boy Advance | `gba_bios.bin` | Optional |
 
-Neo Geo requires `neogeo.zip` in **both** `Config/BIOS/` and `Config/ROMs/neogeo/`. BIOS filenames are case-sensitive — use exact names (e.g., `scph5501.bin`, not `SCPH5501.BIN`).
+Neo Geo requires `neogeo.zip` in **both** `config/BIOS/` and `config/ROMs/neogeo/`. BIOS filenames are case-sensitive — use exact names (e.g., `scph5501.bin`, not `SCPH5501.BIN`).
 
 Nintendo DS: melonDS DS includes built-in HLE BIOS replacements that work with most games. Native BIOS files are required only for firmware boot and GBA Slot-2 connectivity.
 
@@ -380,7 +380,7 @@ Use Minimal presets for Tier 2–3 cores where GPU headroom is limited by interp
 
 **crt-easymode 4K parameters** (community-recommended starting point): Mask Strength 0.18, Mask Type 1, Scanline Strength 0.95, Gamma Input 2.2, Gamma Output 1.8, Brightness 1.10. Adjust Mask Strength to taste for your display.
 
-> **Note:** If `shaders_slang/crt/` appears empty after an update, re-run Online Updater → Update Slang Shaders. If that fails, upload presets manually via WebDAV to `Config/shaders_slang/crt/`.
+> **Note:** If `shaders_slang/crt/` appears empty after an update, re-run Online Updater → Update Slang Shaders. If that fails, upload presets manually via WebDAV to `config/shaders_slang/crt/`.
 
 ## 9. iCloud Sync
 
@@ -412,7 +412,7 @@ Synchronize save data across Apple devices signed into the same Apple ID.
 
 The A15 Bionic handles retro emulation effectively, but Apple's App Store restriction on JIT compilation limits performance for demanding systems. Dreamcast, GameCube, Wii, and PS2 require JIT and cannot run through the App Store version.
 
-Per-core override values and core options are maintained in the companion [retroarch-configs](https://github.com/ryanmusante/retroarch-configs) repository. Override files (`.cfg`) and core option files (`.opt`) are uploaded to `Config/<core_name>/` on the Apple TV (see [Filesystem layout](#filesystem-layout-apple-tv)). Both file types load automatically — no manual entry required.
+Per-core override values and core options are maintained in the companion [retroarch-configs](https://github.com/ryanmusante/retroarch-configs) repository. Override files (`.cfg`) and core option files (`.opt`) are uploaded to `config/<core_name>/` on the Apple TV (see [Filesystem layout](#filesystem-layout-apple-tv)). Both file types load automatically — no manual entry required.
 
 Tier definitions: **1** = Flawless (full speed, shaders enabled), **2** = Good (most titles at full speed), **3** = Limited/Experimental.
 
@@ -469,8 +469,8 @@ Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version
 
 ### Content
 
-- [ ] ROMs placed in `Config/ROMs/<s>/` (see [ROM folder reference](#rom-folder-reference))
-- [ ] BIOS files placed in `Config/BIOS/` (case-sensitive filenames)
+- [ ] ROMs placed in `config/ROMs/<s>/` (see [ROM folder reference](#rom-folder-reference))
+- [ ] BIOS files placed in `config/BIOS/` (case-sensitive filenames)
 - [ ] Manual Scan completed per system
 
 ### tvOS and TV settings
@@ -493,9 +493,9 @@ Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version
 
 ### Per-core overrides
 
-- [ ] Tier 1–2 override files (`.cfg` and `.opt`) uploaded to `Config/<core_name>/` (see §10)
+- [ ] Tier 1–2 override files (`.cfg` and `.opt`) uploaded to `config/<core_name>/` (see §10)
 - [ ] Both file types load automatically — verify via Quick Menu → Information
-- [ ] Tier 3 melonDS DS override files (`.cfg` and `.opt`) uploaded to `Config/melonDS DS/` (Beetle Saturn, PPSSPP, Azahar are configured manually on-device — no config files provided)
+- [ ] Tier 3 melonDS DS override files (`.cfg` and `.opt`) uploaded to `config/melonDS DS/` (Beetle Saturn, PPSSPP, Azahar are configured manually on-device — no config files provided)
 
 ## Appendix A: 4th Gen Projections
 
