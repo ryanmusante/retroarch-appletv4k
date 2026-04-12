@@ -6,8 +6,6 @@
 
 **RetroArch v1.22.x** · **tvOS 26** · **Apple TV 4K 3rd Gen (64 GB Wi-Fi · j255ap · A2737)** · **April 2026**
 
-A comprehensive guide to installing and configuring RetroArch on the Apple TV 4K 3rd Generation. Covers installation, ROM and BIOS management, controller pairing, performance tuning, CRT shader selection, and iCloud save synchronization. A companion `retroarch.cfg` with the recommended global settings is included; path-based directory assignments remain manual.
-
 ### Quick Start
 
 1. Install RetroArch from the tvOS App Store.
@@ -36,7 +34,6 @@ Detailed instructions for each step follow below.
    - [TV output](#tv-output)
    - [Additional settings](#additional-settings)
 8. [CRT Shaders](#8-crt-shaders)
-9. [iCloud Sync](#9-icloud-sync)
 10. [Supported Systems and Per-Core Overrides](#10-supported-systems-and-per-core-overrides)
 11. [Known Issues](#11-known-issues)
 12. [Setup Checklist](#12-setup-checklist)
@@ -100,9 +97,6 @@ Follow the [Filesystem layout](#filesystem-layout-apple-tv) in §4. Create the d
 2. Upload ROM and BIOS files into the appropriate subfolders.
 3. Set **File Browser** to `config/ROMs/` (Settings → Directory). The companion `retroarch.cfg` does **not** set this path.
 4. Set **System/BIOS** to `config/BIOS/` (Settings → Directory). The companion `retroarch.cfg` does **not** set this path.
-5. Enable **iCloud Cloud Sync:** Settings → Saving → Cloud Sync → Enable → Backend: iCloud.
-
-ROM files are never synced by iCloud. Always maintain backups on the transfer computer. Keep the ROM library lean to reduce cache pressure on the 64 GB model.
 
 ## 4. File Transfers
 
@@ -130,8 +124,6 @@ Available in RetroArch v1.20.0+. Port 8080.
 > ⚠️ **Security:** The built-in web interface and WebDAV server (port 8080) provide **unauthenticated** read/write access to RetroArch's sandboxed filesystem. No configuration settings exist to add authentication, enable TLS, or disable these services. Any device on the same network can read or overwrite saves, states, and configuration. Mitigate with VLAN isolation or router firewall rules restricting access to ports 80 and 8080 on the Apple TV's IP.
 
 ### Filesystem layout (Apple TV)
-
-The web interface and WebDAV expose RetroArch's sandboxed root. All paths in this guide are relative to that root. The `config/` directory is the primary user data area — iCloud syncs its contents (except ROMs). Per-core overrides auto-load from per-core directories under `config/`. Quick Menu → Overrides → Save Core Overrides creates matching per-core directories there automatically.
 
 ```
 /                              ← web interface / WebDAV root
@@ -181,6 +173,8 @@ Place ROMs in `config/ROMs/<folder>/` using the folder names below. These names 
 | Nintendo 64 | `n64/` | `.n64`, `.z64`, `.v64` | Mupen64Plus-Next | 2 |
 
 Tier definitions: **1** = Flawless (full speed, shaders enabled), **2** = Good (most titles at full speed). See [Supported Systems and Per-Core Overrides](#10-supported-systems-and-per-core-overrides) for details.
+
+Nintendo 64 uses the companion `retroarch-configs` override pack with `Mupen64Plus-Next` set to the **Angrylion** software renderer, `cxd4` RSP, and Slang shaders.
 
 ### BIOS files
 
@@ -321,9 +315,6 @@ The companion `retroarch.cfg` includes hardening, input, menu performance, and l
 | Audio | `audio_out_rate` | 48000 Hz | Matches Apple TV HDMI audio natively; prevents unnecessary resampling |
 | Audio | Resampler Quality | Normal (3) | Kaiser resampler. A15 has headroom for Tier 1; per-core Lower (2) for Tier 2 if needed |
 | Video | Threaded Video | OFF | Crashes on tvOS with Metal ([#14978](https://github.com/libretro/RetroArch/issues/14978)); explicit false globally, per-core true for interpreter-bound cores (N64, PS1) via retroarch-configs overrides |
-| Saving | Max Auto-Increment States | 10 | Bounds cache consumption and iCloud sync overhead on 64 GB model |
-| Saving | Save State Compression | ON | ~90% size reduction; reduces iCloud sync bandwidth and tvOS cache pressure |
-| Saving | SaveRAM Compression | ON | Reduces SRAM cache footprint and iCloud sync volume |
 | Menu | Playlist Compression | ON | ~90% file size reduction; reduces cache writes on volatile tvOS storage |
 | Latency | Run-Ahead Hide Warnings | ON | Per-core overrides already disable for incompatible cores; suppresses noise |
 
@@ -374,15 +365,11 @@ Use Minimal presets for Tier 2 cores where GPU headroom is limited by interprete
 
 > **Note:** If `shaders_slang/crt/` appears empty after an update, re-run Online Updater → Update Slang Shaders. If that fails, upload presets manually via WebDAV to `config/shaders_slang/crt/`.
 
-## 9. iCloud Sync
-
 Synchronize save data across Apple devices signed into the same Apple ID.
 
 ### Setup
 
 1. Install RetroArch on each device with the same Apple ID.
-2. Settings → Saving → Cloud Sync → Enable → **ON**.
-3. Backend: **iCloud**.
 4. Ensure "Sort Saves into Folders by Core Name" is consistent across all devices.
 
 ### Sync scope
@@ -392,11 +379,8 @@ Synchronize save data across Apple devices signed into the same Apple ID.
 | Save files (.srm) | Yes | In-game saves |
 | Save states | Yes | Quick save/load |
 | Core settings / overrides | Yes | Per-core .cfg/.opt, hotkeys, and directory settings set in the UI (NOT retroarch.cfg — upload manually) |
-| Thumbnails | Optional | Consumes iCloud quota |
 | BIOS files | Optional | Enable system file sync |
 | ROM files | **No** | Maintain backups on the transfer computer |
-
-`retroarch.cfg` does **not** sync via Cloud Sync — upload it manually to each device. The iCloud Drive backend (PR #17814) is available on macOS/iOS but not Apple TV; continue using the CloudKit backend.
 
 > **Note:** Close content and return to the main menu before quitting RetroArch to prevent sync conflicts between devices ([#16727](https://github.com/libretro/RetroArch/issues/16727)).
 
@@ -417,7 +401,7 @@ Tier definitions: **1** = Flawless (full speed, shaders enabled), **2** = Good (
 | 1 | PC Engine / TG-16 | Beetle PCE Fast | Yes | — |
 | 1 | Neo Geo, Arcade (CPS1/2/3) | FinalBurn Neo | Yes | Rewind conflicts with runahead ([#16374](https://github.com/libretro/RetroArch/issues/16374)) |
 | 2 | PlayStation 1 | PCSX ReARMed | Yes | No JIT; run-ahead/preemptive frames disabled per-core, re-enable per-game for light 2D titles. Lower `psxclock` to 50 per-game for demanding titles |
-| 2 | Nintendo 64 | Mupen64Plus-Next | Yes | ~60–70% compatibility; rewind freezes emulation ([#18300](https://github.com/libretro/RetroArch/issues/18300)); auto frame delay incompatible ([#14201](https://github.com/libretro/RetroArch/issues/14201)). Re-enable run-ahead per-game for light titles (Mario 64, Kirby 64) |
+| 2 | Nintendo 64 | Mupen64Plus-Next | Yes | ~60–70% compatibility; companion overrides keep Angrylion software RDP + CXD4 with Slang shaders. Rewind freezes emulation ([#18300](https://github.com/libretro/RetroArch/issues/18300)); auto frame delay incompatible ([#14201](https://github.com/libretro/RetroArch/issues/14201)). Re-enable run-ahead per-game for light titles (Mario 64, Kirby 64) |
 
 ### Systems not supported (JIT required)
 
@@ -433,7 +417,6 @@ Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version
 | 4 | Mupen64Plus-Next auto frame delay incompatible | [#14201](https://github.com/libretro/RetroArch/issues/14201) | Open | Disable auto frame delay per-core; refactored in v1.20.0 |
 | 5 | N64 rendering glitches (game-specific) | [#16598](https://github.com/libretro/RetroArch/issues/16598) | Open | Per-game overrides |
 | 6 | Threaded video crashes RetroArch on tvOS (Metal) | [#14978](https://github.com/libretro/RetroArch/issues/14978) | Persists | `video_threaded = "false"` set globally; per-core true for interpreter-bound cores (N64, PS1) via retroarch-configs overrides. Upstream fix targets GL only, not Metal |
-| 7 | Cloud Sync conflicts between tvOS and macOS | [#16727](https://github.com/libretro/RetroArch/issues/16727) | Partial | DS_Store filter + foreground re-sync added; close content before quitting |
 | 8 | Bluetooth controller jitter over HDMI | — | Reports | Replace HDMI cable if input latency is inconsistent |
 | 9 | A15 thermal throttling during sustained emulation | — | Hardware | Passively-cooled A15 throttles after 20–90 min sustained load; affects Tier 2 most. Ensure open ventilation, use lightweight shaders, prefer native resolution |
 
@@ -476,7 +459,6 @@ Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version
 ### Verify after relaunch
 
 - [ ] CRT shaders load automatically from override `.cfg` files (verify via Quick Menu → Shaders)
-- [ ] iCloud Cloud Sync enabled and initial sync triggered (quit and relaunch)
 
 ### Per-core overrides
 

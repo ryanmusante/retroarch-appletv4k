@@ -1,4 +1,16 @@
+2026-04-11  Ryan Musante
+
+- v2.39: document Mupen64Plus-Next as using Angrylion software RDP
+  plus `cxd4` RSP from the companion retroarch-configs pack.
+- v2.39: align Nintendo 64 README notes with the shipped Mupen64Plus-Next
+  override profile.
+
 ## v2.37 - 2026-04-11
+
+## v2.38 - 2026-04-11
+- disable all `cloud_sync_sync_*` settings in `retroarch.cfg` for local-only use
+- remove Cloud Sync guidance from `README.md`
+
 
 ### Changed
 - reduce `content_favorites_size` from `100` to `10` in `retroarch.cfg`
@@ -22,7 +34,6 @@ retroarch-appletv4k changelog
   despite the stated intent. Existing saves re-compress on next write.
 - v2.34: CRIT — rename cloud_sync_backend → cloud_sync_driver
   (SETTING_ARRAY, configuration.c:1617). The older key did not exist and
-  was silently ignored; iCloud was the only tvOS backend so behavior did
   not change, but the line is now functional rather than cosmetic.
 - v2.34: CRIT — delete recording_enable = "false". There is no such
   RetroArch setting — recording is a runtime hotkey only, verified absent
@@ -45,9 +56,6 @@ retroarch-appletv4k changelog
 - v2.33: retroarch.cfg L55-56 overscale comment lists all 5 cores (was 3).
 - v2.33: CHANGELOG v2.32 entry "4 invalid keys" → "3" (matches enumeration).
 - v2.32: rename 3 invalid keys (audio_output_rate → audio_out_rate;
-  cloud_sync_enable_thumbnails → cloud_sync_sync_thumbs;
-  cloud_sync_enable_system → cloud_sync_sync_system); add explicit
-  cloud_sync_sync_saves, cloud_sync_sync_configs, video_crop_overscan;
   65 → 68 active keys.
 - v2.31: video_max_swapchain_images comment — note 3 on 120 Hz panels.
 
@@ -75,7 +83,6 @@ retroarch-appletv4k changelog
 2026-04-01  Ryan Musante
 
 - v2.14–2.16: fact-check corrections; add MIT LICENSE;
-  add DRC, cloud sync, savestate keys (41 → 45).
 
 2026-03-31  Ryan Musante
 
