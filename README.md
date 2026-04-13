@@ -245,6 +245,8 @@ The PS/Xbox home button opens tvOS Control Center, not RetroArch's menu. A contr
 | State Slot − | Select + D-Pad Left |
 | Close Content | Select + Start |
 
+> ⚠️ **Save state is not auto-captured on Close Content.** As of v2.65, `savestate_auto_save` / `savestate_auto_load` are unset (upstream default `false`). Closing content without first triggering Save State (Select + R1) discards in-memory state; SRAM is still flushed via `block_sram_overwrite` + `autosave_interval = "60"`.
+
 > ⚠️ **Warning:** Without Close Content configured, there is no method to exit a running game without force-quitting the app.
 
 ### Video settings
@@ -301,7 +303,7 @@ The companion `retroarch.cfg` includes hardening, input, menu performance, and l
 | Input | Joypad Driver | mfi | Apple GCController framework; only viable driver on tvOS |
 | Menu | Throttle Framerate | ON | Caps XMB 3D ribbon at 60 fps; prevents uncapped rendering and thermal waste |
 | Menu | Favorites / History Size | 10 / 10 | Defaults are 200; reduced for 4 GB RAM |
-| Saving | Max Auto-Increment States | 10 | Limits storage usage |
+| Saving | Max Auto-Increment States | 5 | Bounds per-game auto-slot growth on 64 GB cache (`savestate_max_keep = "5"`) |
 | Saving | Save State Compression | ON | Reduces save state size |
 | Saving | SaveRAM Compression | ON | Reduces SRAM size |
 | Logging | Verbosity / File Logging | OFF | Each `os_log` message involves malloc/vsnprintf/free; file writes waste volatile cache |
