@@ -1,9 +1,10 @@
 2026-04-12  Ryan Musante
 
+- v2.65: `README.md` — version badge `2.64` → `2.65`. Missed in initial v2.65 pass; caught during sync review.
 - v2.65: `retroarch.cfg` — remove `savestate_auto_save` and `savestate_auto_load` (both were set to `"true"`; upstream defaults are `false`). Rationale: the auto-save-on-close / auto-load-on-reopen pair was originally added as a tvOS volatile-cache eviction safety net, but it conflicts with manual save-slot workflow — auto-load silently overwrites the in-memory state on content reopen, defeating `savestate_max_keep = "5"` slot rotation. `block_sram_overwrite = "true"` already covers the SRAM side of the eviction concern. `content_runtime_log` / `content_runtime_log_aggregate` were never set (upstream default `false` retained). `savestate_auto_index = "true"` retained — different key, drives `savestate_max_keep` slot numbering.
 - v2.65: `retroarch.cfg` — orphaned comment on L96 ("auto-save state on content close, auto-load on reopen; safety net tvos eviction") removed; it described the two keys that were just deleted and no longer applied to the surviving `block_sram_overwrite` line below it.
-- v2.65: Key count 72 → 70. Companion `retroarch-configs` bumped to v1.29.1 (SYNC entry only; no `.cfg` / `.opt` changes — audit confirmed neither file set either key).
-- v2.65: `README.md` §10 Optimizations table — `Max Auto-Increment States` row value `10` → `5`. **Pre-existing drift from v2.60** (v2.60 bumped `savestate_max_keep` 10 → 5 in `retroarch.cfg` but did not update the README row). Caught during v2.65 audit pass, fixed now. Row rationale also expanded from "Limits storage usage" to cite the actual key and reasoning.
+- v2.65: Key count 72 → 70. Companion `retroarch-configs` bumped to v1.29.1 (SYNC entry only; no `.cfg` / `.opt` changes — verified neither file set either key).
+- v2.65: `README.md` §10 Optimizations table — `Max Auto-Increment States` row value `10` → `5`. **Pre-existing drift from v2.60** (v2.60 bumped `savestate_max_keep` 10 → 5 in `retroarch.cfg` but did not update the README row). Caught during v2.65 review, fixed now. Row rationale also expanded from "Limits storage usage" to cite the actual key and reasoning.
 - v2.65: `README.md` §7 Hotkey Assignments — added warning block under the `Close Content` row noting that save state is not auto-captured on close as of v2.65. Users relying on the prior `savestate_auto_save` / `savestate_auto_load` pair (originally a tvOS volatile-cache eviction safety net) need to trigger Save State (Select + R1) manually before closing content. SRAM path unchanged (`block_sram_overwrite` + 60 s `autosave_interval`).
 
 2026-04-12  Ryan Musante
@@ -31,7 +32,7 @@
 
 2026-04-12  Ryan Musante
 
-- v2.61: DOC-SYNC — REV 3 audit pass reconciling `retroarch.cfg` inline comments and README prose with shipped values. No functional config changes.
+- v2.61: DOC-SYNC — REV 3 review pass reconciling `retroarch.cfg` inline comments and README prose with shipped values. No functional config changes.
 - v2.61: `retroarch.cfg` — `audio_resampler_quality` comment corrected. Prior comment claimed "Kaiser resampler 3 baseline; Tier 2 overrides lower to 2" but the value on that line is `"2"` and Tier 2 cfgs do not override it. Comment now reads "Kaiser resampler 2 baseline; lower than upstream 3 for A15 headroom".
 - v2.61: `retroarch.cfg` — fix misplaced comment above `audio_sync`. Prior comment "DRC grouped with video_refresh_rate" described `audio_rate_control_delta`, not `audio_sync`. Rewritten as "audio_sync paired with video_refresh_rate for pacing".
 - v2.61: `retroarch.cfg` — integer-overscale per-core comment list gains FinalBurn Neo (Mesen/Snes9x/GPGX/Beetle PCE/mGBA/FBN). FBN started shipping `video_scale_integer_scaling="1"` in companion v1.26 but the global comment was never updated.
@@ -39,7 +40,7 @@
 - v2.61: `README.md` §10 Known Issue #6 — same inverted `video_threaded` claim corrected. Both `Mupen64Plus-Next.cfg` and `PCSX-ReARMed.cfg` pin `"false"`; effective value is `false` everywhere.
 - v2.61: `README.md` §8 and §11 — bump stale `retroarch-configs` v1.23 cross-references to v1.27+. Companion repo is at v1.28 after this pass but the floor for the §8 CRT-shader override behavior is v1.27.
 - v2.61: Companion `retroarch-configs` bumped to v1.28: Frontend Override Keys table rewritten to match shipped files (three phantom key rows removed, `video_threaded` direction corrected, `run_ahead_frames` values `0,2`→`1,2` to cover Beetle PCE Fast's 1-frame exception, `audio_latency` clarified as PS1-only override with N64 inheriting global); FBN rewind note rephrased (rewind is globally off so the "conflict" is unreachable in-package); File Structure section collapsed to a pointer at Manual Install as single source of truth for on-device layout.
-- v2.60: AUDIT — REV 2 audit pass against libretro/RetroArch master `configuration.c` and `gfx/video_defines.h`. 5 REV 1 findings retracted after source verification (all were valid upstream-documented keys/values): `video_use_metal_arg_buffers`, `aspect_ratio_index=22` (= ASPECT_RATIO_CORE), `log_verbosity="false"` (default literal), `cloud_sync_driver=""`, Genesis Plus GX `lowpass_range="55"`. Corrected findings applied.
+- v2.60: REV 2 — source verification pass against libretro/RetroArch master `configuration.c` and `gfx/video_defines.h`. 5 REV 1 findings retracted after source verification (all were valid upstream-documented keys/values): `video_use_metal_arg_buffers`, `aspect_ratio_index=22` (= ASPECT_RATIO_CORE), `log_verbosity="false"` (default literal), `cloud_sync_driver=""`, Genesis Plus GX `lowpass_range="55"`. Corrected findings applied.
 - v2.60: `retroarch.cfg` — `audio_rate_control_delta` 0.005 → 0.008. Upstream default 0.005 is tight for uncalibrated tvOS 59.94Hz drift with `vrr_runloop_enable=false`; 0.008 gives DRC headroom before audible crackle without impacting sync accuracy on calibrated setups.
 - v2.60: `retroarch.cfg` — `autosave_interval` 30 → 60. 30s cadence contradicted the L131 "log_to_file wastes volatile cache space" rationale (same cache, same churn). SRAM still flushes on pause/close, so 60s loses at most 30s of extra progress vs. prior behavior.
 - v2.60: `retroarch.cfg` — `savestate_max_keep` 10 → 5. 10 × N64 ~1 MB × N games was unbounded growth on the 64 GB model; 5 halves the worst-case ceiling.
@@ -78,7 +79,7 @@
 
 2026-04-12  Ryan Musante
 
-- v2.54: PERF — `retroarch.cfg` add 4 explicit `false` values for keys whose upstream defaults are ON and hurt A15 tvOS performance: `netplay_public_announce` (network traffic), `menu_enable_widgets` (animated notification GPU compositing), `video_waitable_swapchains` (non-UWP-Windows default true; adds frame-latency pacing overhead on tvOS Metal). Also added `discord_allow = "false"` explicit (upstream default is already false) for audit symmetry with the security block.
+- v2.54: PERF — `retroarch.cfg` add 4 explicit `false` values for keys whose upstream defaults are ON and hurt A15 tvOS performance: `netplay_public_announce` (network traffic), `menu_enable_widgets` (animated notification GPU compositing), `video_waitable_swapchains` (non-UWP-Windows default true; adds frame-latency pacing overhead on tvOS Metal). Also added `discord_allow = "false"` explicit (upstream default is already false) for symmetry with the security block.
 - v2.54: STYLE — collapse multiline comment runs in `retroarch.cfg` to single-line comments per the same policy applied to `.cfg`/`.opt` files. 56 → 55 comment lines.
 - v2.54: README §7 Additional settings table — add 4 new rows documenting the above explicit values and their rationale.
 - v2.54: retroarch.cfg key count 66 → 70.
@@ -99,8 +100,8 @@
 
 - v2.51: CRIT — `retroarch.cfg` L55 delete `video_sync_to_exact_content_framerate = "false"`. There is no such RetroArch key — verified absent from `libretro/RetroArch/configuration.c` and `config.def.h` on master. The string "Sync to exact content framerate" is the menu *label* for the existing `vrr_runloop_enable` key, which is already correctly set to `false` on L57. The bogus key was silently ignored by RetroArch loaders since v2.44; no runtime behavior changes from this deletion.
 - v2.51: README §7 Latency reduction table — correct the key reference for the "Sync to Exact Content Framerate" row from `video_sync_to_exact_content_framerate` to `vrr_runloop_enable`.
-- v2.51: full audit of all 66 `retroarch.cfg` keys against upstream `configuration.c` SETTING_* macros — only the bogus key above flagged; the remaining 65 keys verified valid (`log_verbosity` is read via `config_get_bool` rather than registered through SETTING_*, but is a documented and accepted key).
-- v2.51: companion `retroarch-configs` bumped to v1.19 (Mupen64Plus-Next Player 1 Rumble Pak default + full opt/cfg audit).
+- v2.51: full key-by-key verification of all 66 `retroarch.cfg` keys against upstream `configuration.c` SETTING_* macros — only the bogus key above flagged; the remaining 65 keys verified valid (`log_verbosity` is read via `config_get_bool` rather than registered through SETTING_*, but is a documented and accepted key).
+- v2.51: companion `retroarch-configs` bumped to v1.19 (Mupen64Plus-Next Player 1 Rumble Pak default + full opt/cfg verification).
 
 2026-04-12  Ryan Musante
 
