@@ -1,6 +1,6 @@
 # RetroArch on Apple TV 4K
 
-![version](https://img.shields.io/badge/version-2.59-blue)
+![version](https://img.shields.io/badge/version-2.64-blue)
 ![RetroArch](https://img.shields.io/badge/RetroArch-v1.22.x-green)
 ![license](https://img.shields.io/badge/license-MIT-green)
 
@@ -41,9 +41,9 @@ Detailed instructions for each step follow below.
 9. [Supported Systems and Per-Core Overrides](#9-supported-systems-and-per-core-overrides)
 10. [Known Issues](#10-known-issues)
 11. [Setup Checklist](#11-setup-checklist)
-12. [Files in This Repository](#files-in-this-repository)
-13. [Versioning](#versioning)
-14. [License](#license)
+12. [Files in This Repository](#12-files-in-this-repository)
+13. [Versioning](#13-versioning)
+14. [License](#14-license)
 
 ## 1. Prerequisites
 
@@ -240,7 +240,7 @@ The PS/Xbox home button opens tvOS Control Center, not RetroArch's menu. A contr
 | Save State | Select + R1 |
 | Load State | Select + L1 |
 | Fast Forward | Select + R2 (hold) |
-| Rewind | Select + L2 (hold; disabled globally, per-core only) |
+| Rewind | Select + L2 (hold; hotkey bound but rewind disabled globally — enable per-game only) |
 | State Slot + | Select + D-Pad Right |
 | State Slot − | Select + D-Pad Left |
 | Close Content | Select + Start |
@@ -253,7 +253,7 @@ The PS/Xbox home button opens tvOS Control Center, not RetroArch's menu. A contr
 |---------|-------|-------|
 | Video driver | Metal | Best performance on Apple silicon |
 | Integer Scale | ON | Pixel-perfect output; produces borders at 4K |
-| Integer Overscale | Optional | Used per-core for NES, SNES, Genesis, PC Engine/TurboGrafx-16, and mGBA (including GBA 240×160) where shipped overrides enable it |
+| Integer Overscale | Optional | Used per-core for NES, SNES, Genesis, PC Engine/TurboGrafx-16, mGBA (including GBA 240×160), and FinalBurn Neo (224p–304p) where shipped overrides enable it |
 | Bilinear Filtering | OFF | Required for correct shader rendering |
 | Metal Argument Buffers | ON (test) | v1.22.1+; reduces CPU draw-call overhead on A15. Revert to OFF if visual glitches appear |
 | GPU Screenshot | ON | Captures post-shader framebuffer; required for accurate screenshots with shaders |
@@ -267,7 +267,7 @@ The PS/Xbox home button opens tvOS Control Center, not RetroArch's menu. A contr
 |---------|-------|-------|
 | Sync to Exact Content Framerate | OFF (`vrr_runloop_enable = "false"`) | Apple TV is fixed-refresh in normal use; keeping this OFF preserves Dynamic Rate Control via `audio_rate_control_delta` |
 | Run Ahead | OFF by default globally (`run_ahead_enabled = "false"`, `run_ahead_frames = "1"`) | Conservative global baseline. Companion Tier 1 core overrides explicitly set `run_ahead_enabled = "true"` with `run_ahead_frames = "2"`; Tier 2 cores keep it disabled unless re-enabled per game. |
-| Run-Ahead Mode | Single Instance (`run_ahead_secondary_instance = "false"`) | Forces save-state-rewind-in-one-core instead of RetroArch's default dual-instance parallel emulation. Same latency benefit at roughly half the CPU cost; critical for sustained Tier 1 Run-Ahead 2 on the passively-cooled A15. Verified stable across all Tier 1 cores (Mesen, Snes9x, mGBA, Genesis Plus GX, Beetle PCE Fast, FinalBurn Neo). If a specific core later exhibits audio crackle or serialization glitches, flip to `true` as a per-core override for that core only. |
+| Run-Ahead Mode | Single Instance (`run_ahead_secondary_instance = "false"`) | Forces save-state-rewind-in-one-core instead of RetroArch's default dual-instance parallel emulation. Same latency benefit at roughly half the CPU cost; critical for sustained Tier 1 Run-Ahead on the passively-cooled A15. Verified stable across all Tier 1 cores: Mesen, Snes9x, mGBA, Genesis Plus GX, and FinalBurn Neo at `run_ahead_frames = 2`; Beetle PCE Fast at `run_ahead_frames = 1` (CDROM seek determinism). If a specific core later exhibits audio crackle or serialization glitches, flip to `true` as a per-core override for that core only. |
 | Automatic Frame Delay | OFF | Conservative baseline. Enable per-core only after confirming stable pacing and no missed frames. |
 | Fast Forward Ratio | 3× (`fastforward_ratio = "3.0"`) | Reduced from 5× to lower instability and thermal-throttle risk on passively-cooled A15. Note: fast-forward may not function with Metal driver on tvOS |
 | Static Frame Delay | 0 | Explicit baseline; nonzero values should be tested per-core. |
@@ -308,7 +308,7 @@ The companion `retroarch.cfg` includes hardening, input, menu performance, and l
 | Audio | `audio_out_rate` | 48000 Hz | Matches Apple TV HDMI audio natively; prevents unnecessary resampling |
 | Audio | Audio Latency | 64 ms | Conservative baseline for broad compatibility; lower only after testing per core |
 | Audio | Resampler Quality | Lower (2) | Slightly lowers latency while preserving acceptable quality on Apple TV 4K |
-| Video | Threaded Video | OFF | Crashes on tvOS with Metal ([#14978](https://github.com/libretro/RetroArch/issues/14978)); explicit false globally, per-core true for interpreter-bound cores (N64, PS1) via retroarch-configs overrides |
+| Video | Threaded Video | OFF | Crashes on tvOS with Metal ([#14978](https://github.com/libretro/RetroArch/issues/14978)); `video_threaded = "false"` globally. Tier 2 cores (N64, PS1) redundantly pin the same value in their `.cfg` as a forensic anchor in case the global ever drifts — the effective value is still `false` everywhere |
 | Menu | Playlist Compression | ON | ~90% file size reduction; reduces cache writes on volatile tvOS storage |
 | Latency | Run Ahead Hide Warnings | ON | Per-core overrides already disable for incompatible cores; suppresses noise |
 
@@ -322,7 +322,7 @@ RetroArch supports peer-to-peer Netplay with up to 16 players and spectators. A 
 
 ### Applying a shader
 
-As of v2.55, `retroarch.cfg` sets a **global default CRT shader** of `shaders_slang/crt/crt-easymode.slangp`, which every core inherits automatically. The companion `retroarch-configs` v1.23 Tier 2 overrides (`Mupen64Plus-Next.cfg`, `PCSX-ReARMed.cfg`) replace it with the lighter `zfast_crt.slangp` to fit the interpreter + software-RDP GPU budget. No manual steps are required for the defaults to load. To override the preset for a specific core:
+As of v2.55, `retroarch.cfg` sets a **global default CRT shader** of `shaders_slang/crt/crt-easymode.slangp`, which every core inherits automatically. The companion `retroarch-configs` v1.27+ Tier 2 overrides (`Mupen64Plus-Next.cfg`, `PCSX-ReARMed.cfg`) replace it with the lighter `zfast_crt.slangp` to fit the interpreter + software-RDP GPU budget. No manual steps are required for the defaults to load. To override the preset for a specific core:
 
 1. Launch a game → Quick Menu (L3 + R3) → Shaders → Video Shaders: **ON**.
 2. Load Preset → `shaders_slang` → `crt` → select a preset.
@@ -365,14 +365,14 @@ Tier definitions: **1** = Flawless (full speed, shaders enabled), **2** = Good (
 
 | Tier | System | Core | Override | Notes |
 |------|--------|------|----------|-------|
-| 1 | NES | Mesen | Yes | Overscale for 224p at 4K. No per-game overclock needed |
+| 1 | NES | Mesen | Yes | Overscale for 224p at 4K. Per-game: `mesen_overclock_rate` available for slowdown-prone titles (Battletoads, Recca) but not set globally — values that help one game can break another |
 | 1 | SNES | Snes9x | Yes | Overscale for 224p at 4K. Run Ahead 2 is safe for light titles (Super Mario World, Zelda). Per-game: `snes9x_overclock = 200` for SuperFX titles (Star Fox, Yoshi's Island, Doom, Stunt Race FX) |
 | 1 | GB / GBC / GBA | mGBA | Yes | — |
 | 1 | Genesis / MD / CD, Master System | Genesis Plus GX | Yes | Overscale for 224p at 4K. Tier 1 companion override enables Run Ahead per core. Master System (192p) may need per-content-directory override |
 | 1 | PC Engine / TG-16 | Beetle PCE Fast | Yes | — |
-| 1 | Neo Geo, Arcade (CPS1/2/3) | FinalBurn Neo | Yes | Rewind conflicts with Run Ahead ([#16374](https://github.com/libretro/RetroArch/issues/16374)) |
-| 2 | PlayStation 1 | PCSX-ReARMed | Yes | No JIT; Run Ahead / preemptive frames disabled per-core, re-enable per-game for light 2D titles. Global `psxclock` is `100` (native); per-game underclock to 75 or 50 for demanding 3D titles (Tony Hawk, Spyro 2/3, Tekken 3) |
-| 2 | Nintendo 64 | Mupen64Plus-Next | Yes | ~60–70% compatibility; companion overrides keep Angrylion software RDP + CXD4 with Slang shaders. Rewind freezes emulation ([#18300](https://github.com/libretro/RetroArch/issues/18300)); auto frame delay incompatible ([#14201](https://github.com/libretro/RetroArch/issues/14201)). Run Ahead remains disabled by default; re-enable per-game for light titles (Mario 64, Kirby 64) |
+| 1 | Neo Geo, Arcade (CPS1/2/3) | FinalBurn Neo | Yes | Rewind remains globally disabled — do not re-enable per-game alongside Run Ahead ([#16374](https://github.com/libretro/RetroArch/issues/16374)) |
+| 2 | PlayStation 1 | PCSX-ReARMed | Yes | No JIT. Run Ahead and `preemptive_frames_enable` are not set in the PCSX `.cfg`; both inherit the global `false` baseline. Re-enable per-game for light 2D titles. Global `psxclock` is `100` (native); per-game underclock to 75 or 50 for demanding 3D titles (Tony Hawk, Spyro 2/3, Tekken 3) |
+| 2 | Nintendo 64 | Mupen64Plus-Next | Yes | ~60–70% compatibility; companion overrides keep Angrylion software RDP + CXD4 with Slang shaders. Rewind and auto frame delay are disabled globally — do not re-enable per-game (rewind freezes emulation [#18300](https://github.com/libretro/RetroArch/issues/18300); auto frame delay incompatible [#14201](https://github.com/libretro/RetroArch/issues/14201)). Run Ahead inherits the global `false` baseline; re-enable per-game for light titles (Mario 64, Kirby 64) |
 
 ### Systems not supported (JIT required)
 
@@ -384,10 +384,10 @@ Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version
 |---|-------|-----|--------|------------|
 | 1 | Switch Pro B button exits app | [#18286](https://github.com/libretro/RetroArch/issues/18286) | Open | Avoid Switch Pro Controller |
 | 2 | Ghost inputs with multiple controllers | [#18447](https://github.com/libretro/RetroArch/issues/18447) | Open | Use single controller or test carefully |
-| 3 | Mupen64Plus-Next per-core rewind feature request | [#18300](https://github.com/libretro/RetroArch/issues/18300) | Open | Disable rewind per-core for N64 |
-| 4 | Mupen64Plus-Next auto frame delay incompatible | [#14201](https://github.com/libretro/RetroArch/issues/14201) | Open | Disable auto frame delay per-core; refactored in v1.20.0 |
+| 3 | Mupen64Plus-Next per-core rewind feature request | [#18300](https://github.com/libretro/RetroArch/issues/18300) | Open | `rewind_enable = "false"` set globally; do not re-enable per-game for N64 |
+| 4 | Mupen64Plus-Next auto frame delay incompatible | [#14201](https://github.com/libretro/RetroArch/issues/14201) | Open | `video_frame_delay_auto = "false"` set globally; do not re-enable per-game for N64. Refactored upstream in v1.20.0 |
 | 5 | N64 rendering glitches (game-specific) | [#16598](https://github.com/libretro/RetroArch/issues/16598) | Open | Per-game overrides |
-| 6 | Threaded video crashes RetroArch on tvOS (Metal) | [#14978](https://github.com/libretro/RetroArch/issues/14978) | Persists | `video_threaded = "false"` set globally; per-core true for interpreter-bound cores (N64, PS1) via retroarch-configs overrides. Keep the PCSX-ReARMed override unless you observe pacing issues; test disabling it only for that core. Upstream fix targets GL only, not Metal |
+| 6 | Threaded video crashes RetroArch on tvOS (Metal) | [#14978](https://github.com/libretro/RetroArch/issues/14978) | Persists | `video_threaded = "false"` set globally. Tier 2 `.cfg` files (Mupen64Plus-Next, PCSX-ReARMed) also pin `"false"` as an explicit crash-defense anchor — not a divergence from global. Upstream fix targets GL only, not Metal |
 
 ## 11. Setup Checklist
 
@@ -427,14 +427,14 @@ Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version
 
 ### Verify after relaunch
 
-- [ ] CRT shader loads automatically (global `crt-easymode` for Tier 1; Tier 2 overrides to `zfast_crt` per `retroarch-configs` v1.23+). Verify via Quick Menu → Shaders
+- [ ] CRT shader loads automatically (global `crt-easymode` for Tier 1; Tier 2 overrides to `zfast_crt` per `retroarch-configs` v1.27+). Verify via Quick Menu → Shaders
 
 ### Per-core overrides
 
 - [ ] Tier 1–2 override files (`.cfg` and `.opt`) uploaded to `config/<core_name>/` (see §9)
 - [ ] Both file types load automatically — verify via Quick Menu → Information
 
-## Files in This Repository
+## 12. Files in This Repository
 
 | File | Description |
 |------|-------------|
@@ -443,11 +443,11 @@ Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version
 | `retroarch.cfg` | Drop-in configuration for Apple TV 4K 3rd Gen |
 | `LICENSE` | MIT License |
 
-## Versioning
+## 13. Versioning
 
 This repository uses `vMAJOR.MINOR` (no patch component). `MAJOR` increments on incompatible structural changes (filesystem layout, breaking config schema, removed features). `MINOR` increments on every release — additive changes, key additions/removals, documentation syncs, and conservative defaults adjustments. Each release ships with a matching `CHANGELOG.md` entry in kernel.org `date<TAB>name` style.
 
-## License
+## 14. License
 
 [MIT](LICENSE)
 
