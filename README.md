@@ -1,6 +1,6 @@
 # RetroArch on Apple TV 4K
 
-![version](https://img.shields.io/badge/version-2.69-blue)
+![version](https://img.shields.io/badge/version-2.75-blue)
 ![RetroArch](https://img.shields.io/badge/RetroArch-v1.22.x-green)
 ![license](https://img.shields.io/badge/license-MIT-green)
 
@@ -76,7 +76,7 @@ Minimum recommended version: **RetroArch v1.20.0** (required for WebDAV, automat
 
 | Component | Specification | Notes |
 |-----------|---------------|-------|
-| Apple TV | 4K 3rd Gen (2022), 64 GB Wi-Fi (j255ap / A2737) | A15 Bionic; 64 GB model — tvOS purges cache more aggressively than 128 GB |
+| Apple TV | 4K 3rd Gen (2022), 64 GB Wi-Fi (j255ap / A2737) | A15 Bionic; 64 GB — more aggressive cache purges than 128 GB |
 | Controller | PS5 DualSense or Xbox Series X/S | Any Bluetooth gamepad; Siri Remote is menu-only |
 | Network | Same Wi-Fi/LAN for Apple TV and computer | Wi-Fi only (no Ethernet on 64 GB model) |
 | Computer | Mac, Windows, or Linux with a web browser | Required for ROM/BIOS file transfers |
@@ -238,7 +238,7 @@ The Apple TV supports up to four simultaneous Bluetooth controllers. The Siri Re
 
 | Controller | Pairing Method | Status |
 |-----------|---------------|--------|
-| PS5 DualSense / Edge | PS + Create buttons | **Recommended** — full support, BT 5.1 (link limited to Apple TV's BT 5.0) |
+| PS5 DualSense / Edge | PS + Create buttons | **Recommended** — BT 5.1 (limited to ATV BT 5.0) |
 | Xbox Series X/S Wireless | Xbox + Connect button | **Recommended** — full support |
 | PS4 DualShock 4 | PS + Share buttons | Excellent — most stable |
 | 8BitDo Pro 2 / Ultimate | Mode D/A + Pair button | Excellent — multi-platform |
@@ -263,7 +263,7 @@ The PS/Xbox home button opens tvOS Control Center, not RetroArch's menu. A contr
 | Save State | Select + R1 |
 | Load State | Select + L1 |
 | Fast Forward | Select + R2 (hold) |
-| Rewind | Select + L2 (hold; hotkey bound but rewind disabled globally — enable per-game only) |
+| Rewind | Select + L2 (hold; rewind disabled globally; enable per-game) |
 | State Slot + | Select + D-Pad Right |
 | State Slot − | Select + D-Pad Left |
 | Close Content | Select + Start |
@@ -278,25 +278,28 @@ The PS/Xbox home button opens tvOS Control Center, not RetroArch's menu. A contr
 |---------|-------|-------|
 | Video driver | Metal | Best performance on Apple silicon |
 | Integer Scale | ON | Pixel-perfect output; produces borders at 4K |
-| Integer Overscale | Optional | Used per-core for NES, SNES, Genesis, PC Engine/TurboGrafx-16, mGBA (including GBA 240×160), and FinalBurn Neo (224p–304p) where shipped overrides enable it |
+| Integer Overscale | Optional | Per-core: NES, SNES, Genesis, PCE/TG-16, mGBA (incl. GBA 240×160), FBN (224p–304p) |
 | Bilinear Filtering | OFF | Required for correct shader rendering |
-| Metal Argument Buffers | ON (test) | v1.22.1+; reduces CPU draw-call overhead on A15. Revert to OFF if visual glitches appear |
-| GPU Screenshot | ON | Captures post-shader framebuffer; required for accurate screenshots with shaders |
-| Crop Overscan | ON | Removes garbage border pixels from retro cores. Core-dependent |
-| Max Swapchain Images | 2 | Double-buffer; lower latency than triple-buffer on fixed-refresh tvOS. Revert to `3` if pacing artifacts appear |
-| Refresh Rate | Calibrate | Cfg seeds `video_refresh_rate = 59.940060` (NTSC). Run Settings → Video → Output → Estimated Screen Refresh Rate and accept the measured value. |
+| Video Shaders | ON (`video_shader_enable = "true"`) | Master shader pipeline gate; required for global `crt-easymode` auto-load (see §8) |
+| Metal Argument Buffers | ON (test) | v1.22.1+; reduces CPU draw-call overhead on A15; revert if visual glitches |
+| GPU Screenshot | ON | Post-shader capture; required for accurate screenshots |
+| Crop Overscan | ON | Trims garbage border pixels; core-dependent |
+| Max Swapchain Images | 2 | Double-buffer; lower latency than triple on fixed-refresh tvOS; revert to `3` if pacing artifacts |
+| Swap Interval | 1 (`video_swap_interval = "1"`) | 60 Hz swap; set to `2` for 30 fps content on a 60 Hz display |
+| Refresh Rate | Calibrate | Seeds `59.940060` (NTSC); calibrate via Settings → Video → Output → Estimated Screen Refresh Rate |
 
 ### Latency reduction
 
 | Setting | Value | Notes |
 |---------|-------|-------|
-| Sync to Exact Content Framerate | OFF (`vrr_runloop_enable = "false"`) | Apple TV is fixed-refresh in normal use; keeping this OFF preserves Dynamic Rate Control via `audio_rate_control_delta` |
+| Sync to Exact Content Framerate | OFF (`vrr_runloop_enable = "false"`) | Fixed-refresh Apple TV; keeps DRC (`audio_rate_control_delta`) active |
 | Run Ahead | OFF globally (`run_ahead_enabled = "false"`, `run_ahead_frames = "1"`) | Tier 1 per-core overrides set `true` with frames = 2; Tier 2 inherits off |
-| Run-Ahead Mode | Single Instance (`run_ahead_secondary_instance = "false"`) | Rewind-in-core, not dual-instance parallel; ~½ CPU cost, A15 thermal-safe. Tier 1 stable at frames = 2 (Beetle PCE Fast = 1, CDROM determinism). Flip to `true` per-core on crackle/serialization glitches |
-| Preemptive Frames | OFF (`preemptive_frames_enable = "false"`) | RunAhead alternative, RA v1.15.0 ([PR #14832](https://github.com/libretro/RetroArch/pull/14832); menu [PR #17093](https://github.com/libretro/RetroArch/pull/17093)). Reruns core on input change, reuses `run_ahead_frames`. Mutually exclusive with `run_ahead_enabled` per upstream `runahead_change_handler`. Per-core alternative only |
+| Run-Ahead Mode | Single Instance (`run_ahead_secondary_instance = "false"`) | ~½ CPU cost vs dual-instance; A15 thermal-safe; Tier 1: frames = 2; Beetle PCE Fast = 1 (CDROM); flip to `true` per-core for crackle/serialization |
+| Preemptive Frames | OFF (`preemptive_frames_enable = "false"`) | RA v1.15.0 ([PR #14832](https://github.com/libretro/RetroArch/pull/14832); menu [PR #17093](https://github.com/libretro/RetroArch/pull/17093)); reruns core on input change; reuses `run_ahead_frames`; exclusive with `run_ahead_enabled` (`runahead_change_handler`); per-core only |
 | Automatic Frame Delay | ON (`video_frame_delay_auto = "true"`) | Tier 1 per-core opt-in; Mupen64Plus-Next pinned `"false"` (N64 incompatible, [#14201](https://github.com/libretro/RetroArch/issues/14201)) |
-| Fast Forward Ratio | 3× (`fastforward_ratio = "3.0"`) | Reduced from 5× for A15 thermal headroom. May not function with Metal driver on tvOS |
-| Static Frame Delay | 0 | Explicit baseline; nonzero values should be tested per-core. |
+| Fast Forward Ratio | 3× (`fastforward_ratio = "3.0"`) | From 5×; A15 thermal headroom; may not function with Metal on tvOS |
+| Static Frame Delay | 0 | Explicit baseline; nonzero values should be tested per-core |
+| Input Poll Mode | Late (`input_poll_type_behavior = "2"`) | Late input sampling; ~0.5–1 frame reduction; netplay forces `0` |
 
 ### TV output
 
@@ -318,24 +321,34 @@ The companion `retroarch.cfg` includes hardening, input, menu performance, and l
 
 | Category | Setting | Value | Notes |
 |----------|---------|-------|-------|
-| Security | Network/stdin Command interfaces + Camera/Location access | OFF | Zero-auth UDP command/remote channels (55355, 55400–55420) are input-injection vectors; stdin same set via pipe; camera/location explicit-blocked on top of sandbox |
-| Security | On-Demand Thumbnails | OFF | Hangs on game/state load when thumbnail server is slow ([#17242](https://github.com/libretro/RetroArch/issues/17242)) |
-| Network | Netplay Public Announce | OFF (`netplay_public_announce = "false"`) | Upstream defaults ON; disabled to keep this device off the public announce list |
-| Network | Discord RPC | OFF (`discord_allow = "false"`) | Explicit for audit; already defaults off upstream |
-| Menu | Widgets (Animated Notifications) | OFF (`menu_enable_widgets = "false"`) | Upstream defaults ON; animated toasts add GPU compositing overhead; text OSD still legible |
-| Video | Waitable Swapchains | OFF (`video_waitable_swapchains = "false"`) | Upstream ON on non-UWP-Windows (incl. tvOS/Metal); adds pacing overhead fixed-refresh tvOS doesn't need |
-| Input | Joypad Driver | mfi | Apple GCController framework; only viable driver on tvOS |
-| Menu | Favorites / History Size | 10 / 10 | Defaults are 200; reduced for 4 GB RAM |
-| Saving | Max Auto-Increment States | 5 | Bounds per-game auto-slot growth on 64 GB cache (`savestate_max_keep = "5"`) |
-| Saving | Save State Compression | ON | Reduces save state size |
-| Saving | SaveRAM Compression | ON | Reduces SRAM size |
-| Logging | Verbosity / File Logging | OFF | Each `os_log` message involves malloc/vsnprintf/free; file writes waste volatile cache |
-| Audio | `audio_out_rate` | 48000 Hz | Matches Apple TV HDMI audio natively; prevents unnecessary resampling |
-| Audio | Audio Latency | 48 ms | Lowered from prior 64 ms baseline for latency reduction. Raise per-core via override if audio crackling appears |
-| Audio | Resampler Quality | Lower (2) | Slightly lowers latency while preserving acceptable quality on Apple TV 4K |
-| Video | Threaded Video | OFF | Upstream `gfx/video_driver.c` force-disables under `#if defined(__MACH__) && defined(__APPLE__)` — all Apple platforms ([#14978](https://github.com/libretro/RetroArch/issues/14978)). Tier 2 cfgs pin as forensic anchor |
-| Menu | Playlist Compression | ON | ~90% file size reduction; reduces cache writes on volatile tvOS storage |
-| Latency | Run Ahead Hide Warnings | ON | Per-core overrides already disable for incompatible cores; suppresses noise |
+| Security | Network/stdin Command interfaces + Camera/Location access | OFF | Zero-auth UDP (55355, 55400–55420) + stdin = input-injection vectors; camera/location blocked on top of sandbox |
+| Security | On-Demand Thumbnails | OFF (`network_on_demand_thumbnails = "false"`) | Hangs on game/state load when thumbnail server is slow ([#17242](https://github.com/libretro/RetroArch/issues/17242)) |
+| Cloud | Cloud Sync | OFF | `cloud_sync_enable = "false"`; driver, saves, configs, thumbs, system sub-keys all `"false"` — no backend configured; all six keys explicit for audit |
+| Network | Netplay Public Announce | OFF (`netplay_public_announce = "false"`) | Upstream default ON; keeps device off public announce list |
+| Network | Discord RPC | OFF (`discord_allow = "false"`) | Upstream default OFF; explicit for audit |
+| Menu | Widgets (Animated Notifications) | OFF (`menu_enable_widgets = "false"`) | Upstream default ON; animated toasts add GPU compositing overhead |
+| Video | Waitable Swapchains | OFF (`video_waitable_swapchains = "false"`) | Upstream ON on tvOS/Metal; pacing overhead fixed-refresh tvOS doesn't need |
+| Input | Joypad Driver | mfi (`input_joypad_driver = "mfi"`) | Apple GCController framework; only viable driver on tvOS |
+| Input | Max Users | 1 (`input_max_users = "1"`) | Solo play; raise to 2–4 for multiplayer |
+| Menu | Favorites / History Size | 10 / 10 | Default 200; reduced for 4 GB RAM |
+| Menu | Pause on Menu | ON (`menu_pause_libretro = "true"`) | Pauses emulation in Quick Menu; thermal relief for A15 |
+| Menu | Pause on Focus Loss | ON (`pause_nonactive = "true"`) | Pauses on Siri/notification/app switch; reduces OS kill probability |
+| Menu | Playlist Sub-labels | OFF (`playlist_show_sublabels = "false"`) | Disables per-entry metadata lookups; prevents XMB scroll lag |
+| Saving | Auto-Index States | ON (`savestate_auto_index = "true"`) | Required for `savestate_max_keep = "5"` slot rotation |
+| Saving | Max Auto-Increment States | 5 (`savestate_max_keep = "5"`) | Caps auto-slot growth on 64 GB cache |
+| Saving | Save State Compression | ON (`savestate_file_compression = "true"`) | Reduces save state size |
+| Saving | SaveRAM Compression | ON (`save_file_compression = "true"`) | Reduces SRAM size |
+| Saving | State Thumbnails | ON (`savestate_thumbnail_enable = "true"`) | Slot previews; improves couch-distance readability |
+| Logging | Verbosity / File Logging | OFF | `os_log` per-message alloc cost; file writes consume volatile cache |
+| Audio | `audio_out_rate` | 48000 Hz | Native HDMI rate; no resampling |
+| Audio | Audio Latency | 48 ms (`audio_latency = "48"`) | From 64 ms baseline; raise per-core if crackling |
+| Audio | Resampler Quality | 2 (`audio_resampler_quality = "2"`) | Lower than upstream 3; acceptable quality on ATV4K |
+| Audio | Audio Sync | ON (`audio_sync = "true"`) | Ties audio to `video_refresh_rate`; works with `audio_rate_control_delta` |
+| Audio | Rate Control Delta | 0.008 (`audio_rate_control_delta = "0.008"`) | DRC headroom from upstream 0.005; handles tvOS clock drift |
+| Video | Threaded Video | OFF (`video_threaded = "false"`) | Force-disabled by upstream for all Apple platforms ([#14978](https://github.com/libretro/RetroArch/issues/14978)); Tier 2 cfgs pin as anchor |
+| Menu | Playlist Compression | ON (`playlist_compression = "true"`) | ~90% reduction; reduces cache writes on volatile tvOS storage |
+| System | Screensaver Suspend | ON (`suspend_screensaver_enable = "true"`) | Requests screensaver off during content; tvOS may still fire while paused |
+| Latency | Run Ahead Hide Warnings | ON (`run_ahead_hide_warnings = "true"`) | Per-core overrides handle incompatible cores; suppresses noise |
 
 See also the [WebDAV security warning](#4-file-transfers) in §4.
 
@@ -390,14 +403,14 @@ Tier definitions: **1** = Flawless (full speed, shaders enabled), **2** = Good (
 
 | Tier | System | Core | Override | Notes |
 |------|--------|------|----------|-------|
-| 1 | NES | Mesen | Yes | Overscale for 224p at 4K. Per-game: `mesen_overclock_rate` available for slowdown-prone titles (Battletoads, Recca) — not set globally |
-| 1 | SNES | Snes9x | Yes | Overscale for 224p at 4K. Run Ahead 2 safe for light titles. Per-game: `snes9x_overclock = 200` for SuperFX (Star Fox, Yoshi's Island, Doom, Stunt Race FX) |
+| 1 | NES | Mesen | Yes | Overscale 224p; per-game: `mesen_overclock_rate` for slowdown-prone titles (Battletoads, Recca) |
+| 1 | SNES | Snes9x | Yes | Overscale 224p; per-game: `snes9x_overclock = 200` for SuperFX (Star Fox, Yoshi's Island, Doom, Stunt Race FX) |
 | 1 | GB / GBC / GBA | mGBA | Yes | — |
-| 1 | Genesis / MD / CD, Master System | Genesis Plus GX | Yes | Overscale for 224p at 4K. Run Ahead enabled per-core. Master System (192p) may need per-content-directory override |
+| 1 | Genesis / MD / CD, Master System | Genesis Plus GX | Yes | Overscale 224p; Run Ahead per-core; Master System (192p) may need per-content override |
 | 1 | PC Engine / TG-16 | Beetle PCE Fast | Yes | — |
 | 1 | Neo Geo, Arcade (CPS1/2/3) | FinalBurn Neo | Yes | Rewind pinned `false` per-core; do not re-enable per-game alongside Run Ahead ([#16374](https://github.com/libretro/RetroArch/issues/16374)) |
-| 2 | PlayStation 1 | PCSX-ReARMed | Yes | No JIT. Run Ahead and `preemptive_frames_enable` inherit the global `false`; re-enable per-game for light 2D titles. Global `psxclock = 100` (native); per-game underclock to 75 / 50 for demanding 3D titles (Tony Hawk, Spyro 2/3, Tekken 3) |
-| 2 | Nintendo 64 | Mupen64Plus-Next | Yes | ~60–70% compat; Angrylion sw RDP + CXD4, Slang shaders. Per-core pins: `rewind_enable=false` ([#18300](https://github.com/libretro/RetroArch/issues/18300) freeze), `video_frame_delay_auto=false` ([#14201](https://github.com/libretro/RetroArch/issues/14201) incompat). Run Ahead inherits global off; re-enable per-game for light titles |
+| 2 | PlayStation 1 | PCSX-ReARMed | Yes | No JIT; Run Ahead + preemptive inherit off; re-enable per-game for light 2D; `psxclock = 100` native; underclock 75/50 for 3D (Tony Hawk, Spyro 2/3, Tekken 3) |
+| 2 | Nintendo 64 | Mupen64Plus-Next | Yes | ~60–70% compat; Angrylion sw RDP + CXD4; pins: `rewind_enable=false` ([#18300](https://github.com/libretro/RetroArch/issues/18300)), `video_frame_delay_auto=false` ([#14201](https://github.com/libretro/RetroArch/issues/14201)); Run Ahead off; re-enable per-game |
 
 ### Systems not supported (JIT required)
 
@@ -409,10 +422,10 @@ Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version
 |---|-------|-----|--------|------------|
 | 1 | Switch Pro B button exits app | [#18286](https://github.com/libretro/RetroArch/issues/18286) | Open | Avoid Switch Pro Controller |
 | 2 | Ghost inputs with multiple controllers | [#18447](https://github.com/libretro/RetroArch/issues/18447) | Open | Use single controller or test carefully |
-| 3 | Mupen64Plus-Next rewind feature request | [#18300](https://github.com/libretro/RetroArch/issues/18300) | Open | `rewind_enable = "false"` pinned per-core (global also `false`); do not re-enable per-game |
-| 4 | Mupen64Plus-Next auto frame delay incompatible | [#14201](https://github.com/libretro/RetroArch/issues/14201) | Open | `video_frame_delay_auto = "false"` pinned per-core (global is `true` as of v2.66); do not re-enable per-game. Refactored upstream in v1.20.0 |
+| 3 | Mupen64Plus-Next rewind feature request | [#18300](https://github.com/libretro/RetroArch/issues/18300) | Open | `rewind_enable = "false"` per-core + global; do not re-enable per-game |
+| 4 | Mupen64Plus-Next auto frame delay incompatible | [#14201](https://github.com/libretro/RetroArch/issues/14201) | Open | `video_frame_delay_auto = "false"` per-core (global `true` as of v2.66); do not re-enable per-game; refactored upstream v1.20.0 |
 | 5 | N64 rendering glitches (game-specific) | [#16598](https://github.com/libretro/RetroArch/issues/16598) | Open | Per-game overrides |
-| 6 | Threaded video force-disabled on all Apple platforms | [#14978](https://github.com/libretro/RetroArch/issues/14978) | Persists | Upstream `gfx/video_driver.c` `#if defined(__MACH__) && defined(__APPLE__)` — NSWindow/UIWindow concurrency unresolved, no fix. `video_threaded=false` globally; Tier 2 cfgs pin as forensic anchor |
+| 6 | Threaded video force-disabled on all Apple platforms | [#14978](https://github.com/libretro/RetroArch/issues/14978) | Persists | Upstream `gfx/video_driver.c` `#if defined(__MACH__) && defined(__APPLE__)` — NSWindow/UIWindow concurrency; no upstream fix; `video_threaded=false` globally; Tier 2 cfgs pin |
 
 ## 11. Setup Checklist
 
