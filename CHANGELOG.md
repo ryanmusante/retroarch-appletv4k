@@ -1,5 +1,10 @@
 2026-04-13  Ryan Musante
 
+- v2.68: `README.md` — Table of Contents expanded with full H3 sub-section nesting under every H2 that contains H3 children. Prior TOC nested H3s only under §5 ROM and BIOS Setup and §7 Configuration; now applies the same indented-bullet convention uniformly to §1 Prerequisites (Hardware, Software), §3 Storage Persistence (Automatic config backup, Recommended setup), §4 File Transfers (Web interface, WebDAV (bulk transfers), Filesystem layout (Apple TV)), §5 (added Scanning games), §6 Controllers (Pairing, Compatibility), §7 (added Hotkeys, Netplay), §8 CRT Shaders (Applying a shader, Recommended presets), §9 Supported Systems (Systems not supported (JIT required)), and §11 Setup Checklist (all 8 sub-sections). All 30 H3 headings now reachable from TOC. No content changes; navigation only. Companion `retroarch-configs` bumped to v1.31.2.
+- v2.68: TOC anchor verification — every numeric-section anchor (`#1-prerequisites` through `#14-license`) and every H3 anchor (`#hardware`, `#software`, `#automatic-config-backup`, etc.) verified against actual GitHub-slugified heading text. Zero broken anchors. The `### Quick Start` H3 at L13 is intentionally excluded — it sits before §1 in an introductory position and is not part of the numbered TOC structure.
+
+2026-04-13  Ryan Musante
+
 - v2.67: TRIM — README table rationale cells shortened; cfg multi-line comment block collapsed. No semantic changes to any `.cfg` value. Companion `retroarch-configs` bumped to v1.31.
 - v2.67: `retroarch.cfg` L15-16 — two-line comment block collapsed to one line: `# VIDEO: integer overscale per-core (Mesen/Snes9x/GPGX/Beetle PCE/mGBA/FBN)` + `# crop overscan (core-dependent)` → `# VIDEO: crop overscan (core-dependent); integer overscale is Tier 1 per-core`. Key count unchanged (70). Line count 129 → 128.
 - v2.67: `README.md` §7 Latency reduction table — Run Ahead, Run-Ahead Mode, Preemptive Frames, Automatic Frame Delay, and Fast Forward Ratio rows trimmed. Preemptive Frames row kept the PR #14832 / #17093 split and the `runahead_change_handler` XOR citation but shortened wording.
