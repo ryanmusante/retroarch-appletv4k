@@ -1,6 +1,6 @@
 # RetroArch on Apple TV 4K
 
-![version](https://img.shields.io/badge/version-2.68-blue)
+![version](https://img.shields.io/badge/version-2.69-blue)
 ![RetroArch](https://img.shields.io/badge/RetroArch-v1.22.x-green)
 ![license](https://img.shields.io/badge/license-MIT-green)
 
@@ -325,7 +325,6 @@ The companion `retroarch.cfg` includes hardening, input, menu performance, and l
 | Menu | Widgets (Animated Notifications) | OFF (`menu_enable_widgets = "false"`) | Upstream defaults ON; animated toasts add GPU compositing overhead; text OSD still legible |
 | Video | Waitable Swapchains | OFF (`video_waitable_swapchains = "false"`) | Upstream ON on non-UWP-Windows (incl. tvOS/Metal); adds pacing overhead fixed-refresh tvOS doesn't need |
 | Input | Joypad Driver | mfi | Apple GCController framework; only viable driver on tvOS |
-| Menu | Throttle Framerate | ON | Caps XMB 3D ribbon at 60 fps; prevents uncapped rendering and thermal waste |
 | Menu | Favorites / History Size | 10 / 10 | Defaults are 200; reduced for 4 GB RAM |
 | Saving | Max Auto-Increment States | 5 | Bounds per-game auto-slot growth on 64 GB cache (`savestate_max_keep = "5"`) |
 | Saving | Save State Compression | ON | Reduces save state size |
