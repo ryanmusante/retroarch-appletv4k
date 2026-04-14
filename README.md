@@ -1,6 +1,6 @@
 # RetroArch on Apple TV 4K
 
-![version](https://img.shields.io/badge/version-2.75-blue)
+![version](https://img.shields.io/badge/version-2.76-blue)
 ![RetroArch](https://img.shields.io/badge/RetroArch-v1.22.x-green)
 ![license](https://img.shields.io/badge/license-MIT-green)
 
@@ -323,9 +323,9 @@ The companion `retroarch.cfg` includes hardening, input, menu performance, and l
 |----------|---------|-------|-------|
 | Security | Network/stdin Command interfaces + Camera/Location access | OFF | Zero-auth UDP (55355, 55400–55420) + stdin = input-injection vectors; camera/location blocked on top of sandbox |
 | Security | On-Demand Thumbnails | OFF (`network_on_demand_thumbnails = "false"`) | Hangs on game/state load when thumbnail server is slow ([#17242](https://github.com/libretro/RetroArch/issues/17242)) |
-| Cloud | Cloud Sync | OFF | `cloud_sync_enable = "false"`; driver, saves, configs, thumbs, system sub-keys all `"false"` — no backend configured; all six keys explicit for audit |
+| Cloud | Cloud Sync | OFF | `cloud_sync_enable = "false"`; driver, saves, configs, thumbs, system sub-keys all `"false"` — no backend configured; all six keys set explicitly |
 | Network | Netplay Public Announce | OFF (`netplay_public_announce = "false"`) | Upstream default ON; keeps device off public announce list |
-| Network | Discord RPC | OFF (`discord_allow = "false"`) | Upstream default OFF; explicit for audit |
+| Network | Discord RPC | OFF (`discord_allow = "false"`) | Upstream default OFF; kept explicit |
 | Menu | Widgets (Animated Notifications) | OFF (`menu_enable_widgets = "false"`) | Upstream default ON; animated toasts add GPU compositing overhead |
 | Video | Waitable Swapchains | OFF (`video_waitable_swapchains = "false"`) | Upstream ON on tvOS/Metal; pacing overhead fixed-refresh tvOS doesn't need |
 | Input | Joypad Driver | mfi (`input_joypad_driver = "mfi"`) | Apple GCController framework; only viable driver on tvOS |
