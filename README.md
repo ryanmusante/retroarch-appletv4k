@@ -1,6 +1,6 @@
 # RetroArch on Apple TV 4K
 
-![version](https://img.shields.io/badge/version-2.76-blue)
+![version](https://img.shields.io/badge/version-2.77-blue)
 ![RetroArch](https://img.shields.io/badge/RetroArch-v1.22.x-green)
 ![license](https://img.shields.io/badge/license-MIT-green)
 
@@ -276,17 +276,17 @@ The PS/Xbox home button opens tvOS Control Center, not RetroArch's menu. A contr
 
 | Setting | Value | Notes |
 |---------|-------|-------|
-| Video driver | Metal | Best performance on Apple silicon |
-| Integer Scale | ON | Pixel-perfect output; produces borders at 4K |
+| Video driver | Metal (`video_driver = "metal"`) | Best performance on Apple silicon |
+| Integer Scale | ON (`video_scale_integer = "true"`) | Pixel-perfect output; produces borders at 4K |
 | Integer Overscale | Optional | Per-core: NES, SNES, Genesis, PCE/TG-16, mGBA (incl. GBA 240×160), FBN (224p–304p) |
-| Bilinear Filtering | OFF | Required for correct shader rendering |
+| Bilinear Filtering | OFF (`video_smooth = "false"`) | Required for correct shader rendering |
 | Video Shaders | ON (`video_shader_enable = "true"`) | Master shader pipeline gate; required for global `crt-easymode` auto-load (see §8) |
-| Metal Argument Buffers | ON (test) | v1.22.1+; reduces CPU draw-call overhead on A15; revert if visual glitches |
-| GPU Screenshot | ON | Post-shader capture; required for accurate screenshots |
-| Crop Overscan | ON | Trims garbage border pixels; core-dependent |
-| Max Swapchain Images | 2 | Double-buffer; lower latency than triple on fixed-refresh tvOS; revert to `3` if pacing artifacts |
+| Metal Argument Buffers | ON (`video_use_metal_arg_buffers = "true"`) | v1.22.1+; reduces CPU draw-call overhead on A15; revert if visual glitches |
+| GPU Screenshot | ON (`video_gpu_screenshot = "true"`) | Post-shader capture; required for accurate screenshots |
+| Crop Overscan | ON (`video_crop_overscan = "true"`) | Trims garbage border pixels; core-dependent |
+| Max Swapchain Images | 2 (`video_max_swapchain_images = "2"`) | Double-buffer; lower latency than triple on fixed-refresh tvOS; revert to `3` if pacing artifacts |
 | Swap Interval | 1 (`video_swap_interval = "1"`) | 60 Hz swap; set to `2` for 30 fps content on a 60 Hz display |
-| Refresh Rate | Calibrate | Seeds `59.940060` (NTSC); calibrate via Settings → Video → Output → Estimated Screen Refresh Rate |
+| Refresh Rate | Calibrate (`video_refresh_rate = "59.940060"`) | Seeds `59.940060` (NTSC); calibrate via Settings → Video → Output → Estimated Screen Refresh Rate |
 
 ### Latency reduction
 
@@ -298,7 +298,7 @@ The PS/Xbox home button opens tvOS Control Center, not RetroArch's menu. A contr
 | Preemptive Frames | OFF (`preemptive_frames_enable = "false"`) | RA v1.15.0 ([PR #14832](https://github.com/libretro/RetroArch/pull/14832); menu [PR #17093](https://github.com/libretro/RetroArch/pull/17093)); reruns core on input change; reuses `run_ahead_frames`; exclusive with `run_ahead_enabled` (`runahead_change_handler`); per-core only |
 | Automatic Frame Delay | ON (`video_frame_delay_auto = "true"`) | Tier 1 per-core opt-in; Mupen64Plus-Next pinned `"false"` (N64 incompatible, [#14201](https://github.com/libretro/RetroArch/issues/14201)) |
 | Fast Forward Ratio | 3× (`fastforward_ratio = "3.0"`) | From 5×; A15 thermal headroom; may not function with Metal on tvOS |
-| Static Frame Delay | 0 | Explicit baseline; nonzero values should be tested per-core |
+| Static Frame Delay | 0 (`video_frame_delay = "0"`) | Explicit baseline; nonzero values should be tested per-core |
 | Input Poll Mode | Late (`input_poll_type_behavior = "2"`) | Late input sampling; ~0.5–1 frame reduction; netplay forces `0` |
 
 ### TV output
@@ -332,9 +332,11 @@ The companion `retroarch.cfg` includes hardening, input, menu performance, and l
 | Input | Max Users | 1 (`input_max_users = "1"`) | Solo play; raise to 2–4 for multiplayer |
 | Menu | Favorites / History Size | 10 / 10 | Default 200; reduced for 4 GB RAM |
 | Menu | Pause on Menu | ON (`menu_pause_libretro = "true"`) | Pauses emulation in Quick Menu; thermal relief for A15 |
+| Menu | Menu Driver | xmb (`menu_driver = "xmb"`) | XMB front-end; restart required to switch drivers |
 | Menu | Pause on Focus Loss | ON (`pause_nonactive = "true"`) | Pauses on Siri/notification/app switch; reduces OS kill probability |
 | Menu | Playlist Sub-labels | OFF (`playlist_show_sublabels = "false"`) | Disables per-entry metadata lookups; prevents XMB scroll lag |
 | Saving | Auto-Index States | ON (`savestate_auto_index = "true"`) | Required for `savestate_max_keep = "5"` slot rotation |
+| Saving | Save Config on Exit | OFF (`config_save_on_exit = "false"`) | Prevents accidental overwrite of curated `retroarch.cfg`; save explicitly after intentional changes |
 | Saving | Max Auto-Increment States | 5 (`savestate_max_keep = "5"`) | Caps auto-slot growth on 64 GB cache |
 | Saving | Save State Compression | ON (`savestate_file_compression = "true"`) | Reduces save state size |
 | Saving | SaveRAM Compression | ON (`save_file_compression = "true"`) | Reduces SRAM size |
@@ -346,6 +348,7 @@ The companion `retroarch.cfg` includes hardening, input, menu performance, and l
 | Audio | Audio Sync | ON (`audio_sync = "true"`) | Ties audio to `video_refresh_rate`; works with `audio_rate_control_delta` |
 | Audio | Rate Control Delta | 0.008 (`audio_rate_control_delta = "0.008"`) | DRC headroom from upstream 0.005; handles tvOS clock drift |
 | Video | Threaded Video | OFF (`video_threaded = "false"`) | Force-disabled by upstream for all Apple platforms ([#14978](https://github.com/libretro/RetroArch/issues/14978)); Tier 2 cfgs pin as anchor |
+| Video | Aspect Ratio | Core Provided (`aspect_ratio_index = "22"`) | Index 22 = `ASPECT_RATIO_CORE` per `gfx/video_defines.h`; verified in §11 checklist |
 | Menu | Playlist Compression | ON (`playlist_compression = "true"`) | ~90% reduction; reduces cache writes on volatile tvOS storage |
 | System | Screensaver Suspend | ON (`suspend_screensaver_enable = "true"`) | Requests screensaver off during content; tvOS may still fire while paused |
 | Latency | Run Ahead Hide Warnings | ON (`run_ahead_hide_warnings = "true"`) | Per-core overrides handle incompatible cores; suppresses noise |
