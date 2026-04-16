@@ -1,6 +1,6 @@
 # RetroArch on Apple TV 4K
 
-![version](https://img.shields.io/badge/version-2.78-blue)
+![version](https://img.shields.io/badge/version-2.80-blue)
 ![RetroArch](https://img.shields.io/badge/RetroArch-v1.22.x-green)
 ![license](https://img.shields.io/badge/license-MIT-green)
 
@@ -49,7 +49,7 @@ Detailed instructions for each step follow below.
    - [TV output](#tv-output)
    - [Additional settings](#additional-settings)
    - [Netplay](#netplay)
-8. [CRT Shaders](#8-crt-shaders)
+8. [Shaders](#8-shaders)
    - [Applying a shader](#applying-a-shader)
    - [Recommended presets](#recommended-presets)
 9. [Supported Systems and Per-Core Overrides](#9-supported-systems-and-per-core-overrides)
@@ -280,7 +280,7 @@ The PS/Xbox home button opens tvOS Control Center, not RetroArch's menu. A contr
 | Integer Scale | ON (`video_scale_integer = "true"`) | Pixel-perfect output; produces borders at 4K |
 | Integer Overscale | Optional | Per-core: NES, SNES, Genesis, PCE/TG-16, mGBA (incl. GBA 240×160), FBN (224p–304p) |
 | Bilinear Filtering | OFF (`video_smooth = "false"`) | Required for correct shader rendering |
-| Video Shaders | ON (`video_shader_enable = "true"`) | Master shader pipeline gate; required for global `crt-easymode` auto-load (see §8) |
+| Video Shaders | ON (`video_shader_enable = "true"`) | Master shader pipeline gate; per-core `.cfg` files set `video_shader` explicitly (see §8) |
 | Metal Argument Buffers | ON (`video_use_metal_arg_buffers = "true"`) | v1.22.1+; reduces CPU draw-call overhead on A15; revert if visual glitches |
 | GPU Screenshot | ON (`video_gpu_screenshot = "true"`) | Post-shader capture; required for accurate screenshots |
 | Crop Overscan | ON (`video_crop_overscan = "true"`) | Trims garbage border pixels; core-dependent |
@@ -293,7 +293,7 @@ The PS/Xbox home button opens tvOS Control Center, not RetroArch's menu. A contr
 | Setting | Value | Notes |
 |---------|-------|-------|
 | Sync to Exact Content Framerate | OFF (`vrr_runloop_enable = "false"`) | Fixed-refresh Apple TV; keeps DRC (`audio_rate_control_delta`) active |
-| Run Ahead | OFF globally (`run_ahead_enabled = "false"`, `run_ahead_frames = "1"`) | Tier 1 per-core overrides set `true` with frames = 2; Tier 2 inherits off |
+| Run Ahead | OFF globally (`run_ahead_enabled = "false"`, `run_ahead_frames = "1"`) | Tier 1 per-core overrides set `true` with frames = 2; Tier 2: PCSX-ReARMed explicit `false`; Mupen64Plus-Next inherits off |
 | Run-Ahead Mode | Single Instance (`run_ahead_secondary_instance = "false"`) | ~½ CPU cost vs dual-instance; A15 thermal-safe; Tier 1: frames = 2; Beetle PCE Fast = 1 (CDROM); flip to `true` per-core for crackle/serialization |
 | Preemptive Frames | OFF (`preemptive_frames_enable = "false"`) | RA v1.15.0 ([PR #14832](https://github.com/libretro/RetroArch/pull/14832); menu [PR #17093](https://github.com/libretro/RetroArch/pull/17093)); reruns core on input change; reuses `run_ahead_frames`; exclusive with `run_ahead_enabled` (`runahead_change_handler`); per-core only |
 | Automatic Frame Delay | ON (`video_frame_delay_auto = "true"`) | Tier 1 per-core opt-in; Mupen64Plus-Next pinned `"false"` (N64 incompatible, [#14201](https://github.com/libretro/RetroArch/issues/14201)) |
@@ -359,11 +359,11 @@ See also the [WebDAV security warning](#4-file-transfers) in §4.
 
 RetroArch supports peer-to-peer Netplay with up to 16 players and spectators. A low-latency network is recommended (5 GHz Wi-Fi or Ethernet on the 128 GB model). Only cores with serialization (save state) support are compatible.
 
-## 8. CRT Shaders
+## 8. Shaders
 
 ### Applying a shader
 
-As of v2.55, `retroarch.cfg` sets a **global default CRT shader** of `shaders_slang/crt/crt-easymode.slangp`, which every core inherits automatically. The companion `retroarch-configs` v1.27+ Tier 2 overrides (`Mupen64Plus-Next.cfg`, `PCSX-ReARMed.cfg`) replace it with the lighter `zfast_crt.slangp` to fit the interpreter + software-RDP GPU budget. No manual steps are required for the defaults to load. To override the preset for a specific core:
+As of v2.79, `retroarch.cfg` enables the shader pipeline (`video_shader_enable = "true"`) but sets no global `video_shader` path. All shader assignments are per-core in the companion `retroarch-configs` v1.42+ `.cfg` files: Tier 1 CRT cores use `crt-easymode.slangp`, mGBA uses `lcd-grid-v2.slangp` (handheld LCD), and Tier 2 cores (Mupen64Plus-Next, PCSX-ReARMed) use `zfast_crt.slangp`. No manual steps are required for the defaults to load. To override the preset for a specific core:
 
 1. Launch a game → Quick Menu (L3 + R3) → Shaders → Video Shaders: **ON**.
 2. Load Preset → `shaders_slang` → `crt` → select a preset.
@@ -379,7 +379,7 @@ Grouped by GPU cost at 4K output on the passively-cooled A15:
 | Minimal | `zfast_crt.slangp` | All systems, especially PS1/N64 |
 | Minimal | `crt-pi.slangp` | Heaviest cores; comparable weight to zfast_crt |
 | Minimal | `crt-potato-warm/cool.slangp` | All systems (lookup-texture based) |
-| Low | `crt-easymode.slangp` | NES, SNES, Genesis, PC Engine/TurboGrafx-16, GBA |
+| Low | `crt-easymode.slangp` | NES, SNES, Genesis, PC Engine/TurboGrafx-16 |
 | Low | `crt-hyllian.slangp` | SNES, Genesis (Trinitron aesthetic) |
 | Low | `crt-aperture.slangp` | SNES, Genesis (lighter than crt-hyllian) |
 | Low | `fakelottes.slangp` | 16-bit systems (lighter crt-lottes) |
@@ -468,7 +468,7 @@ Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version
 
 ### Verify after relaunch
 
-- [ ] CRT shader loads automatically (global `crt-easymode` for Tier 1; Tier 2 overrides to `zfast_crt` per `retroarch-configs` v1.27+). Verify via Quick Menu → Shaders
+- [ ] Per-core shader loads automatically (Tier 1 CRT `crt-easymode`; mGBA `lcd-grid-v2`; Tier 2 `zfast_crt` per `retroarch-configs` v1.42+). Verify via Quick Menu → Shaders
 
 ### Per-core overrides
 

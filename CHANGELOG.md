@@ -1,3 +1,12 @@
+2026-04-15  Ryan Musante
+
+- v2.80: SYNC — no `retroarch.cfg` changes. Companion `retroarch-configs` bumped to v1.42: 4 explicit `.opt` pins added for drift-guard consistency (Mupen `angrylion-multithread`, PCSX `neon_enhancement_enable`, mGBA `audio_low_pass_range`, Genesis `render`); all match prior upstream defaults, no behavior change. `README.md` §8 CRT Shaders + §11 Setup Checklist: companion version refs `v1.41+` → `v1.42+`. Version badge 2.79 → 2.80.
+
+2026-04-15  Ryan Musante
+
+- v2.79: `retroarch.cfg` — remove `video_shader = "shaders_slang/crt/crt-easymode.slangp"` and its comment; shader assignments are now per-core in companion `retroarch-configs` v1.41+. `video_shader_enable = "true"` retained (pipeline gate for per-core shaders). 2 comments updated: `video_shader_enable` comment reworded for per-core context; `run_ahead_frames` comment clarified as "baseline". Key count 70 → 69.
+- v2.79: `README.md` — §7 Video settings: Video Shaders row Notes updated for per-core shaders. §8 CRT Shaders: "Applying a shader" rewritten (no global default; per-core via `retroarch-configs` v1.41+); Recommended presets table: GBA removed from crt-easymode row (now uses lcd-grid-v2). §11 Setup Checklist: shader verify step updated for per-core (mGBA lcd-grid-v2 noted). Version badge 2.78 → 2.79. Companion `retroarch-configs` bumped to v1.41.
+
 2026-04-13  Ryan Musante
 
 - v2.78: `README.md` §6 Controllers — severity callout consistency pass. Added ⚠️ emoji to the "Ghost inputs from controllers 2+" Warning callout (L248) to match the other three severity callouts that already carried it: §3 Critical (L111), §4 Security (L151), §6 Warning "Close Content" (L273). Plain `> **Note:**` / `> **Saves and savestates:**` / `> **Integer Scaling Conflict:**` informational callouts intentionally remain emoji-free — only Critical/Security/Warning severity levels get ⚠️. No content or semantic changes. README line count unchanged. Companion `retroarch-configs` stays at v1.39.
@@ -12,16 +21,3 @@
 2026-04-13  Ryan Musante
 
 - v2.76: Companion `retroarch-configs` bumped to v1.38: `FinalBurn Neo.opt` added (placeholder, future use); `Beetle PCE Fast.opt` gains `pce_fast_cdspeed = "2"` (halves TurboGrafx-CD load times; default 1x).
-
-2026-04-13  Ryan Musante
-
-- v2.75: `README.md` §7 — 2 Notes cells micro-trimmed. Video settings GPU Screenshot: "required for accurate screenshots with shaders" → "required for accurate screenshots" ("with shaders" tautological after "post-shader"). Latency Preemptive Frames: "mutually exclusive with" → "exclusive with" ("mutually" implied by "exclusive"). No semantic changes. Companion `retroarch-configs` bumped to v1.37.
-
-2026-04-13  Ryan Musante
-
-- v2.74: `README.md` — sentence-separator period consistency pass; 8 periods converted to semicolons across §7 Latency, §9 Supported Systems, and §10 Known Issues tables; no semantic changes. §7 Latency Run-Ahead Mode: 2 periods removed ("thermal-safe. Tier 1:" and "(CDROM). Flip"); "Flip" lowercased to "flip" after semicolon. §9 NES + SNES: "Overscale 224p. Per-game:" → "Overscale 224p; per-game:". §9 Genesis: "per-core. Master System" → "per-core; Master System". §9 PCSX: "light 2D. `psxclock`" → "light 2D; `psxclock`". §9 N64: 2 periods removed ("sw RDP + CXD4. Pins:" → "sw RDP + CXD4; pins:" and "[#14201]). Run Ahead" → "[#14201]); Run Ahead"). §10 Row 6: "no upstream fix. `video_threaded`" → "no upstream fix; `video_threaded`". All 10 issue refs and all 2 PR refs intact. Companion `retroarch-configs` bumped to v1.36.
-
-2026-04-13  Ryan Musante
-
-- v2.73: `README.md` — cross-table consistency pass; 14 fixes, no semantic changes. (1) §6 Controllers: PS5 Status separator restored from `;` to `—`, consistent with all 5 other Status cells. (2) §7 Latency: Preemptive Frames Notes mid-cell period changed to semicolon, matching all other Latency rows. (3) §7 Latency: Static Frame Delay Notes trailing period removed. (4) §7 Additional: Rate Control Delta Value corrected from `0.008 (`audio_rate_control_delta`)` to `0.008 (`audio_rate_control_delta = "0.008"`)`, matching the `KEY = "value"` format used by every other Value cell in the table. (5) §7 Additional: 9 pre-existing single-key rows that predated the v2.70 additions lacked `(key = "value")` in Value; all 9 updated for uniformity: On-Demand Thumbnails, Joypad Driver, Max Auto-Increment States, Save State Compression, SaveRAM Compression, Audio Latency, Resampler Quality (value changed from `Lower (2)` to `2`, context preserved in Notes), Threaded Video, Playlist Compression, Run Ahead Hide Warnings. Multi-key rows (Network/stdin, Verbosity/File Logging, Cloud Sync, Favorites/History) and the backtick-keyed `audio_out_rate` row correctly retain plain Value cells. Companion `retroarch-configs` stays at v1.35.
-
