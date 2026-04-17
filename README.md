@@ -1,6 +1,6 @@
 # RetroArch on Apple TV 4K
 
-![version](https://img.shields.io/badge/version-2.80-blue)
+![version](https://img.shields.io/badge/version-2.81-blue)
 ![RetroArch](https://img.shields.io/badge/RetroArch-v1.22.x-green)
 ![license](https://img.shields.io/badge/license-MIT-green)
 
@@ -164,15 +164,17 @@ Available in RetroArch v1.20.0+. Port 8080.
     ├── BIOS/                  ← system BIOS files (case-sensitive)
     ├── saves/                 ← in-game saves (.srm), sorted per core
     ├── states/                ← save states, sorted per core
+    ├── shaders/               ← Online Updater → Update Slang Shaders
+    │   └── shaders_slang/
+    │       ├── crt/           ← CRT shader presets (see §8)
+    │       └── handheld/      ← handheld LCD presets (mGBA)
     ├── Mesen/                 ← per-core overrides (from retroarch-configs repo)
     │   ├── Mesen.cfg            (.cfg = frontend overrides)
     │   └── Mesen.opt            (.opt = core options)
     ├── Snes9x/
     │   ├── Snes9x.cfg
     │   └── Snes9x.opt
-    ├── ...                      (see §9 for override values)
-    └── shaders_slang/
-        └── crt/               ← CRT shader presets (see §8)
+    └── ...                      (see §9 for override values)
 ```
 
 The web interface and WebDAV expose RetroArch's sandboxed root. All paths in this guide are relative to that root. The `config/` directory stores user configuration. Per-core overrides auto-load from `config/<core_name>/` and can be created via Quick Menu → Overrides → Save Core Overrides.
@@ -207,11 +209,11 @@ Nintendo 64 uses the companion `retroarch-configs` override pack with `Mupen64Pl
 
 ### BIOS files
 
-Most 8/16-bit cores include built-in BIOS support. The following 32-bit+ systems require external BIOS files placed in `config/BIOS/`.
+Most 8/16-bit cores include built-in BIOS support. The following CD-based, arcade, and 32-bit systems require external BIOS files placed in `config/BIOS/`.
 
 | System | Required File(s) | Required? |
 |--------|-----------------|-----------|
-| PlayStation 1 | `scph5501.bin` (NA) or `scph1001.bin` | Yes |
+| PlayStation 1 | `scph5501.bin` (NA), `scph5502.bin` (EU), `scph5500.bin` (JP), or `scph1001.bin` | Yes |
 | Sega CD / Mega CD | `bios_CD_U.bin`, `bios_CD_E.bin`, `bios_CD_J.bin` | Yes |
 | TurboGrafx-CD | `syscard3.pce` | Yes |
 | Neo Geo | `neogeo.zip` | Yes |
@@ -241,7 +243,7 @@ The Apple TV supports up to four simultaneous Bluetooth controllers. The Siri Re
 | PS5 DualSense / Edge | PS + Create buttons | **Recommended** — BT 5.1 (limited to ATV BT 5.0) |
 | Xbox Series X/S Wireless | Xbox + Connect button | **Recommended** — full support |
 | PS4 DualShock 4 | PS + Share buttons | Excellent — most stable |
-| 8BitDo Pro 2 / Ultimate | Mode D/A + Pair button | Excellent — multi-platform |
+| 8BitDo Pro 2 / Ultimate | macOS mode (M) + Pair button | Excellent — multi-platform; older firmware labels M position as A |
 | SteelSeries Nimbus+ | Bluetooth button | Good — MFi certified |
 | Nintendo Switch Pro | Sync button | **Avoid** — B button exits app ([#18286](https://github.com/libretro/RetroArch/issues/18286)) |
 
@@ -394,7 +396,7 @@ Use Minimal presets for Tier 2 cores where GPU headroom is limited by interprete
 
 **crt-easymode 4K parameters** (community-recommended starting point): Mask Strength 0.18, Mask Type 1, Scanline Strength 0.95, Gamma Input 2.2, Gamma Output 1.8, Brightness 1.10. Adjust Mask Strength to taste for your display.
 
-> **Note:** If `shaders_slang/crt/` appears empty after an update, re-run Online Updater → Update Slang Shaders. If that fails, upload presets manually via WebDAV to `config/shaders_slang/crt/`.
+> **Note:** If `config/shaders/shaders_slang/crt/` appears empty after an update, re-run Online Updater → Update Slang Shaders. If that fails, upload presets manually via WebDAV to `config/shaders/shaders_slang/crt/` (or `config/shaders/shaders_slang/handheld/` for mGBA's `lcd-grid-v2.slangp`). The `shaders/` directory lives inside `config/` — the per-core override paths `../shaders/shaders_slang/...` resolve from `config/<core_name>/` up one level to `config/`, then into `shaders/`. See [Filesystem layout](#filesystem-layout-apple-tv) in §4.
 
 ## 9. Supported Systems and Per-Core Overrides
 
@@ -412,8 +414,8 @@ Tier definitions: **1** = Flawless (full speed, shaders enabled), **2** = Good (
 | 1 | Genesis / MD / CD, Master System | Genesis Plus GX | Yes | Overscale 224p; Run Ahead per-core; Master System (192p) may need per-content override |
 | 1 | PC Engine / TG-16 | Beetle PCE Fast | Yes | — |
 | 1 | Neo Geo, Arcade (CPS1/2/3) | FinalBurn Neo | Yes | Rewind pinned `false` per-core; do not re-enable per-game alongside Run Ahead ([#16374](https://github.com/libretro/RetroArch/issues/16374)) |
-| 2 | PlayStation 1 | PCSX-ReARMed | Yes | No JIT; Run Ahead + preemptive inherit off; re-enable per-game for light 2D; `psxclock = 100` native; underclock 75/50 for 3D (Tony Hawk, Spyro 2/3, Tekken 3) |
-| 2 | Nintendo 64 | Mupen64Plus-Next | Yes | ~60–70% compat; Angrylion sw RDP + CXD4; pins: `rewind_enable=false` ([#18300](https://github.com/libretro/RetroArch/issues/18300)), `video_frame_delay_auto=false` ([#14201](https://github.com/libretro/RetroArch/issues/14201)); Run Ahead off; re-enable per-game |
+| 2 | PlayStation 1 | PCSX-ReARMed | Yes | No JIT; Run Ahead pinned `false` (interpreter safety); preemptive frames inherit off; re-enable per-game for light 2D; `psxclock = 100` native; underclock 75/50 for 3D (Tony Hawk, Spyro 2/3, Tekken 3) |
+| 2 | Nintendo 64 | Mupen64Plus-Next | Yes | ~60–70% compat; Angrylion sw RDP + CXD4; pins: `video_threaded=false` ([#14978](https://github.com/libretro/RetroArch/issues/14978)), `video_frame_delay_auto=false` ([#14201](https://github.com/libretro/RetroArch/issues/14201)), `rewind_enable=false` ([#18300](https://github.com/libretro/RetroArch/issues/18300)); Run Ahead off; re-enable per-game |
 
 ### Systems not supported (JIT required)
 
@@ -480,13 +482,13 @@ Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version
 | File | Description |
 |------|-------------|
 | `README.md` | This guide |
-| [`CHANGELOG.md`](CHANGELOG.md) | Release history (kernel.org style) |
+| [`CHANGELOG.md`](CHANGELOG.md) | Release history (GNU ChangeLog style) |
 | `retroarch.cfg` | Drop-in configuration for Apple TV 4K 3rd Gen |
 | `LICENSE` | MIT License |
 
 ## 13. Versioning
 
-This repository uses `vMAJOR.MINOR` (no patch component). `MAJOR` increments on incompatible structural changes (filesystem layout, breaking config schema, removed features). `MINOR` increments on every release — additive changes, key additions/removals, documentation syncs, and conservative defaults adjustments. Each release ships with a matching `CHANGELOG.md` entry in kernel.org `date<TAB>name` style.
+This repository uses `vMAJOR.MINOR` (no patch component). `MAJOR` increments on incompatible structural changes (filesystem layout, breaking config schema, removed features). `MINOR` increments on every release — additive changes, key additions/removals, documentation syncs, and conservative defaults adjustments. Each release ships with a matching `CHANGELOG.md` entry in GNU ChangeLog style (`YYYY-MM-DD<SP><SP>Author Name`; date and author separated by two spaces).
 
 ## 14. License
 
