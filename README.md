@@ -1,6 +1,6 @@
 # RetroArch on Apple TV 4K
 
-![version](https://img.shields.io/badge/version-2.84-blue)
+![version](https://img.shields.io/badge/version-2.85-blue)
 ![RetroArch](https://img.shields.io/badge/RetroArch-v1.22.x-green)
 ![license](https://img.shields.io/badge/license-MIT-green)
 
@@ -284,7 +284,6 @@ The PS/Xbox home button opens tvOS Control Center, not RetroArch's menu. A contr
 | Bilinear Filtering | OFF (`video_smooth = "false"`) | Required for correct shader rendering |
 | Video Shaders | ON (`video_shader_enable = "true"`) | Master shader pipeline gate |
 | Shader Preset | crt-aperture (`video_shader = "../shaders/shaders_slang/crt/crt-aperture.slangp"`) | Global default; single-pass, Low GPU cost; applied to all cores. Override per-core via Quick Menu → Shaders → Save Core Preset (see §8) |
-| Metal Argument Buffers | ON (`video_use_metal_arg_buffers = "true"`) | v1.22.1+; reduces CPU draw-call overhead on A15; revert if visual glitches |
 | GPU Screenshot | ON (`video_gpu_screenshot = "true"`) | Post-shader capture; required for accurate screenshots |
 | Crop Overscan | ON (`video_crop_overscan = "true"`) | Trims garbage border pixels; core-dependent |
 | Max Swapchain Images | 2 (`video_max_swapchain_images = "2"`) | Double-buffer; lower latency than triple on fixed-refresh tvOS; revert to `3` if pacing artifacts |
@@ -328,12 +327,16 @@ The companion `retroarch.cfg` includes hardening, input, menu performance, and l
 | Security | On-Demand Thumbnails | OFF (`network_on_demand_thumbnails = "false"`) | Hangs on game/state load when thumbnail server is slow ([#17242](https://github.com/libretro/RetroArch/issues/17242)) |
 | Cloud | Cloud Sync | OFF | `cloud_sync_enable = "false"`; `cloud_sync_driver = ""` (empty — no backend); saves, configs, thumbs, system sub-keys all `"false"`; all six keys set explicitly |
 | Network | Netplay Public Announce | OFF (`netplay_public_announce = "false"`) | Upstream default ON; keeps device off public announce list |
+| Network | Netplay NAT Traversal | OFF (`netplay_nat_traversal = "false"`) | Blocks UPnP / NAT-PMP probing on startup. Registration-site default is `true` ([RA] configuration.c:2272) — the `DEFAULT_NETPLAY_NAT_TRAVERSAL=false` macro in config.def.h:1371 is dead code |
+| Network | Netplay MITM Server | OFF (`netplay_use_mitm_server = "false"`) | Default-false in both config.def.h:1375 and configuration.c:2277; pinned to prevent relay-server opt-in on default drift |
+| Network | Netplay Start as Spectator | OFF (`netplay_start_as_spectator = "false"`) | Default-false in both config.def.h:1349 and configuration.c:2271; closes remaining netplay attack-surface keys |
 | Network | Discord RPC | OFF (`discord_allow = "false"`) | Upstream default OFF; kept explicit |
 | Menu | Widgets (Animated Notifications) | OFF (`menu_enable_widgets = "false"`) | Upstream default ON; animated toasts add GPU compositing overhead |
 | Video | Waitable Swapchains | OFF (`video_waitable_swapchains = "false"`) | Upstream ON on tvOS/Metal; pacing overhead fixed-refresh tvOS doesn't need |
 | Input | Joypad Driver | mfi (`input_joypad_driver = "mfi"`) | Apple GCController framework; only viable driver on tvOS |
 | Input | Max Users | 1 (`input_max_users = "1"`) | Solo play; raise to 2–4 for multiplayer |
 | Input | Menu Toggle Combo | L3+R3 (`input_menu_toggle_gamepad_combo = "2"`) | Opens Quick Menu in-game; combo value 2 = L3+R3 (see §7 Hotkeys) |
+| Input | Overlay Subsystem | OFF (`input_overlay_enable = "false"`) | No touch surface on Apple TV; v1.21.0 changed preferred-overlay auto-load default on mobile-class platforms, triggering overlay subsystem scan at startup on tvOS |
 | Menu | Favorites / History Size | 10 / 10 | Default 200; reduced for 4 GB RAM |
 | Menu | Pause on Menu | ON (`menu_pause_libretro = "true"`) | Pauses emulation in Quick Menu; thermal relief for A15 |
 | Menu | Menu Driver | xmb (`menu_driver = "xmb"`) | XMB front-end; restart required to switch drivers |
@@ -346,6 +349,7 @@ The companion `retroarch.cfg` includes hardening, input, menu performance, and l
 | Saving | SaveRAM Compression | ON (`save_file_compression = "true"`) | Reduces SRAM size |
 | Saving | State Thumbnails | ON (`savestate_thumbnail_enable = "true"`) | Slot previews; improves couch-distance readability |
 | Logging | Verbosity / File Logging | OFF | `os_log` per-message alloc cost; file writes consume volatile cache |
+| Audio | Audio Driver | coreaudio (`audio_driver = "coreaudio"`) | tvOS 26, v1.20.0–v1.22.x stable; pins driver to prevent silent fallback. `coreaudio3` is master-only (under `# Future` in CHANGES.md) and must not be used in v1.22.x stable |
 | Audio | `audio_out_rate` | 48000 Hz | Native HDMI rate; no resampling |
 | Audio | Audio Latency | 48 ms (`audio_latency = "48"`) | From 64 ms baseline; raise per-core if crackling |
 | Audio | Resampler Quality | 2 (`audio_resampler_quality = "2"`) | Lower than upstream 3; acceptable quality on ATV4K |
