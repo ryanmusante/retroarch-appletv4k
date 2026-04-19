@@ -1,6 +1,6 @@
 # RetroArch on Apple TV 4K
 
-![version](https://img.shields.io/badge/version-2.90-blue)
+![version](https://img.shields.io/badge/version-2.92-blue)
 ![RetroArch](https://img.shields.io/badge/RetroArch-v1.22.x-green)
 ![license](https://img.shields.io/badge/license-MIT-green)
 
@@ -269,7 +269,7 @@ The PS/Xbox home button opens tvOS Control Center, not RetroArch's menu. A contr
 | State Slot − | Select + D-Pad Left |
 | Close Content | Select + Start |
 
-> ℹ️ **Save state behavior.** `savestate_auto_save = "true"` captures in-memory state on Close Content; `savestate_auto_load = "false"` keeps launches clean (no auto-restore). Use Select + L1 to manually load the auto-saved state when resuming. SRAM is still flushed via `block_sram_overwrite` + `autosave_interval = "60"`. Up to 10 auto-indexed state slots are rotated (`savestate_max_keep = "10"`).
+> ℹ️ **Save state behavior.** `savestate_auto_save = "true"` captures in-memory state on Close Content; `savestate_auto_load = "false"` keeps launches clean (no auto-restore). Use Select + L1 to manually load the auto-saved state when resuming. SRAM is flushed every 60 seconds via `autosave_interval = "60"`; `block_sram_overwrite = "true"` additionally prevents a manual state-load (Select + L1) from clobbering live SRAM, at the cost of a potential SRAM/state divergence for games that exercise both. Up to 10 auto-indexed state slots are rotated (`savestate_max_keep = "10"`).
 
 > ⚠️ **Warning:** Without Close Content configured, there is no method to exit a running game without force-quitting the app.
 
@@ -299,7 +299,7 @@ The PS/Xbox home button opens tvOS Control Center, not RetroArch's menu. A contr
 | Run-Ahead Mode | Single Instance (`run_ahead_secondary_instance = "false"`) | ~½ CPU cost vs dual-instance; A15 thermal-safe; Tier 1: frames = 2; Beetle PCE Fast = 1 (CDROM); flip to `true` per-core for crackle/serialization |
 | Preemptive Frames | OFF (`preemptive_frames_enable = "false"`) | RA v1.15.0 ([PR #14832](https://github.com/libretro/RetroArch/pull/14832); menu [PR #17093](https://github.com/libretro/RetroArch/pull/17093)); reruns core on input change; reuses `run_ahead_frames`; exclusive with `run_ahead_enabled` (`runahead_change_handler`); per-core only |
 | Automatic Frame Delay | ON (`video_frame_delay_auto = "true"`) | Tier 1 per-core opt-in; Mupen64Plus-Next pinned `"false"` (N64 incompatible, [#14201](https://github.com/libretro/RetroArch/issues/14201)) |
-| Fast Forward Ratio | 3× (`fastforward_ratio = "3.0"`) | From 5×; A15 thermal headroom; may not function with Metal on tvOS |
+| Fast Forward Ratio | 4× (`fastforward_ratio = "4.0"`) | From 3×; A15 has thermal headroom for 8/16-bit cores at 4K60; Tier 2 (Mupen/PCSX) already thermal-limits itself; may not function with Metal on tvOS |
 | Static Frame Delay | 0 (`video_frame_delay = "0"`) | Explicit baseline; nonzero values should be tested per-core |
 | Input Poll Mode | Late (`input_poll_type_behavior = "2"`) | Late input sampling; ~0.5–1 frame reduction; netplay forces `0` |
 
