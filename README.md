@@ -1,6 +1,6 @@
 # RetroArch on Apple TV 4K
 
-![version](https://img.shields.io/badge/version-2.85-blue)
+![version](https://img.shields.io/badge/version-2.86-blue)
 ![RetroArch](https://img.shields.io/badge/RetroArch-v1.22.x-green)
 ![license](https://img.shields.io/badge/license-MIT-green)
 
@@ -280,7 +280,7 @@ The PS/Xbox home button opens tvOS Control Center, not RetroArch's menu. A contr
 |---------|-------|-------|
 | Video driver | Metal (`video_driver = "metal"`) | Best performance on Apple silicon |
 | Integer Scale | ON (`video_scale_integer = "true"`) | Pixel-perfect output; produces borders at 4K |
-| Integer Overscale | Optional | Per-core: NES, SNES, Genesis, PCE/TG-16, mGBA (incl. GBA 240×160), FBN (224p–304p) |
+| Integer Overscale | Optional | Per-core: NES, SNES, Genesis, PCE/TG-16, mGBA (incl. GBA 240×160), FBN (224p–304p), PCSX (256–640 variable; borders may shift on mode switch) |
 | Bilinear Filtering | OFF (`video_smooth = "false"`) | Required for correct shader rendering |
 | Video Shaders | ON (`video_shader_enable = "true"`) | Master shader pipeline gate |
 | Shader Preset | crt-aperture (`video_shader = "../shaders/shaders_slang/crt/crt-aperture.slangp"`) | Global default; single-pass, Low GPU cost; applied to all cores. Override per-core via Quick Menu → Shaders → Save Core Preset (see §8) |
@@ -295,7 +295,7 @@ The PS/Xbox home button opens tvOS Control Center, not RetroArch's menu. A contr
 | Setting | Value | Notes |
 |---------|-------|-------|
 | Sync to Exact Content Framerate | OFF (`vrr_runloop_enable = "false"`) | Fixed-refresh Apple TV; keeps DRC (`audio_rate_control_delta`) active |
-| Run Ahead | OFF globally (`run_ahead_enabled = "false"`, `run_ahead_frames = "1"`) | Tier 1 per-core overrides set `true` with frames = 2; Tier 2: PCSX-ReARMed explicit `false`; Mupen64Plus-Next inherits off |
+| Run Ahead | OFF globally (`run_ahead_enabled = "false"`, `run_ahead_frames = "1"`) | Tier 1 per-core overrides set `true` with frames = 2; Tier 2: PCSX-ReARMed explicit `false`; Mupen64Plus-Next inherits off. Global `run_ahead_frames = "1"` is the fallback for any core without a per-core `run_ahead_frames` override (inert unless Run Ahead is toggled on per-core) |
 | Run-Ahead Mode | Single Instance (`run_ahead_secondary_instance = "false"`) | ~½ CPU cost vs dual-instance; A15 thermal-safe; Tier 1: frames = 2; Beetle PCE Fast = 1 (CDROM); flip to `true` per-core for crackle/serialization |
 | Preemptive Frames | OFF (`preemptive_frames_enable = "false"`) | RA v1.15.0 ([PR #14832](https://github.com/libretro/RetroArch/pull/14832); menu [PR #17093](https://github.com/libretro/RetroArch/pull/17093)); reruns core on input change; reuses `run_ahead_frames`; exclusive with `run_ahead_enabled` (`runahead_change_handler`); per-core only |
 | Automatic Frame Delay | ON (`video_frame_delay_auto = "true"`) | Tier 1 per-core opt-in; Mupen64Plus-Next pinned `"false"` (N64 incompatible, [#14201](https://github.com/libretro/RetroArch/issues/14201)) |
@@ -391,12 +391,12 @@ Grouped by GPU cost at 4K output on the passively-cooled A15:
 | Minimal | `crt-potato-warm/cool.slangp` | All systems (lookup-texture based) |
 | Low | `crt-easymode.slangp` | NES, SNES, Genesis, PC Engine/TurboGrafx-16 |
 | Low | `crt-hyllian.slangp` | SNES, Genesis (Trinitron aesthetic) |
-| Low | `crt-aperture.slangp` | SNES, Genesis (lighter than crt-hyllian) |
+| Low | `crt-aperture.slangp` | **Global default** (all cores); best all-rounder across 2D systems, lighter than crt-hyllian |
 | Low | `fakelottes.slangp` | 16-bit systems (lighter crt-lottes) |
 | Medium | `crt-geom.slangp` | All 2D systems (scanlines + curvature) |
 | Medium | `crt-lottes-fast.slangp` | 16-bit systems (slot mask + bloom) |
 
-Use Minimal presets for Tier 2 cores where GPU headroom is limited by interpreter overhead. If complex shaders cause frame drops or thermal throttling at 4K, switch Apple TV output to 1080p SDR 60 Hz — the TV's scaler handles upscaling, and GPU load drops significantly.
+Global default `crt-aperture.slangp` (Low cost) applies to all cores including Tier 2 (Mupen64Plus-Next, PCSX-ReARMed). If Tier 2 cores drop frames or trigger thermal throttling under the global default, downgrade per-core via Quick Menu → Shaders → Save Core Preset to a Minimal preset (`zfast_crt`, `crt-pi`, or `crt-potato-warm/cool`). If complex shaders cause frame drops or thermal throttling at 4K globally, switch Apple TV output to 1080p SDR 60 Hz — the TV's scaler handles upscaling, and GPU load drops significantly.
 
 **Avoid on Apple TV:** CRT-Royale, CRT-Geom-Deluxe, Guest-Dr-Venom, Guest-Advanced, and all Mega Bezel shaders exceed the A15's GPU budget.
 
@@ -479,6 +479,7 @@ Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version
 ### Verify after relaunch
 
 - [ ] Global shader loads automatically (`crt-aperture`) on every core. Verify via Quick Menu → Shaders
+- [ ] `cloud_sync_driver` remains `""` (empty string) after any Save Current Config event — inspect `retroarch.cfg` directly; cfg-merge tools that treat empty strings as unset can silently re-introduce the upstream driver default
 
 ### Per-core overrides
 
@@ -496,7 +497,7 @@ Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version
 
 ## 13. Versioning
 
-This repository uses `vMAJOR.MINOR` (no patch component). `MAJOR` increments on incompatible structural changes (filesystem layout, breaking config schema, removed features). `MINOR` increments on every release — additive changes, key additions/removals, documentation syncs, and conservative defaults adjustments. Each release ships with a matching `CHANGELOG.md` entry in GNU ChangeLog style (`YYYY-MM-DD<SP><SP>Author Name`; date and author separated by two spaces).
+This repository uses `vMAJOR.MINOR` (no patch component). `MAJOR` increments on incompatible structural changes (filesystem layout, breaking config schema, removed features). `MINOR` increments on every release — additive changes, key additions/removals, documentation syncs, and conservative defaults adjustments. Each release ships with a matching `CHANGELOG.md` entry in GNU ChangeLog style (`YYYY-MM-DD<SP><SP>Author Name`; date and author separated by two spaces). `CHANGELOG.md` retains the last 5 MINOR version entries; older entries are trimmed on each release.
 
 ## 14. License
 
