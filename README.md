@@ -1,6 +1,6 @@
 # RetroArch on Apple TV 4K
 
-![version](https://img.shields.io/badge/version-2.87-blue)
+![version](https://img.shields.io/badge/version-2.90-blue)
 ![RetroArch](https://img.shields.io/badge/RetroArch-v1.22.x-green)
 ![license](https://img.shields.io/badge/license-MIT-green)
 
@@ -8,7 +8,7 @@
 
 This package now ships a **conservative baseline** configuration. Global low-latency features that require per-core validation remain disabled in the baseline `retroarch.cfg`, but the companion Tier 1 core overrides explicitly enable Run Ahead where it has been validated.
 
-RetroArch setup guide for Apple TV 4K (3rd generation). Covers installation, ROM/BIOS setup, controllers, performance tuning, and CRT shaders. Includes a companion `retroarch.cfg`; File Browser and System/BIOS directory paths are set to relative `../ROMs` and `../BIOS`, resolving to `config/ROMs/` and `config/BIOS/` at runtime (same `../` scheme as `../shaders`; see §8).
+RetroArch setup guide for Apple TV 4K (3rd generation). Covers installation, ROM/BIOS setup, controllers, performance tuning, and CRT shaders. Includes a companion `retroarch.cfg`. Directory paths (ROMs, BIOS, saves, states) are set in-app per §4 — not via `retroarch.cfg`.
 
 ### Quick Start
 
@@ -122,8 +122,7 @@ Follow the [Filesystem layout](#filesystem-layout-apple-tv) in §4. Create the d
 
 1. Create `ROMs/` and `BIOS/` folders inside `config/`.
 2. Upload ROM and BIOS files into the appropriate subfolders.
-3. The companion `retroarch.cfg` sets **File Browser** to `../ROMs` (resolves to `config/ROMs/`). Verify under Settings → Directory after upload.
-4. The companion `retroarch.cfg` sets **System/BIOS** to `../BIOS` (resolves to `config/BIOS/`). Verify under Settings → Directory after upload.
+3. In RetroArch, set **Settings → Directory → File Browser** to `config/ROMs/` and **Settings → Directory → System/BIOS** to `config/BIOS/`. These paths are not set by the companion `retroarch.cfg`; they must be configured in-app once, then persist via NSUserDefaults.
 
 ## 4. File Transfers
 
@@ -179,7 +178,7 @@ Available in RetroArch v1.20.0+. Port 8080.
 
 The web interface and WebDAV expose RetroArch's sandboxed root. All paths in this guide are relative to that root. The `config/` directory stores user configuration. Per-core overrides auto-load from `config/<core_name>/` and can be created via Quick Menu → Overrides → Save Core Overrides.
 
-> **Saves and savestates:** `retroarch.cfg` sets `savefile_directory = "../saves"` and `savestate_directory = "../states"`, which resolve to `config/saves/` and `config/states/` at runtime (same `../` scheme as `../shaders` documented in §8). Both are backup-accessible via WebDAV. With `sort_savefiles_enable` / `sort_savestates_enable` at their upstream defaults of `true`, both are auto-organized into per-core subfolders (e.g. `config/saves/Mesen/`, `config/states/Snes9x/`).
+> **Saves and savestates:** `retroarch.cfg` pins `sort_savefiles_enable = "true"` and `sort_savestates_enable = "true"` (drift-guard on upstream defaults) so saves and states auto-organize into per-core subfolders (e.g. `Mesen/`, `Snes9x/`) under whichever save/state directories are configured in Settings → Directory. Both are backup-accessible via WebDAV from wherever they land.
 
 ## 5. ROM and BIOS Setup
 
@@ -270,7 +269,7 @@ The PS/Xbox home button opens tvOS Control Center, not RetroArch's menu. A contr
 | State Slot − | Select + D-Pad Left |
 | Close Content | Select + Start |
 
-> ⚠️ **Save state is not auto-captured on Close Content.** As of v2.65, `savestate_auto_save` / `savestate_auto_load` are unset (upstream default `false`). Closing content without first triggering Save State (Select + R1) discards in-memory state; SRAM is still flushed via `block_sram_overwrite` + `autosave_interval = "60"`.
+> ℹ️ **Save state behavior.** `savestate_auto_save = "true"` captures in-memory state on Close Content; `savestate_auto_load = "false"` keeps launches clean (no auto-restore). Use Select + L1 to manually load the auto-saved state when resuming. SRAM is still flushed via `block_sram_overwrite` + `autosave_interval = "60"`. Up to 10 auto-indexed state slots are rotated (`savestate_max_keep = "10"`).
 
 > ⚠️ **Warning:** Without Close Content configured, there is no method to exit a running game without force-quitting the app.
 
@@ -283,11 +282,12 @@ The PS/Xbox home button opens tvOS Control Center, not RetroArch's menu. A contr
 | Integer Overscale | Optional | Per-core: NES, SNES, Genesis, PCE/TG-16, mGBA (incl. GBA 240×160), FBN (224p–304p), PCSX (256–640 variable; borders may shift on mode switch) |
 | Bilinear Filtering | OFF (`video_smooth = "false"`) | Required for correct shader rendering |
 | Video Shaders | ON (`video_shader_enable = "true"`) | Master shader pipeline gate |
-| Shader Preset | crt-aperture (`video_shader = "../shaders/shaders_slang/crt/crt-aperture.slangp"`) | Global default; single-pass, Low GPU cost; applied to all cores. Override per-core via Quick Menu → Shaders → Save Core Preset (see §8) |
+| Shader Preset | crt-easymode (`video_shader = "../shaders/shaders_slang/crt/crt-easymode.slangp"`) | Global default; single-pass, Low GPU cost, no shader geometry (integer-scale safe); applied to all cores. Override per-core via Quick Menu → Shaders → Save Core Preset (see §8) |
 | GPU Screenshot | ON (`video_gpu_screenshot = "true"`) | Post-shader capture; required for accurate screenshots |
 | Crop Overscan | ON (`video_crop_overscan = "true"`) | Trims garbage border pixels; core-dependent |
 | Max Swapchain Images | 2 (`video_max_swapchain_images = "2"`) | Double-buffer; lower latency than triple on fixed-refresh tvOS; revert to `3` if pacing artifacts |
 | Swap Interval | 1 (`video_swap_interval = "1"`) | 60 Hz swap; set to `2` for 30 fps content on a 60 Hz display |
+| VSync | ON (`video_vsync = "true"`) | Master vsync gate; pinned to upstream default as drift-guard (paired with `video_swap_interval` and `video_max_swapchain_images`) |
 | Refresh Rate | Calibrate (`video_refresh_rate = "59.940060"`) | Seeds `59.940060` (NTSC); calibrate via Settings → Video → Output → Estimated Screen Refresh Rate |
 
 ### Latency reduction
@@ -342,12 +342,16 @@ The companion `retroarch.cfg` includes hardening, input, menu performance, and l
 | Menu | Menu Driver | xmb (`menu_driver = "xmb"`) | XMB front-end; restart required to switch drivers |
 | Menu | Pause on Focus Loss | ON (`pause_nonactive = "true"`) | Pauses on Siri/notification/app switch; reduces OS kill probability |
 | Menu | Playlist Sub-labels | OFF (`playlist_show_sublabels = "false"`) | Disables per-entry metadata lookups; prevents XMB scroll lag |
-| Saving | Auto-Index States | ON (`savestate_auto_index = "true"`) | Required for `savestate_max_keep = "5"` slot rotation |
+| Saving | Auto-Index States | ON (`savestate_auto_index = "true"`) | Required for `savestate_max_keep = "10"` slot rotation |
+| Saving | Auto-Save on Exit | ON (`savestate_auto_save = "true"`) | Captures in-memory state when Close Content (Select + Start) fires; manual load via Select + L1 |
+| Saving | Auto-Load on Launch | OFF (`savestate_auto_load = "false"`) | No auto-restore on content launch; prevents unintended rollback over SRAM state |
 | Saving | Save Config on Exit | OFF (`config_save_on_exit = "false"`) | Prevents accidental overwrite of curated `retroarch.cfg`; save explicitly after intentional changes |
-| Saving | Max Auto-Increment States | 5 (`savestate_max_keep = "5"`) | Caps auto-slot growth on 64 GB cache |
+| Saving | Max Auto-Increment States | 10 (`savestate_max_keep = "10"`) | Caps auto-slot growth on 64 GB cache |
 | Saving | Save State Compression | ON (`savestate_file_compression = "true"`) | Reduces save state size |
 | Saving | SaveRAM Compression | ON (`save_file_compression = "true"`) | Reduces SRAM size |
 | Saving | State Thumbnails | ON (`savestate_thumbnail_enable = "true"`) | Slot previews; improves couch-distance readability |
+| Saving | Sort Save Files | ON (`sort_savefiles_enable = "true"`) | Drift-guard pin on upstream default; per-core `.srm` subfolders (e.g. `Mesen/`) |
+| Saving | Sort Save States | ON (`sort_savestates_enable = "true"`) | Drift-guard pin on upstream default; per-core state subfolders |
 | Logging | Verbosity / File Logging | OFF | `os_log` per-message alloc cost; file writes consume volatile cache |
 | Audio | Audio Driver | coreaudio (`audio_driver = "coreaudio"`) | tvOS 26, v1.20.0–v1.22.x stable; pins driver to prevent silent fallback. `coreaudio3` is master-only (under `# Future` in CHANGES.md) and must not be used in v1.22.x stable |
 | Audio | `audio_out_rate` | 48000 Hz | Native HDMI rate; no resampling |
@@ -371,14 +375,14 @@ RetroArch supports peer-to-peer Netplay with up to 16 players and spectators. A 
 
 ### Applying a shader
 
-As of v2.84, `retroarch.cfg` sets a global shader preset: `video_shader = "../shaders/shaders_slang/crt/crt-aperture.slangp"` (with `video_shader_enable = "true"`). This applies to every core — the companion `retroarch-configs` v1.46+ `.cfg` files no longer set `video_shader`. **crt-aperture** was selected as the global default because it is single-pass, runs at native 4K60 on A15, is brighter than crt-easymode, and works across CRT-era systems as a best all-rounder. No manual steps are required for the default to load. To override the preset for a specific core:
+As of v2.88, `retroarch.cfg` sets a global shader preset: `video_shader = "../shaders/shaders_slang/crt/crt-easymode.slangp"` (with `video_shader_enable = "true"`). This applies to every core — the companion `retroarch-configs` v1.46+ `.cfg` files no longer set `video_shader`. **crt-easymode** was selected as the global default because it is single-pass, runs at native 4K60 on A15, has no shader-controlled geometry (integer-scale safe on all cores including Tier 2), and produces a cleaner 4K phosphor mask than `crt-aperture` (replaced in v2.88). No manual steps are required for the default to load. To override the preset for a specific core:
 
 1. Launch a game → Quick Menu (L3 + R3) → Shaders → Video Shaders: **ON**.
 2. Load Preset → `shaders_slang` → `crt` (or `handheld` for LCD-style systems) → select a preset.
-3. Adjust parameters as needed (see **crt-aperture 4K parameters** below).
+3. Adjust parameters as needed (see **crt-easymode 4K parameters** below).
 4. Save Preset → **Save Core Preset** (writes a per-core shader preset that overrides the global `video_shader` for that core).
 
-> **Handheld note:** `crt-aperture` is a CRT shader. For mGBA (GBA/GB/GBC) users who prefer the LCD aesthetic, apply `handheld/lcd-grid-v2.slangp` via Save Core Preset per the steps above.
+> **Handheld note:** `crt-easymode` is a CRT shader. For mGBA (GBA/GB/GBC) users who prefer the LCD aesthetic, apply `handheld/lcd-grid-v2.slangp` via Save Core Preset per the steps above.
 
 ### Recommended presets
 
@@ -389,22 +393,22 @@ Grouped by GPU cost at 4K output on the passively-cooled A15:
 | Minimal | `zfast_crt.slangp` | All systems, especially PS1/N64 |
 | Minimal | `crt-pi.slangp` | Heaviest cores; comparable weight to zfast_crt |
 | Minimal | `crt-potato-warm/cool.slangp` | All systems (lookup-texture based) |
-| Low | `crt-easymode.slangp` | NES, SNES, Genesis, PC Engine/TurboGrafx-16 |
+| Low | `crt-easymode.slangp` | **Global default** (all cores); cleaner 4K phosphor mask than crt-aperture; integer-scale safe (no shader geometry); all 2D systems |
 | Low | `crt-hyllian.slangp` | SNES, Genesis (Trinitron aesthetic) |
-| Low | `crt-aperture.slangp` | **Global default** (all cores); best all-rounder across 2D systems, lighter than crt-hyllian |
+| Low | `crt-aperture.slangp` | Aperture-grille look; best all-rounder across 2D systems, lighter than crt-hyllian |
 | Low | `fakelottes.slangp` | 16-bit systems (lighter crt-lottes) |
 | Medium | `crt-geom.slangp` | All 2D systems (scanlines + curvature) |
 | Medium | `crt-lottes-fast.slangp` | 16-bit systems (slot mask + bloom) |
 
-Global default `crt-aperture.slangp` (Low cost) applies to all cores including Tier 2 (Mupen64Plus-Next, PCSX-ReARMed). If Tier 2 cores drop frames or trigger thermal throttling under the global default, downgrade per-core via Quick Menu → Shaders → Save Core Preset to a Minimal preset (`zfast_crt`, `crt-pi`, or `crt-potato-warm/cool`). If complex shaders cause frame drops or thermal throttling at 4K globally, switch Apple TV output to 1080p SDR 60 Hz — the TV's scaler handles upscaling, and GPU load drops significantly.
+Global default `crt-easymode.slangp` (Low cost) applies to all cores including Tier 2 (Mupen64Plus-Next, PCSX-ReARMed). If Tier 2 cores drop frames or trigger thermal throttling under the global default, downgrade per-core via Quick Menu → Shaders → Save Core Preset to a Minimal preset (`zfast_crt`, `crt-pi`, or `crt-potato-warm/cool`). If complex shaders cause frame drops or thermal throttling at 4K globally, switch Apple TV output to 1080p SDR 60 Hz — the TV's scaler handles upscaling, and GPU load drops significantly.
 
 **Avoid on Apple TV:** CRT-Royale, CRT-Geom-Deluxe, Guest-Dr-Venom, Guest-Advanced, and all Mega Bezel shaders exceed the A15's GPU budget.
 
 > **Integer Scaling Conflict:** Multi-pass CRT shaders that perform their own geometry (crt-geom, crt-hyllian) expect to control the full output resolution. `video_scale_integer = ON` constrains the viewport *before* the shader processes it, resulting in a smaller and potentially distorted image. Set `video_scale_integer = OFF` in per-core overrides where geometry shaders are used. Simple scanline-only shaders (zfast_crt, crt-pi) are unaffected.
 
-**crt-aperture 4K parameters:** `crt-aperture.slangp` exposes SCANLINE_WEIGHT, MASK_DARK, MASK_FADE, BRIGHTBOOST, and related controls via Quick Menu → Shaders → Shader Parameters. Starting values are reasonable out-of-the-box on a 4K display; tune to taste.
+**crt-easymode 4K parameters:** `crt-easymode.slangp` exposes SHARPNESS_IMAGE, SHARPNESS_EDGES, GLOW_WIDTH/HEIGHT/HALATION/DIFFUSION, MASK_COLORS, MASK_STRENGTH, MASK_SIZE, SCANLINE_SIZE_MIN/MAX, SCANLINE_SHAPE, GAMMA_INPUT/OUTPUT, and BRIGHTNESS via Quick Menu → Shaders → Shader Parameters. Starting values are reasonable out-of-the-box on a 4K display; tune to taste.
 
-> **Note:** If `config/shaders/shaders_slang/crt/` appears empty after an update, re-run Online Updater → Update Slang Shaders. If that fails, upload presets manually via WebDAV to `config/shaders/shaders_slang/crt/`. The relative path `../shaders/shaders_slang/...` in `retroarch.cfg` resolves from the RA-tvOS working directory up one level into `config/`, then into `shaders/` (same scheme as `../ROMs`, `../BIOS`, `../saves`; see [Filesystem layout](#filesystem-layout-apple-tv) in §4).
+> **Note:** If `config/shaders/shaders_slang/crt/` appears empty after an update, re-run Online Updater → Update Slang Shaders. If that fails, upload presets manually via WebDAV to `config/shaders/shaders_slang/crt/`. The relative `../shaders/shaders_slang/...` path in `retroarch.cfg` resolves from the RA-tvOS working directory up one level into `config/`, then into `shaders/`.
 
 ## 9. Supported Systems and Per-Core Overrides
 
@@ -478,7 +482,7 @@ Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version
 
 ### Verify after relaunch
 
-- [ ] Global shader loads automatically (`crt-aperture`) on every core. Verify via Quick Menu → Shaders
+- [ ] Global shader loads automatically (`crt-easymode`) on every core. Verify via Quick Menu → Shaders
 - [ ] `cloud_sync_driver` remains `""` (empty string) after any Save Current Config event — inspect `retroarch.cfg` directly; cfg-merge tools that treat empty strings as unset can silently re-introduce the upstream driver default
 
 ### Per-core overrides
