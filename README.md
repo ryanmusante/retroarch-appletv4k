@@ -1,6 +1,6 @@
 # RetroArch on Apple TV 4K
 
-![version](https://img.shields.io/badge/version-2.86-blue)
+![version](https://img.shields.io/badge/version-2.87-blue)
 ![RetroArch](https://img.shields.io/badge/RetroArch-v1.22.x-green)
 ![license](https://img.shields.io/badge/license-MIT-green)
 
@@ -279,7 +279,7 @@ The PS/Xbox home button opens tvOS Control Center, not RetroArch's menu. A contr
 | Setting | Value | Notes |
 |---------|-------|-------|
 | Video driver | Metal (`video_driver = "metal"`) | Best performance on Apple silicon |
-| Integer Scale | ON (`video_scale_integer = "true"`) | Pixel-perfect output; produces borders at 4K |
+| Integer Scale | ON (`video_scale_integer = "true"`) | Global bool; pixel-perfect output, produces borders at 4K. Orthogonal to Integer Overscale (next row), which is the per-core mode selector (`video_scale_integer_scaling`). Mupen64Plus-Next inherits this global bool but sets no per-core overscale mode (plain integer scale at native 320×240) |
 | Integer Overscale | Optional | Per-core: NES, SNES, Genesis, PCE/TG-16, mGBA (incl. GBA 240×160), FBN (224p–304p), PCSX (256–640 variable; borders may shift on mode switch) |
 | Bilinear Filtering | OFF (`video_smooth = "false"`) | Required for correct shader rendering |
 | Video Shaders | ON (`video_shader_enable = "true"`) | Master shader pipeline gate |
