@@ -1,12 +1,12 @@
 # RetroArch on Apple TV 4K
 
-![version](https://img.shields.io/badge/version-3.2-blue)
+![version](https://img.shields.io/badge/version-3.3-blue)
 ![RetroArch](https://img.shields.io/badge/RetroArch-v1.22.x-green)
 ![license](https://img.shields.io/badge/license-MIT-green)
 
 **RetroArch v1.22.x** · **tvOS 26** · **Apple TV 4K 3rd Gen (64 GB Wi-Fi · j255ap · A2737)** · **April 2026**
 
-This package ships a baseline configuration as of v3.2. The global shader pipeline is enabled (`video_shader_enable = "true"`); no preset is set in `retroarch.cfg` — users select presets per-core via Quick Menu → Shaders → Save Core Preset (see §8). Tier 1 core overrides explicitly enable Run Ahead where it has been validated. Global low-latency features that require per-core validation remain disabled in the baseline `retroarch.cfg`.
+This package ships a baseline configuration as of v3.3. The global shader pipeline is enabled (`video_shader_enable = "true"`); no preset is set in `retroarch.cfg` — users select presets per-core via Quick Menu → Shaders → Save Core Preset (see §8). Tier 1 core overrides explicitly enable Run Ahead where it has been validated. Global low-latency features that require per-core validation remain disabled in the baseline `retroarch.cfg`.
 
 RetroArch setup guide for Apple TV 4K (3rd generation). Covers installation, ROM/BIOS setup, controllers, performance tuning, and CRT shaders. Includes a companion `retroarch.cfg`. Directory paths (ROMs, BIOS, saves, states) are set in-app per §4 — not via `retroarch.cfg`.
 
@@ -269,7 +269,7 @@ The PS/Xbox home button opens tvOS Control Center, not RetroArch's menu. A contr
 | State Slot − | Select + D-Pad Left |
 | Close Content | Select + Start |
 
-> ℹ️ **Save state behavior.** `savestate_auto_save = "true"` captures in-memory state on Close Content; `savestate_auto_load = "false"` keeps launches clean (no auto-restore). Use Select + L1 to manually load the auto-saved state when resuming. SRAM is flushed every 2.5 minutes via `autosave_interval = "150"` (balances volatile-cache write frequency against data-loss window on tvOS force-kill; `save_file_compression = "true"` retained so each write stays small); `block_sram_overwrite = "true"` additionally prevents a manual state-load (Select + L1) from clobbering live SRAM, at the cost of a potential SRAM/state divergence for games that exercise both. Up to 10 auto-indexed state slots are rotated (`savestate_max_keep = "10"`).
+> ℹ️ **Save state behavior.** `savestate_auto_save = "true"` captures in-memory state on Close Content; `savestate_auto_load = "false"` keeps launches clean (no auto-restore). Use Select + L1 to manually load the auto-saved state when resuming. SRAM is flushed every 2.5 minutes via `autosave_interval = "150"` (balances volatile-cache write frequency against data-loss window on tvOS force-kill; `save_file_compression = "true"` retained so each write stays small); `block_sram_overwrite = "true"` additionally prevents a manual state-load (Select + L1) from clobbering live SRAM, at the cost of a potential SRAM/state divergence for games that exercise both. Up to 10 auto-indexed state slots are rotated (`savestate_max_keep = "10"`). **v3.3: Tier 2 cores (Mupen64Plus-Next, PCSX-ReARMed) pin `autosave_interval = "0"` per-core** — prevents SRAM/memcard-write-to-purgeable-cache stall every 2.5 min mid-play on the 64 GB model; save-on-close still applies via `savestate_auto_save = "true"`.
 
 > ⚠️ **Warning:** Without Close Content configured, there is no method to exit a running game without force-quitting the app.
 
@@ -284,7 +284,7 @@ The PS/Xbox home button opens tvOS Control Center, not RetroArch's menu. A contr
 | Video Shaders | ON (`video_shader_enable = "true"`) | Shader pipeline enabled; no global preset set in cfg — select per-core via Quick Menu → Shaders → Save Core Preset (§8) |
 | GPU Screenshot | ON (`video_gpu_screenshot = "true"`) | Post-shader capture; required for accurate screenshots |
 | Crop Overscan | ON (`video_crop_overscan = "true"`) | Trims garbage border pixels; core-dependent |
-| Max Swapchain Images | 2 (`video_max_swapchain_images = "2"`) | Double-buffer; minimum output latency on fixed-refresh tvOS |
+| Max Swapchain Images | 2 (`video_max_swapchain_images = "2"`) | Global double-buffer — minimum output latency for Tier 1 on fixed-refresh tvOS; **v3.3: Tier 2 per-core pins = `3`** (Mupen64Plus-Next + PCSX-ReARMed triple-buffer for frame-time variance absorption on CPU-bound no-JIT interpreter stack; Metal driver has no pacing penalty on fixed-refresh tvOS; ~16 ms output-latency cost acceptable on Tier 2) |
 | Swap Interval | 1 (`video_swap_interval = "1"`) | 60 Hz swap; set to `2` for 30 fps content on a 60 Hz display |
 | VSync | ON (`video_vsync = "true"`) | Master vsync gate; pinned to upstream default as drift-guard (paired with `video_swap_interval` and `video_max_swapchain_images`) |
 | Refresh Rate | Calibrate (`video_refresh_rate = "59.940060"`) | Seeds `59.940060` (NTSC); calibrate via Settings → Video → Output → Estimated Screen Refresh Rate |
@@ -298,7 +298,7 @@ The PS/Xbox home button opens tvOS Control Center, not RetroArch's menu. A contr
 | Run-Ahead Mode | Single Instance (`run_ahead_secondary_instance = "false"`) | ~½ CPU cost vs dual-instance; fits within A15 CPU budget; Tier 1: frames = 2 (all 7 Tier 1 cores at parity); flip to `true` per-core for crackle/serialization |
 | Preemptive Frames | OFF (`preemptive_frames_enable = "false"`) | RA v1.15.0 ([PR #14832](https://github.com/libretro/RetroArch/pull/14832); menu [PR #17093](https://github.com/libretro/RetroArch/pull/17093)); reruns core on input change; reuses `run_ahead_frames`; exclusive with `run_ahead_enabled` (`runahead_change_handler`); per-core only |
 | Automatic Frame Delay | ON (`video_frame_delay_auto = "true"`) | Tier 1 per-core opt-in; Mupen64Plus-Next pinned `"false"` (N64 incompatible, [#14201](https://github.com/libretro/RetroArch/issues/14201)) |
-| Fast Forward Ratio | Uncapped (`fastforward_ratio = "0.0"`) | **v3.1: from 4× to uncapped** for Tier 1 throughput (Mesen/Snes9x/mGBA/Genesis/PCE/FBN); Tier 2 (Mupen/PCSX) self-limits ~1× on the interpreter-only stack. If FF fails to engage on Metal/tvOS, revert to `"4.0"` |
+| Fast Forward Ratio | 5× (`fastforward_ratio = "5.0"`) | **v3.3: capped at 5×** (one step above v3.1–3.2's uncapped `0.0` which drove audio into continuous underrun when held on the no-JIT Tier 2 interpreter stack; 5× cap is transparent to Tier 2 which self-limits at ~1× on the interpreter-only stack, and preserves Tier 1 throughput headroom — Mesen/Snes9x/mGBA/Genesis/PCE/FBN can all achieve 5× on A15). If FF fails to engage above real-time on Metal/tvOS, revert to `"4.0"` per v3.1 footnote |
 | Static Frame Delay | 0 (`video_frame_delay = "0"`) | Explicit baseline; nonzero values should be tested per-core |
 | Input Poll Mode | Late (`input_poll_type_behavior = "2"`) | Late input sampling; ~0.5–1 frame reduction; netplay forces `0` |
 
@@ -353,9 +353,9 @@ The companion `retroarch.cfg` includes hardening, input, menu performance, and l
 | Logging | Verbosity / File Logging | OFF | `os_log` per-message alloc cost; file writes consume volatile cache |
 | Audio | Audio Driver | coreaudio (`audio_driver = "coreaudio"`) | tvOS 26, v1.20.0–v1.22.x stable; pins driver to prevent silent fallback. `coreaudio3` is master-only (under `# Future` in CHANGES.md) and must not be used in v1.22.x stable |
 | Audio | `audio_out_rate` | 48000 Hz | Native HDMI rate; no resampling |
-| Audio | Audio Latency | 64 ms (`audio_latency = "64"`) | Global baseline providing CPU-underrun tolerance on the no-JIT interpreter stack; PCSX-ReARMed pins `48` per-core (tighter Tier 2 requirement) |
+| Audio | Audio Latency | 64 ms (`audio_latency = "64"`) | Global baseline providing CPU-underrun tolerance on the no-JIT interpreter stack; PCSX-ReARMed pins `48` per-core (tighter Tier 2 coreaudio buffer requirement); **v3.3: Mupen64Plus-Next pins `96` per-core** (+32 ms absorption over global for E-core stragglers + GC + OS scheduler variance on heterogeneous 2P+4E A15) |
 | Audio | Resampler Quality | 1 (`audio_resampler_quality = "1"`) | **v3.1: lowered from 2** (two below upstream 3); minimal CPU cost; imperceptible at 48 kHz |
-| Audio | Audio Sync | ON (`audio_sync = "true"`) | Ties audio to `video_refresh_rate`; pinned as drift-guard |
+| Audio | Audio Sync | ON (`audio_sync = "true"`) | Global — ties audio to `video_refresh_rate`; pinned as drift-guard. **v3.3: Mupen64Plus-Next pins `false` per-core** (video-driven pacing substitutes clean dropped frames for pitch rubber-band on frame-budget overrun; PCSX-ReARMed retains global `true` because core-level `pcsx_rearmed_frameskip_type = "auto_threshold"` handles audio-buffer pressure via frameskip rather than frontend audio_sync toggle) |
 | Video | Threaded Video | OFF (`video_threaded = "false"`) | Force-disabled by upstream for all Apple platforms ([#14978](https://github.com/libretro/RetroArch/issues/14978)); Tier 2 cfgs pin as anchor |
 | Video | Aspect Ratio | Core Provided (`aspect_ratio_index = "22"`) | Index 22 = `ASPECT_RATIO_CORE` per `gfx/video_defines.h`; verified in §11 checklist |
 | Menu | Playlist Compression | ON (`playlist_compression = "true"`) | ~90% reduction; reduces cache writes on volatile tvOS storage |
@@ -425,8 +425,8 @@ Tier definitions: **1** = Flawless (full speed, shaders enabled), **2** = Good (
 | 1 | Genesis / MD / CD, Master System | Genesis Plus GX | Yes | Overscale 224p; Run Ahead per-core; Master System (192p) may need per-content override |
 | 1 | PC Engine / TG-16 | Beetle PCE Fast | Yes | — |
 | 1 | Neo Geo, Arcade (CPS1/2/3) | FinalBurn Neo | Yes | Rewind pinned `false` per-core; do not re-enable per-game alongside Run Ahead ([#16374](https://github.com/libretro/RetroArch/issues/16374)) |
-| 2 | PlayStation 1 | PCSX-ReARMed | Yes | No JIT; Run Ahead pinned `false` (interpreter safety); preemptive frames inherit off; re-enable per-game for light 2D; `psxclock = 100` native; underclock 75/50 for 3D (Tony Hawk, Spyro 2/3, Tekken 3) |
-| 2 | Nintendo 64 | Mupen64Plus-Next | Yes | ~60–70% compat; Angrylion sw RDP + CXD4; pins: `video_threaded=false` ([#14978](https://github.com/libretro/RetroArch/issues/14978)), `video_frame_delay_auto=false` ([#14201](https://github.com/libretro/RetroArch/issues/14201)), `rewind_enable=false` ([#18300](https://github.com/libretro/RetroArch/issues/18300)); Run Ahead off; re-enable per-game |
+| 2 | PlayStation 1 | PCSX-ReARMed | Yes | No JIT; Run Ahead pinned `false` (interpreter safety); preemptive frames inherit off; re-enable per-game for light 2D; `psxclock = 100` native; underclock 75/50 for 3D (Tony Hawk, Spyro 2/3, Tekken 3); **v3.3 Tier 2 parity pins:** `video_max_swapchain_images=3` (frame-time variance absorption on no-JIT interpreter stack; Metal triple-buffer no pacing penalty) + `autosave_interval=0` (prevents PS1 memcard-write-to-purgeable-cache stall every 2.5 min mid-play on 64 GB model; `audio_sync` stays global `true` since `pcsx_rearmed_frameskip_type=auto_threshold` handles audio-buffer pressure at the core level) |
+| 2 | Nintendo 64 | Mupen64Plus-Next | Yes | ~60–70% compat; Angrylion sw RDP + CXD4 (**platform-forced stack on Metal-only build** — GLideN64 needs an OpenGL HW render context the Metal driver does not provide, Parallel-RDP needs Vulkan, Parallel-RSP + `dynamic_recompiler` need JIT disallowed by App Store); **v3.3: `mupen64plus-angrylion-multithread = "2"`** (was `"all threads"`; A15 is 2P+4E, `"all threads"` dispatches 6 RDP workers with E-core tails at ~35–40% P-core throughput = audio stutter source; `"2"` pins to P-cores for pacing consistency; fallbacks `"3"` / `"4"`); retained pins: `video_threaded=false` ([#14978](https://github.com/libretro/RetroArch/issues/14978)), `video_frame_delay_auto=false` ([#14201](https://github.com/libretro/RetroArch/issues/14201)), `rewind_enable=false` ([#18300](https://github.com/libretro/RetroArch/issues/18300)); Run Ahead off; **v3.3 restored v1.56 pins** (dropped v1.57 without evidence): `audio_latency=96` (+32 ms absorption for E-core stragglers + GC + scheduler variance) + `video_max_swapchain_images=3` (frame-time variance absorption); **v3.3 new pins:** `audio_sync=false` (clean dropped frames instead of pitch rubber-band) + `autosave_interval=0` (kills purgeable-cache stall); re-enable per-game |
 
 ### Systems not supported (JIT required)
 
