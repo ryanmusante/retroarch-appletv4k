@@ -1,12 +1,12 @@
 # RetroArch on Apple TV 4K
 
-![version](https://img.shields.io/badge/version-3.1-blue)
+![version](https://img.shields.io/badge/version-3.2-blue)
 ![RetroArch](https://img.shields.io/badge/RetroArch-v1.22.x-green)
 ![license](https://img.shields.io/badge/license-MIT-green)
 
 **RetroArch v1.22.x** · **tvOS 26** · **Apple TV 4K 3rd Gen (64 GB Wi-Fi · j255ap · A2737)** · **April 2026**
 
-This package ships a **max-performance baseline** as of v3.1. Global shader pipeline is disabled by default for maximum GPU headroom at 4K60; CRT aesthetic is opt-in via `video_shader_enable = "true"` (see §8). Tier 1 core overrides explicitly enable Run Ahead where it has been validated. Global low-latency features that require per-core validation remain disabled in the baseline `retroarch.cfg`.
+This package ships a baseline configuration as of v3.2. The global shader pipeline is enabled (`video_shader_enable = "true"`); no preset is set in `retroarch.cfg` — users select presets per-core via Quick Menu → Shaders → Save Core Preset (see §8). Tier 1 core overrides explicitly enable Run Ahead where it has been validated. Global low-latency features that require per-core validation remain disabled in the baseline `retroarch.cfg`.
 
 RetroArch setup guide for Apple TV 4K (3rd generation). Covers installation, ROM/BIOS setup, controllers, performance tuning, and CRT shaders. Includes a companion `retroarch.cfg`. Directory paths (ROMs, BIOS, saves, states) are set in-app per §4 — not via `retroarch.cfg`.
 
@@ -269,7 +269,7 @@ The PS/Xbox home button opens tvOS Control Center, not RetroArch's menu. A contr
 | State Slot − | Select + D-Pad Left |
 | Close Content | Select + Start |
 
-> ℹ️ **Save state behavior.** `savestate_auto_save = "true"` captures in-memory state on Close Content; `savestate_auto_load = "false"` keeps launches clean (no auto-restore). Use Select + L1 to manually load the auto-saved state when resuming. SRAM is flushed every 5 minutes via `autosave_interval = "300"` (v3.1: up from 60 s to reduce volatile-cache write frequency 5×; `save_file_compression = "true"` retained so each write stays small); `block_sram_overwrite = "true"` additionally prevents a manual state-load (Select + L1) from clobbering live SRAM, at the cost of a potential SRAM/state divergence for games that exercise both. Up to 10 auto-indexed state slots are rotated (`savestate_max_keep = "10"`).
+> ℹ️ **Save state behavior.** `savestate_auto_save = "true"` captures in-memory state on Close Content; `savestate_auto_load = "false"` keeps launches clean (no auto-restore). Use Select + L1 to manually load the auto-saved state when resuming. SRAM is flushed every 2.5 minutes via `autosave_interval = "150"` (balances volatile-cache write frequency against data-loss window on tvOS force-kill; `save_file_compression = "true"` retained so each write stays small); `block_sram_overwrite = "true"` additionally prevents a manual state-load (Select + L1) from clobbering live SRAM, at the cost of a potential SRAM/state divergence for games that exercise both. Up to 10 auto-indexed state slots are rotated (`savestate_max_keep = "10"`).
 
 > ⚠️ **Warning:** Without Close Content configured, there is no method to exit a running game without force-quitting the app.
 
@@ -281,11 +281,10 @@ The PS/Xbox home button opens tvOS Control Center, not RetroArch's menu. A contr
 | Integer Scale | ON (`video_scale_integer = "true"`) | Global bool; pixel-perfect output, produces borders at 4K. Orthogonal to Integer Overscale (next row), which is the per-core mode selector (`video_scale_integer_scaling`). Mupen64Plus-Next inherits this global bool but sets no per-core overscale mode (plain integer scale at native 320×240) |
 | Integer Overscale | Optional | Per-core: NES, SNES, Genesis, PCE/TG-16, mGBA (incl. GBA 240×160), FBN (224p–304p), PCSX (256–640 variable; borders may shift on mode switch) |
 | Bilinear Filtering | OFF (`video_smooth = "false"`) | Required for correct shader rendering |
-| Video Shaders | OFF (`video_shader_enable = "false"`) | **v3.1: disabled globally** for max GPU headroom at 4K60. Preset path below is preserved but inert; flip to `true` to re-enable CRT aesthetic (§8) |
-| Shader Preset | crt-easymode (`video_shader = "../shaders/shaders_slang/crt/crt-easymode.slangp"`) | Path preserved but inert while `video_shader_enable = "false"` (v3.1). On re-enable: single-pass, Low GPU cost, no shader geometry (integer-scale safe); applied to all cores. Override per-core via Quick Menu → Shaders → Save Core Preset (see §8) |
+| Video Shaders | ON (`video_shader_enable = "true"`) | Shader pipeline enabled; no global preset set in cfg — select per-core via Quick Menu → Shaders → Save Core Preset (§8) |
 | GPU Screenshot | ON (`video_gpu_screenshot = "true"`) | Post-shader capture; required for accurate screenshots |
 | Crop Overscan | ON (`video_crop_overscan = "true"`) | Trims garbage border pixels; core-dependent |
-| Max Swapchain Images | 2 (`video_max_swapchain_images = "2"`) | Double-buffer; minimum output latency on fixed-refresh tvOS. Mupen64Plus-Next pins `3` per-core for pacing slack on the CPU-bound Angrylion stack |
+| Max Swapchain Images | 2 (`video_max_swapchain_images = "2"`) | Double-buffer; minimum output latency on fixed-refresh tvOS |
 | Swap Interval | 1 (`video_swap_interval = "1"`) | 60 Hz swap; set to `2` for 30 fps content on a 60 Hz display |
 | VSync | ON (`video_vsync = "true"`) | Master vsync gate; pinned to upstream default as drift-guard (paired with `video_swap_interval` and `video_max_swapchain_images`) |
 | Refresh Rate | Calibrate (`video_refresh_rate = "59.940060"`) | Seeds `59.940060` (NTSC); calibrate via Settings → Video → Output → Estimated Screen Refresh Rate |
@@ -294,9 +293,9 @@ The PS/Xbox home button opens tvOS Control Center, not RetroArch's menu. A contr
 
 | Setting | Value | Notes |
 |---------|-------|-------|
-| Sync to Exact Content Framerate | OFF (`vrr_runloop_enable = "false"`) | Fixed-refresh Apple TV; keeps DRC (`audio_rate_control_delta`) active |
-| Run Ahead | OFF globally (`run_ahead_enabled = "false"`, `run_ahead_frames = "1"`) | Tier 1 per-core overrides set `true` with frames = 2; Tier 2: PCSX-ReARMed explicit `false`; Mupen64Plus-Next inherits off. Global `run_ahead_frames = "1"` is the fallback for any core without a per-core `run_ahead_frames` override (inert unless Run Ahead is toggled on per-core) |
-| Run-Ahead Mode | Single Instance (`run_ahead_secondary_instance = "false"`) | ~½ CPU cost vs dual-instance; fits within A15 CPU budget; Tier 1: frames = 2; Beetle PCE Fast = 1 (CDROM); flip to `true` per-core for crackle/serialization |
+| Sync to Exact Content Framerate | OFF (`vrr_runloop_enable = "false"`) | Fixed-refresh Apple TV; keeps DRC active |
+| Run Ahead | OFF globally (`run_ahead_enabled = "false"`, `run_ahead_frames = "2"`) | Tier 1 per-core overrides set `true` with frames = 2; Tier 2: PCSX-ReARMed explicit `false`; Mupen64Plus-Next inherits off. Global `run_ahead_frames = "2"` matches the Tier 1 per-core value so any core without a per-core override would use the same frame count if Run Ahead were toggled on per-core |
+| Run-Ahead Mode | Single Instance (`run_ahead_secondary_instance = "false"`) | ~½ CPU cost vs dual-instance; fits within A15 CPU budget; Tier 1: frames = 2 (all 7 Tier 1 cores at parity); flip to `true` per-core for crackle/serialization |
 | Preemptive Frames | OFF (`preemptive_frames_enable = "false"`) | RA v1.15.0 ([PR #14832](https://github.com/libretro/RetroArch/pull/14832); menu [PR #17093](https://github.com/libretro/RetroArch/pull/17093)); reruns core on input change; reuses `run_ahead_frames`; exclusive with `run_ahead_enabled` (`runahead_change_handler`); per-core only |
 | Automatic Frame Delay | ON (`video_frame_delay_auto = "true"`) | Tier 1 per-core opt-in; Mupen64Plus-Next pinned `"false"` (N64 incompatible, [#14201](https://github.com/libretro/RetroArch/issues/14201)) |
 | Fast Forward Ratio | Uncapped (`fastforward_ratio = "0.0"`) | **v3.1: from 4× to uncapped** for Tier 1 throughput (Mesen/Snes9x/mGBA/Genesis/PCE/FBN); Tier 2 (Mupen/PCSX) self-limits ~1× on the interpreter-only stack. If FF fails to engage on Metal/tvOS, revert to `"4.0"` |
@@ -323,9 +322,9 @@ The companion `retroarch.cfg` includes hardening, input, menu performance, and l
 
 | Category | Setting | Value | Notes |
 |----------|---------|-------|-------|
-| Security | Network/stdin Command interfaces + Camera/Location access | OFF | Zero-auth UDP (55355, 55400–55420) + stdin = input-injection vectors; camera/location blocked on top of sandbox |
+| Security | stdin Command interface + Camera/Location access | OFF | `stdin_cmd_enable = "false"` (input-injection vector); camera/location (`camera_allow`, `location_allow`) blocked on top of sandbox. Network command interface (UDP 55355, 55400–55420) is not explicitly pinned in cfg — relies on upstream default |
 | Security | On-Demand Thumbnails | OFF (`network_on_demand_thumbnails = "false"`) | Hangs on game/state load when thumbnail server is slow ([#17242](https://github.com/libretro/RetroArch/issues/17242)) |
-| Cloud | Cloud Sync | OFF | `cloud_sync_enable = "false"`; `cloud_sync_driver = ""` (empty — no backend); saves, configs, thumbs, system sub-keys all `"false"`; all six keys set explicitly |
+| Cloud | Cloud Sync | OFF | `cloud_sync_enable = "false"` (single master gate; per-category sub-keys — driver, saves, configs, thumbs, system — not explicitly pinned; inherit upstream defaults) |
 | Network | Netplay Public Announce | OFF (`netplay_public_announce = "false"`) | Upstream default ON; keeps device off public announce list |
 | Network | Netplay NAT Traversal | OFF (`netplay_nat_traversal = "false"`) | Blocks UPnP / NAT-PMP probing on startup. Registration-site default is `true` ([RA] configuration.c:2272) — the `DEFAULT_NETPLAY_NAT_TRAVERSAL=false` macro in config.def.h:1371 is dead code |
 | Network | Netplay MITM Server | OFF (`netplay_use_mitm_server = "false"`) | Default-false in both config.def.h:1375 and configuration.c:2277; pinned to prevent relay-server opt-in on default drift |
@@ -334,7 +333,6 @@ The companion `retroarch.cfg` includes hardening, input, menu performance, and l
 | Menu | Widgets (Animated Notifications) | OFF (`menu_enable_widgets = "false"`) | Upstream default ON; animated toasts add GPU compositing overhead |
 | Video | Waitable Swapchains | OFF (`video_waitable_swapchains = "false"`) | Upstream ON on tvOS/Metal; pacing overhead fixed-refresh tvOS doesn't need |
 | Input | Joypad Driver | mfi (`input_joypad_driver = "mfi"`) | Apple GCController framework; only viable driver on tvOS |
-| Input | Max Users | 1 (`input_max_users = "1"`) | Solo play; raise to 2–4 for multiplayer |
 | Input | Menu Toggle Combo | L3+R3 (`input_menu_toggle_gamepad_combo = "2"`) | Opens Quick Menu in-game; combo value 2 = L3+R3 (see §7 Hotkeys) |
 | Input | Overlay Subsystem | OFF (`input_overlay_enable = "false"`) | No touch surface on Apple TV; v1.21.0 changed preferred-overlay auto-load default on mobile-class platforms, triggering overlay subsystem scan at startup on tvOS |
 | Menu | Favorites / History Size | 10 / 10 | Default 200; reduced for 4 GB RAM |
@@ -355,10 +353,9 @@ The companion `retroarch.cfg` includes hardening, input, menu performance, and l
 | Logging | Verbosity / File Logging | OFF | `os_log` per-message alloc cost; file writes consume volatile cache |
 | Audio | Audio Driver | coreaudio (`audio_driver = "coreaudio"`) | tvOS 26, v1.20.0–v1.22.x stable; pins driver to prevent silent fallback. `coreaudio3` is master-only (under `# Future` in CHANGES.md) and must not be used in v1.22.x stable |
 | Audio | `audio_out_rate` | 48000 Hz | Native HDMI rate; no resampling |
-| Audio | Audio Latency | 48 ms (`audio_latency = "48"`) | Minimum viable buffer on tvOS coreaudio for Tier 1 cores; Mupen64Plus-Next pins `64` per-core for CPU-underrun tolerance on the interpreter-only N64 stack; PCSX-ReARMed pins `48` as drift-guard |
+| Audio | Audio Latency | 64 ms (`audio_latency = "64"`) | Global baseline providing CPU-underrun tolerance on the no-JIT interpreter stack; PCSX-ReARMed pins `48` per-core (tighter Tier 2 requirement) |
 | Audio | Resampler Quality | 1 (`audio_resampler_quality = "1"`) | **v3.1: lowered from 2** (two below upstream 3); minimal CPU cost; imperceptible at 48 kHz |
-| Audio | Audio Sync | ON (`audio_sync = "true"`) | Ties audio to `video_refresh_rate`; works with `audio_rate_control_delta` |
-| Audio | Rate Control Delta | 0.008 (`audio_rate_control_delta = "0.008"`) | DRC headroom from upstream 0.005; handles tvOS clock drift without audible pitch wobble |
+| Audio | Audio Sync | ON (`audio_sync = "true"`) | Ties audio to `video_refresh_rate`; pinned as drift-guard |
 | Video | Threaded Video | OFF (`video_threaded = "false"`) | Force-disabled by upstream for all Apple platforms ([#14978](https://github.com/libretro/RetroArch/issues/14978)); Tier 2 cfgs pin as anchor |
 | Video | Aspect Ratio | Core Provided (`aspect_ratio_index = "22"`) | Index 22 = `ASPECT_RATIO_CORE` per `gfx/video_defines.h`; verified in §11 checklist |
 | Menu | Playlist Compression | ON (`playlist_compression = "true"`) | ~90% reduction; reduces cache writes on volatile tvOS storage |
@@ -375,14 +372,14 @@ RetroArch supports peer-to-peer Netplay with up to 16 players and spectators. A 
 
 ### Applying a shader
 
-> ⚠️ **v3.1 default: shaders disabled globally** (`video_shader_enable = "false"`) for maximum GPU headroom at 4K60. The preset path (`crt-easymode.slangp`) is preserved in `retroarch.cfg` but inert until you flip the gate. To restore the CRT aesthetic, edit `retroarch.cfg` and set `video_shader_enable = "true"`, or toggle in-app via Quick Menu → Shaders → Video Shaders: **ON** (then Save Current Configuration if the change should persist).
+> **Shader pipeline is enabled by default** (`video_shader_enable = "true"`). `retroarch.cfg` does not set a global `video_shader` preset — users select a preset per-core via Quick Menu → Shaders → Save Core Preset.
 
-As of v2.88, `retroarch.cfg` sets a global shader preset: `video_shader = "../shaders/shaders_slang/crt/crt-easymode.slangp"`. When `video_shader_enable = "true"`, this applies to every core — the companion `retroarch-configs` v1.46+ `.cfg` files no longer set `video_shader`. **crt-easymode** was selected as the global default because it is single-pass, runs at native 4K60 on A15, has no shader-controlled geometry (integer-scale safe on all cores including Tier 2), and produces a cleaner 4K phosphor mask than `crt-aperture` (replaced in v2.88). To override the preset for a specific core:
+The companion `retroarch-configs` `.cfg` files likewise do not set `video_shader`. To assign a preset for a specific core:
 
 1. Launch a game → Quick Menu (L3 + R3) → Shaders → Video Shaders: **ON**.
 2. Load Preset → `shaders_slang` → `crt` (or `handheld` for LCD-style systems) → select a preset.
-3. Adjust parameters as needed (see **crt-easymode 4K parameters** below).
-4. Save Preset → **Save Core Preset** (writes a per-core shader preset that overrides the global `video_shader` for that core).
+3. Adjust parameters as needed (see **crt-easymode 4K parameters** below if using that preset).
+4. Save Preset → **Save Core Preset** (writes a per-core shader preset so it reloads automatically for that core).
 
 > **Handheld note:** `crt-easymode` is a CRT shader. For mGBA (GBA/GB/GBC) users who prefer the LCD aesthetic, apply `handheld/lcd-grid-v2.slangp` via Save Core Preset per the steps above.
 
@@ -395,14 +392,14 @@ Grouped by GPU cost at 4K output on the passively-cooled A15:
 | Minimal | `zfast_crt.slangp` | All systems, especially PS1/N64 |
 | Minimal | `crt-pi.slangp` | Heaviest cores; comparable weight to zfast_crt |
 | Minimal | `crt-potato-warm/cool.slangp` | All systems (lookup-texture based) |
-| Low | `crt-easymode.slangp` | **Global default** (all cores); cleaner 4K phosphor mask than crt-aperture; integer-scale safe (no shader geometry); all 2D systems |
+| Low | `crt-easymode.slangp` | **Recommended starting point** (all cores); cleaner 4K phosphor mask than crt-aperture; integer-scale safe (no shader geometry); all 2D systems |
 | Low | `crt-hyllian.slangp` | SNES, Genesis (Trinitron aesthetic) |
 | Low | `crt-aperture.slangp` | Aperture-grille look; best all-rounder across 2D systems, lighter than crt-hyllian |
 | Low | `fakelottes.slangp` | 16-bit systems (lighter crt-lottes) |
 | Medium | `crt-geom.slangp` | All 2D systems (scanlines + curvature) |
 | Medium | `crt-lottes-fast.slangp` | 16-bit systems (slot mask + bloom) |
 
-Global default `crt-easymode.slangp` (Low cost) applies to all cores including Tier 2 (Mupen64Plus-Next, PCSX-ReARMed). If Tier 2 cores drop frames or trigger thermal throttling under the global default, downgrade per-core via Quick Menu → Shaders → Save Core Preset to a Minimal preset (`zfast_crt`, `crt-pi`, or `crt-potato-warm/cool`). If complex shaders cause frame drops or thermal throttling at 4K globally, switch Apple TV output to 1080p SDR 60 Hz — the TV's scaler handles upscaling, and GPU load drops significantly.
+Applying `crt-easymode.slangp` per-core (Low cost) is a safe starting point across all cores including Tier 2 (Mupen64Plus-Next, PCSX-ReARMed). If Tier 2 cores drop frames or trigger thermal throttling with `crt-easymode`, swap per-core via Quick Menu → Shaders → Save Core Preset to a Minimal preset (`zfast_crt`, `crt-pi`, or `crt-potato-warm/cool`). If complex shaders cause frame drops or thermal throttling at 4K globally, switch Apple TV output to 1080p SDR 60 Hz — the TV's scaler handles upscaling, and GPU load drops significantly.
 
 **Avoid on Apple TV:** CRT-Royale, CRT-Geom-Deluxe, Guest-Dr-Venom, Guest-Advanced, and all Mega Bezel shaders exceed the A15's GPU budget.
 
@@ -410,13 +407,13 @@ Global default `crt-easymode.slangp` (Low cost) applies to all cores including T
 
 **crt-easymode 4K parameters:** `crt-easymode.slangp` exposes SHARPNESS_IMAGE, SHARPNESS_EDGES, GLOW_WIDTH/HEIGHT/HALATION/DIFFUSION, MASK_COLORS, MASK_STRENGTH, MASK_SIZE, SCANLINE_SIZE_MIN/MAX, SCANLINE_SHAPE, GAMMA_INPUT/OUTPUT, and BRIGHTNESS via Quick Menu → Shaders → Shader Parameters. Starting values are reasonable out-of-the-box on a 4K display; tune to taste.
 
-> **Note:** If `config/shaders/shaders_slang/crt/` appears empty after an update, re-run Online Updater → Update Slang Shaders. If that fails, upload presets manually via WebDAV to `config/shaders/shaders_slang/crt/`. The relative `../shaders/shaders_slang/...` path in `retroarch.cfg` resolves from the RA-tvOS working directory up one level into `config/`, then into `shaders/`.
+> **Note:** If `config/shaders/shaders_slang/crt/` appears empty after an update, re-run Online Updater → Update Slang Shaders. If that fails, upload presets manually via WebDAV to `config/shaders/shaders_slang/crt/`.
 
 ## 9. Supported Systems and Per-Core Overrides
 
 The A15 Bionic handles retro emulation effectively, but Apple's App Store restriction on JIT compilation limits performance for demanding systems. Dreamcast, GameCube, Wii, and PS2 require JIT and cannot run through the App Store version.
 
-Per-core override values and core options are maintained in the companion [retroarch-configs](https://github.com/ryanmusante/retroarch-configs) repository. That ZIP ships its files flat under `config/`; after upload, move each `.cfg` / `.opt` file into the matching `config/<core_name>/` directory on the Apple TV (see [Filesystem layout](#filesystem-layout-apple-tv)). Once placed there, both file types load automatically — no manual entry required inside RetroArch. Tier 1 `.cfg` files explicitly enable Run Ahead per core; the global baseline in this repository does not enable it for all cores.
+Per-core override values and core options are maintained in the companion [retroarch-configs](https://github.com/ryanmusante/retroarch-configs) repository. That ZIP ships its files flat under `config/`; after upload, move each `.cfg` / `.opt` file into the matching `config/<core_name>/` directory on the Apple TV (see [Filesystem layout](#filesystem-layout-apple-tv)). Once placed there, both file types load automatically — no manual entry required inside RetroArch. Tier 1 `.cfg` files explicitly enable Run Ahead per core; the global baseline in `retroarch.cfg` leaves `run_ahead_enabled = "false"`.
 
 Tier definitions: **1** = Flawless (full speed, shaders enabled), **2** = Good (most titles at full speed).
 
@@ -484,8 +481,7 @@ Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version
 
 ### Verify after relaunch
 
-- [ ] Shader pipeline disabled by default (`video_shader_enable = "false"`, v3.1). If CRT aesthetic is desired, flip to `"true"` and verify global `crt-easymode` loads via Quick Menu → Shaders
-- [ ] `cloud_sync_driver` remains `""` (empty string) after any Save Current Config event — inspect `retroarch.cfg` directly; cfg-merge tools that treat empty strings as unset can silently re-introduce the upstream driver default
+- [ ] Shader pipeline enabled (`video_shader_enable = "true"`); no global preset set in `retroarch.cfg` — select per-core via Quick Menu → Shaders → Save Core Preset
 
 ### Per-core overrides
 
