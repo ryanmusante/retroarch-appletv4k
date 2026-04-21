@@ -1,20 +1,86 @@
-2026-04-19  Ryan Musante
+2026-04-20  Ryan Musante
 
-- v3.3: 1 `retroarch.cfg` value change + README row edits to document companion v3.3 Tier 2 stutter mitigations. **`retroarch.cfg`:** `fastforward_ratio = "0.0"` → `"5.0"` (MED; uncapped fast-forward from v3.1 drove audio into continuous underrun when held on the no-JIT Tier 2 interpreter stack — the core cannot exceed ~1× on interpreter-only, but uncapped FF removes the vsync throttle so the frontend signals audio underrun continuously; cap at 5× is transparent to Tier 2 which self-limits at ~1× and preserves Tier 1 throughput headroom — Mesen/Snes9x/mGBA/Genesis/PCE/FBN can all achieve 5× on A15; one step above the v3.1 pre-uncap 4× cap. If Metal-on-tvOS fails to engage FF above real-time in testing, revert to `"4.0"` per v3.1 footnote). Header comment version stamps bumped (line 1: `(v3.2)` → `(v3.3)`; line 3: `retroarch-configs v3.2` → `retroarch-configs v3.3`); all 64 other key values preserved byte-identically from v3.2. **README updates:** landing paragraph version reference `v3.2` → `v3.3`. §7 Latency reduction Fast Forward Ratio row — Value `Uncapped (fastforward_ratio = "0.0")` → `5× (fastforward_ratio = "5.0")`; Notes rewritten to document v3.3 5× cap rationale (uncapped from v3.1 drove audio continuous-underrun on held FF under no-JIT Tier 2 interpreter stack; 5× cap transparent to Tier 2 self-limit at ~1×; preserves Tier 1 throughput; revert-to-4× fallback for Metal/tvOS FF non-engagement). §7 Additional settings Audio Latency row — Notes appended with Mupen64Plus-Next `audio_latency = "96"` per-core pin clause (v3.3 +32 ms absorption for E-core stragglers + GC + OS scheduler variance on heterogeneous 2P+4E A15). §7 Video settings Max Swapchain Images row — Notes expanded to document Tier 2 per-core pin at `3` (v3.3 Mupen64Plus-Next + PCSX-ReARMed triple-buffer for frame-time variance absorption on CPU-bound no-JIT interpreter stack; Metal driver no pacing penalty on fixed-refresh tvOS; ~16 ms output-latency cost acceptable on Tier 2). §7 Additional settings Audio Sync row — Notes expanded to flag Mupen64Plus-Next `false` per-core pin (video-driven pacing substitutes clean dropped frames for pitch rubber-band on frame-budget overrun; PCSX-ReARMed retains global `true` because core-level `pcsx_rearmed_frameskip_type = "auto_threshold"` handles audio-buffer pressure via frameskip rather than frontend audio_sync toggle). §7 Hotkeys save state behavior callout — appended clause that Tier 2 cores (Mupen64Plus-Next, PCSX-ReARMed) pin `autosave_interval = "0"` per-core in v3.3 to prevent SRAM/memcard-write purgeable-cache stall every 2.5 min mid-play on 64 GB model; save-on-close retained via `savestate_auto_save = "true"`. §9 Supported Systems Mupen64Plus-Next row Notes — rewritten to document platform-forced Angrylion+CXD4+cached_interpreter stack on Metal-only build (GLideN64 needs GL context the Metal driver does not provide; Parallel-RDP needs Vulkan; Parallel-RSP + dynamic_recompiler need JIT disallowed by App Store), v3.3 `mupen64plus-angrylion-multithread` value change `"all threads"` → `"2"` with P-core-pin rationale on heterogeneous 2P+4E A15, v1.56 pin restoration (audio_latency=96 + video_max_swapchain_images=3 dropped v1.57 without evidence), new pins (audio_sync=false + autosave_interval=0), retained upstream-issue pins (video_threaded #14978, video_frame_delay_auto #14201, rewind_enable #18300, run_ahead off). §9 Supported Systems PCSX-ReARMed row Notes — appended v3.3 Tier 2 parity pin clause (video_max_swapchain_images=3 frame-time variance absorption; autosave_interval=0 prevents PS1 memcard-write purgeable-cache stall; audio_sync stays global `true` due to core-level frameskip pairing). Version badge 3.2 → 3.3. Global `retroarch.cfg` key count unchanged at 65. Companion `retroarch-configs` bumped to v3.3 (Mupen64Plus-Next.cfg +4 keys restoring v1.56 pins and adding audio_sync + autosave_interval pins, 5 → 9; Mupen64Plus-Next.opt 1 value change — angrylion-multithread heterogeneous-ARM tune `"all threads"` → `"2"`, key count unchanged at 6; PCSX-ReARMed.cfg +2 keys Tier 2 parity video_max_swapchain_images + autosave_interval, 7 → 9; total .cfg key count 49 → 55, total .opt key count unchanged at 27).
-
-2026-04-19  Ryan Musante
-
-- v3.2: 0 `retroarch.cfg` value changes + 2 README stale-reference removals to realign with companion `retroarch-configs` state. Real work lands in the companion (2 `.opt` correctness fixes — see below). **`retroarch.cfg`:** header comment version stamps bumped (line 1: `(v3.1)` → `(v3.2)`; line 3: `retroarch-configs v3.1` → `retroarch-configs v3.2`); all 65 key values preserved byte-identically from v3.1. **README updates:** §7 Video settings Max Swapchain Images row Notes — removed stale "Mupen64Plus-Next pins `3` per-core for pacing slack on the CPU-bound Angrylion stack" clause (the Mupen per-core `video_max_swapchain_images` pin was removed in companion `retroarch-configs` v1.57 when the stutter-mitigation tax was dropped; the README row was never updated). §7 Latency reduction Run-Ahead Mode row Notes — removed stale "Beetle PCE Fast = 1 (CDROM)" clause (PCE Fast was raised to `run_ahead_frames = "2"` in companion `retroarch-configs` v2.95 per libretro/beetle-pce-fast-libretro#127; all 7 Tier 1 cores now run at 2-frame parity); reworded to "Tier 1: frames = 2 (all 7 Tier 1 cores at parity)". Landing paragraph version reference `v3.1` → `v3.2`. Version badge 3.1 → 3.2. Companion `retroarch-configs` bumped to v3.2 (2 `.opt` correctness fixes — display-label strings replaced with valid internal enum values. `mGBA.opt` `mgba_color_correction = "Game Boy Advance"` → `"Auto"` (HIGH; prior value was the *display label* — RetroArch's core_option_manager.c matches on internal enum value (`OFF` / `GBA` / `GBC` / `Auto`) via `config_set_string`/`string_is_equal`, so the label silently failed match and fell back to default `OFF`; color correction has been effectively *disabled* on mGBA since the value was introduced. `Auto` chosen over `GBA` because mGBA handles GB/GBC/GBA per the §1 core table — `Auto` applies the correct per-system correction rather than forcing GBA-only washed-out LCD onto GB/GBC content. Real behavior change: color correction now actually applies). `Genesis Plus GX.opt` `genesis_plus_gx_audio_filter = "off"` → `"disabled"` (MED; prior value `"off"` was not in the option's internal enum (`disabled` / `low-pass` / `EQ`) and silently fell back to default `disabled` — which happened to match intent ("audio filter off"), so no observable behavior change; correctness-only fix so the key actually parses as written). Header comment on `mGBA.opt` updated from "GBA core options: color correction, no interframe blending (max perf), audio low-pass filter off" → "GB/GBC/GBA core options: auto per-system color correction, no interframe blending (max perf), audio low-pass filter off"; `Genesis Plus GX.opt` header comment unchanged. Companion opt key count unchanged at 27; cfg key count unchanged at 49.
-
-2026-04-19  Ryan Musante
-
-- v3.1: 3 `retroarch.cfg` value changes + README realignment to reflect current cfg state. **Modifies `retroarch.cfg`:** `fastforward_ratio = "4.0"` → `"0.0"` (MED; uncaps fast-forward for Tier 1 cores; Tier 2 self-limits ~1× real-time on the no-JIT interpreter stack, so no CPU risk; if Metal-on-tvOS FF fails to engage, revert to `"4.0"` per §7 note). `audio_resampler_quality = "2"` → `"1"` (LOW; drops from sinc-lower to sinc-lowest; two below upstream default 3; minimal CPU reduction on audio path; imperceptible at 48 kHz output). `savestate_thumbnail_enable = "true"` → `"false"` (LOW; skips screenshot + PNG encode on every state save; removes slot preview thumbnails in menu). Key count unchanged at 65. **README updates:** landing paragraph reworded to describe the actual cfg state (shader pipeline enabled, no global preset set; user selects per-core via Save Core Preset). §7 Video settings Video Shaders row — Value `ON` kept; Notes reworded to "Shader pipeline enabled; no global preset set in cfg — select per-core via Quick Menu → Shaders → Save Core Preset (§8)". §7 Video settings Shader Preset row removed (no `video_shader` key in cfg). §7 Latency reduction Fast Forward Ratio row — Value `4×` → `Uncapped`; Notes reworded to reflect uncapped ceiling with revert-to-4× fallback for Metal/tvOS FF non-engagement. §7 Latency reduction Run Ahead row — global `run_ahead_frames` value reference corrected from `"1"` to `"2"` to match cfg. §7 Additional settings Audio Resampler Quality row — Value `2` → `1`; Notes reworded to "Two below upstream 3 (v3.1); minimal CPU; imperceptible at 48 kHz". §7 Additional settings State Thumbnails row — Value `ON` → `OFF`; Notes reworded to "v3.1: disabled to skip screenshot+PNG encode on every state save; no slot previews in menu". §7 Additional settings Audio Latency row — corrected to `64 ms` to match cfg; Notes reworded to "Global baseline providing CPU-underrun tolerance on the no-JIT interpreter stack; PCSX-ReARMed pins `48` per-core". §7 Additional settings Rate Control Delta row removed (`audio_rate_control_delta` not pinned in cfg). §7 Additional settings Input Max Users row removed (`input_max_users` not pinned in cfg). §7 Additional settings Security row — reworded to reference only `stdin_cmd_enable` + `camera_allow` + `location_allow` (the keys actually pinned); network command interface noted as not explicitly pinned. §7 Additional settings Cloud Sync row — reworded to reflect single `cloud_sync_enable = "false"` master gate (per-category sub-keys not pinned). §7 Hotkeys Save state behavior callout — `autosave_interval` reference corrected from `"300"` to `"150"`; "every 5 minutes" → "every 2.5 minutes". §8 Shaders — removed v3.1 default-off callout; rewritten to describe shader pipeline on + no preset set + per-core Save Core Preset workflow. §8 Recommended presets table — `crt-easymode.slangp` row relabeled from "Global default" to "Recommended starting point"; paragraph below rewritten to describe per-core application rather than global default. §11 Setup Checklist Verify after relaunch — shader-disabled and `cloud_sync_driver` verification lines replaced with a single shader-pipeline-enabled confirmation line. `retroarch.cfg` reorganized with section-divider comments (Menu/UI · Video · Audio · Latency/Run Ahead · Input · Saves/Savestates · Security · Netplay · Logging); all 65 key values preserved byte-identically. All other 62 `retroarch.cfg` keys and values unchanged from v3.0. Version badge 3.0 → 3.1. Companion `retroarch-configs` bumped to v3.1 (5 `.opt` files modified: `Genesis Plus GX.opt` -1 key (`genesis_plus_gx_lowpass_range = "55"` removed as inert after `audio_filter` low-pass → off), `mGBA.opt` 2 value changes (`mgba_interframe_blending` mix_smart → disabled, `mgba_audio_low_pass_filter` enabled → disabled), `PCSX-ReARMed.opt` +1 key (`pcsx_rearmed_frameskip_threshold = "33"` added, `pcsx_rearmed_frameskip_type` disabled → auto_threshold), `Beetle PCE Fast.opt` `pce_fast_cdspeed` 2 → 4, `Mesen.opt` `mesen_reduce_dmc_popping` enabled → disabled; opt key count net unchanged at 27 (Genesis -1 + PCSX +1); cfg key count unchanged at 49).
-
-2026-04-19  Ryan Musante
-
-- v3.0: MAJOR version-sync release. Establishes lockstep versioning across companion repositories: both `retroarch-appletv4k` and `retroarch-configs` now share a single MAJOR.MINOR tag and will bump together on every future release regardless of which side contains the real file changes. Pre-sync state: `retroarch-appletv4k` at v2.95, `retroarch-configs` at v1.57 (the two repos had evolved independently since inception with asymmetric version numbering). No `retroarch.cfg` changes, no `.cfg`/`.opt` drift, no behavioral differences from v2.95 / companion v1.57 — file contents byte-identical to the v2.95 shipping state. **README updates:** §13 Versioning — policy text revised to document the lockstep convention explicitly. Prior text: "This repository uses `vMAJOR.MINOR` (no patch component). `MAJOR` increments on incompatible structural changes (filesystem layout, breaking config schema, removed features)." New text prepends a lockstep-scope sentence and expands the MAJOR clause to include cross-repo version-sync events: "This repository uses `vMAJOR.MINOR` (no patch component) in lockstep with its companion repository — both `retroarch-appletv4k` and `retroarch-configs` share a single MAJOR.MINOR tag that increments together on every release, regardless of which side contains the real file changes. `MAJOR` increments on incompatible structural changes (filesystem layout, breaking config schema, removed features) or cross-repo version-sync events (e.g. v3.0 re-aligned the two repos after they had evolved independently at v2.95 / v1.57)." MINOR clause, CHANGELOG GNU-style-date convention, and 5-entry trim policy unchanged. Global `retroarch.cfg` key count unchanged at 65. Version badge 2.95 → 3.0. Companion `retroarch-configs` bumped to v3.0 (matching sync; §11 Versioning text revised identically to §13; file contents byte-identical to v1.57 shipping state).
+- v3.4: SYNC — doc-alignment release; companion ships §4 drift fix.
+  - `retroarch.cfg`: header version stamps bumped to v3.4; all
+    65 key values byte-identical to v3.3.
+  - README: landing paragraph + badge bumped 3.3 → 3.4.
+  - Version badge 3.3 → 3.4. Companion bumped to v3.4
+    (configs README §4 `run_ahead_frames` row: "All 7 Tier 1
+    cores" → "All 6 Tier 1 cores" [stale count; 6 cores ship
+    `run_ahead_frames = "2"`, matching §1 Tier 1 rollup]; all
+    8 `.cfg` header "paired with" stamps bumped; no .cfg/.opt
+    content changes).
 
 2026-04-19  Ryan Musante
 
-- v2.95: SYNC — no `retroarch.cfg` changes, no README table changes (badge only). Version tag aligns the companion release channel with `retroarch-configs` v1.57, which (a) removes the Mupen64Plus-Next stutter-mitigation tax introduced in v1.56 (per-core `audio_latency` and `video_max_swapchain_images` pins dropped from `Mupen64Plus-Next.cfg`; Mupen now inherits the global posture that v2.94 restored for all Tier 1 cores), and (b) applies two max-performance tunes to Beetle PCE Fast: `Beetle PCE Fast.opt` `pce_fast_cdimagecache = "disabled"` → `"enabled"` (full CD image precache to RAM at startup; eliminates disc seek latency during gameplay; aligns with the PCSX-ReARMed `cd_readahead = "333000"` precache philosophy), and `Beetle PCE Fast.cfg` `run_ahead_frames = "1"` → `"2"` (brings PCE Fast to parity with the other 6 Tier 1 cores; prior 1-frame cap justified as "CDROM seek determinism" was over-conservative — the real constraint is Run Ahead Secondary Instance, which PCE Fast already pins to `false` per upstream libretro/beetle-pce-fast-libretro issue #127 confirming 2-frame single-instance run-ahead works on CD games). Global `retroarch.cfg` key count unchanged at 65. Version badge 2.94 → 2.95. Companion `retroarch-configs` bumped to v1.57 (`Mupen64Plus-Next.cfg` -2 keys; `Beetle PCE Fast.opt` cdimagecache value swap; `Beetle PCE Fast.cfg` run_ahead_frames value swap; cfg key count 51 → 49, opt key count unchanged at 27).
+- v3.3: companion v3.3 Tier 2 stutter-mitigation alignment.
+  - `retroarch.cfg`: `fastforward_ratio` "0.0" → "5.0" (uncapped FF
+    drove audio underrun on Tier 2 interpreter stack; 5× cap
+    transparent to Tier 2, preserves Tier 1 headroom; revert to
+    "4.0" if FF fails to engage on Metal).
+  - `retroarch.cfg`: header version stamps bumped to v3.3; all
+    65 key values otherwise byte-identical to v3.2.
+  - README §7 Latency: Fast Forward row updated.
+  - README §7 Additional: Audio Latency, Audio Sync, Max
+    Swapchain notes flagged Tier 2 per-core pins.
+  - README §7 Hotkeys callout: Tier 2 `autosave_interval=0` noted.
+  - README §9 Mupen + PCSX rows: rewritten for v3.3 pins.
+  - Version badge 3.2 → 3.3. Companion bumped to v3.3
+    (Mupen.cfg 5→9 keys, PCSX.cfg 7→9 keys, Mupen.opt 1 value
+    change; total cfg 49→55, opt unchanged at 27).
 
+2026-04-19  Ryan Musante
+
+- v3.2: stale-reference cleanup; companion ships .opt enum fixes.
+  - `retroarch.cfg`: header stamps bumped to v3.2; 65 keys
+    byte-identical to v3.1.
+  - README §7 Video: removed stale Mupen `swapchain=3` clause
+    (pin was dropped in companion v1.57).
+  - README §7 Latency: removed stale "PCE Fast = 1 (CDROM)"
+    clause (PCE moved to 2-frame parity in companion v2.95).
+  - Version badge 3.1 → 3.2. Companion bumped to v3.2
+    (`mGBA.opt` `mgba_color_correction` "Game Boy Advance" → "Auto"
+    [HIGH; enum mismatch silently disabled correction since
+    introduction]; `Genesis Plus GX.opt` `genesis_plus_gx_audio_filter`
+    "off" → "disabled" [correctness; same effect]).
+
+2026-04-19  Ryan Musante
+
+- v3.1: 3 `retroarch.cfg` value changes + README realignment.
+  - `retroarch.cfg`: `fastforward_ratio` "4.0" → "0.0" (uncap;
+    revert to "4.0" if FF fails on Metal).
+  - `retroarch.cfg`: `audio_resampler_quality` "2" → "1" (sinc-lowest;
+    imperceptible at 48 kHz).
+  - `retroarch.cfg`: `savestate_thumbnail_enable` "true" → "false"
+    (skips PNG encode per save).
+  - `retroarch.cfg`: section dividers added; 65 keys preserved.
+  - README: landing paragraph reworded for actual cfg state.
+  - README §7 Video: Shader Preset row removed; Shaders row
+    notes reworded (pipeline on, no global preset).
+  - README §7 Latency: Run Ahead frame count corrected to "2";
+    FF row marked Uncapped.
+  - README §7 Additional: Resampler Quality, State Thumbnails,
+    Audio Latency rows updated; Rate Control Delta + Input Max
+    Users rows removed (not pinned in cfg); Security and Cloud
+    Sync rows reworded to actual pinned keys.
+  - README §7 Hotkeys: `autosave_interval` reference corrected
+    "300" → "150".
+  - README §8 Shaders: rewritten for per-core Save Core Preset
+    workflow; `crt-easymode.slangp` = "Recommended starting point".
+  - README §11 Checklist: shader-pipeline-on verification line.
+  - Version badge 3.0 → 3.1. Companion bumped to v3.1
+    (5 .opt files modified; 27 opt keys / 49 cfg keys unchanged).
+
+2026-04-19  Ryan Musante
+
+- v3.0: MAJOR — version-sync release.
+  - Establishes lockstep versioning: both `retroarch-appletv4k`
+    and `retroarch-configs` share a single MAJOR.MINOR tag from
+    here forward.
+  - Pre-sync: appletv4k v2.95, configs v1.57.
+  - No `retroarch.cfg` or .cfg/.opt content changes — file
+    contents byte-identical to v2.95 / companion v1.57.
+  - README §13 Versioning: rewritten to document lockstep
+    convention; MAJOR clause expanded to include cross-repo
+    version-sync events.
+  - Version badge 2.95 → 3.0. Companion bumped to v3.0.
