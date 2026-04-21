@@ -1,3 +1,125 @@
+2026-04-21  Ryan Musante
+
+- v3.6: 2 `retroarch.cfg` value changes; companion ships 1 value
+  change + 1 doc-sync comment. 90 keys unchanged.
+
+  `retroarch.cfg`:
+  - `fastforward_ratio` "5.0" → "4.0" (MED; 4× matches community
+    standalone-emulator norms and reduces thermal load during
+    sustained FF bursts on passive A15; v3.3 5× cap was set as a
+    Tier 2 audio-underrun mitigation over uncapped 0.0, which 4×
+    also satisfies).
+  - `audio_latency` "32" → "48" (HIGH; v3.5 32 ms was aggressive —
+    crackle risk under thermal throttle and tight buffer on FBNeo
+    secondary-instance workload. 48 ms ≈ 3 frames @ 60 Hz is the
+    sweet spot: preserves most of the 32 benefit, matches standalone
+    emulator community norms, and degrades gracefully. Tier 2 pins
+    adjusted per companion v3.6 — Mupen absolute 64, PCSX mirrors
+    global 48).
+  - 90 keys, byte-identical to v3.5 apart from the two values and
+    the header version stamps.
+
+  README:
+  - Landing paragraph: `audio_latency = "32"` → `"48"`; version
+    stamp 3.5 → 3.6.
+  - §7 Latency table: Fast Forward Ratio row rewritten for
+    4.0 + thermal/community-norm rationale.
+  - §7 Additional table: Audio Latency row rewritten for 48 +
+    sweet-spot rationale; Tier 2 pin values updated (PCSX=48
+    drift-guard mirror, Mupen=64).
+
+  Version badge 3.5 → 3.6. Companion bumped to v3.6
+  (`Mupen64Plus-Next.cfg` `audio_latency` "96" → "64";
+  `PCSX-ReARMed.cfg` inline comment doc-synced — value "48"
+  unchanged but rationale now "drift-guard mirror of v3.6
+  global" instead of "tighter than global 64"; all 8 .cfg
+  header "paired with" stamps v3.5 → v3.6; .opt content
+  byte-identical to v3.5).
+
+2026-04-21  Ryan Musante
+
+- v3.5: `retroarch.cfg` latency + hardening refresh (3 modifications,
+  25 additions; cfg 65 → 90 keys). Companion unchanged.
+
+  Modifications:
+  - `menu_pause_libretro` "true" → "false" (HIGH; was neutralizing
+    Tier 1 Run Ahead catch-up and Fast Forward engagement on every
+    menu open; core now keeps running behind Quick Menu).
+  - `pause_nonactive` "true" → "false" (MED; tvOS briefly marks
+    app inactive on Siri Remote wake / Control Center / HDMI CEC —
+    causes audio-buffer glitch and spurious mid-run pause).
+  - `audio_latency` "64" → "32" (HIGH; A15 + CoreAudio sustains
+    32 ms; halves audio buffer depth. Tier 2 pins unaffected —
+    PCSX 48, Mupen 96 override up. Revert to 48 or 64 if crackle
+    under thermal throttle).
+
+  Additions (25 keys):
+
+  Menu / UI (6):
+  - `core_info_cache_enable = "true"` (cold-start win on 64 GB
+    purgeable-cache).
+  - `menu_xmb_animation_opening_main_menu = "0"`,
+    `menu_xmb_animation_horizontal_highlight = "0"`,
+    `menu_xmb_animation_move_up_down = "0"` (kills XMB ribbon /
+    transition GPU load; instant menu cuts).
+  - `rgui_inline_thumbnails = "false"`,
+    `menu_show_sublabels = "false"` (small cache + CPU save).
+
+  Video (8):
+  - `video_frame_rest = "1"` (HIGH; RA 1.17 CPU end-of-frame
+    sleep; frees Metal queue for earlier present; 1–3 ms
+    CPU→display reduction; fixed-refresh only).
+  - `video_font_enable = "false"` (disables OSD text render;
+    FPS counter / savestate notifications no longer drawn).
+  - `video_black_frame_insertion = "0"` (explicit 0 for 60 Hz
+    panel; drift-guard).
+  - `video_bfi_dark_frames = "1"`, `video_shader_subframes = "1"`
+    (defensive defaults vs future release drift; inert at 60 Hz).
+  - `video_hdr_enable = "false"`, `video_hdr_max_nits = "1000"`,
+    `video_hdr_contrast = "5.0"` (explicit-off guard against
+    Metal HDR10 surface negotiation on DV / HDR10 TV modes;
+    §7 TV output still directs user to 4K SDR).
+
+  Input (2):
+  - `input_auto_game_focus = "1"` (auto-grabs focus on content
+    load; prevents tvOS Siri Remote leak into game focus).
+  - `input_bind_timeout = "3"` (BT HID 125 Hz retry window;
+    default 5 s frequently drops bind samples on GCController).
+
+  Latency (1):
+  - `fastforward_frameskip = "true"` (pairs with
+    `fastforward_ratio = "5.0"`; drops GPU ~50% when FF engages;
+    no effect at 1×).
+
+  Security (2):
+  - `network_cmd_enable = "false"`, `network_remote_enable = "false"`
+    (explicit-off RA UDP command surfaces; complements existing
+    `stdin_cmd_enable = "false"` pin).
+
+  Null drivers (6):
+  - `bluetooth_driver = "null"`, `wifi_driver = "null"`,
+    `midi_driver = "null"`, `record_driver = "null"`,
+    `camera_driver = "null"`, `location_driver = "null"`
+    (tvOS-inert subsystems handled at OS level; skip RA-side
+    init entirely).
+
+  Layout:
+  - `retroarch.cfg`: keys re-grouped for new sections; new
+    "Null drivers" section added. Header 65 → 90.
+
+  README:
+  - §7 Latency table: new rows `video_frame_rest`,
+    `fastforward_frameskip`.
+  - §7 Additional table: `menu_pause_libretro` "true" → "false"
+    (note rewritten); `pause_nonactive` "true" → "false";
+    `audio_latency` "64" → "32" note updated; new rows for
+    Menu/UI, Video, Input, Security, Null drivers additions.
+  - Landing paragraph: key count 65 → 90; companion v3.5.
+
+  Version badge 3.4 → 3.5. Companion bumped to v3.5 (SYNC;
+  all 8 `.cfg` "paired with" stamps v3.4 → v3.5; .cfg/.opt
+  content byte-identical to v3.4).
+
 2026-04-20  Ryan Musante
 
 - v3.4: SYNC — doc-alignment release; companion ships §4 drift fix.
@@ -43,44 +165,3 @@
     [HIGH; enum mismatch silently disabled correction since
     introduction]; `Genesis Plus GX.opt` `genesis_plus_gx_audio_filter`
     "off" → "disabled" [correctness; same effect]).
-
-2026-04-19  Ryan Musante
-
-- v3.1: 3 `retroarch.cfg` value changes + README realignment.
-  - `retroarch.cfg`: `fastforward_ratio` "4.0" → "0.0" (uncap;
-    revert to "4.0" if FF fails on Metal).
-  - `retroarch.cfg`: `audio_resampler_quality` "2" → "1" (sinc-lowest;
-    imperceptible at 48 kHz).
-  - `retroarch.cfg`: `savestate_thumbnail_enable` "true" → "false"
-    (skips PNG encode per save).
-  - `retroarch.cfg`: section dividers added; 65 keys preserved.
-  - README: landing paragraph reworded for actual cfg state.
-  - README §7 Video: Shader Preset row removed; Shaders row
-    notes reworded (pipeline on, no global preset).
-  - README §7 Latency: Run Ahead frame count corrected to "2";
-    FF row marked Uncapped.
-  - README §7 Additional: Resampler Quality, State Thumbnails,
-    Audio Latency rows updated; Rate Control Delta + Input Max
-    Users rows removed (not pinned in cfg); Security and Cloud
-    Sync rows reworded to actual pinned keys.
-  - README §7 Hotkeys: `autosave_interval` reference corrected
-    "300" → "150".
-  - README §8 Shaders: rewritten for per-core Save Core Preset
-    workflow; `crt-easymode.slangp` = "Recommended starting point".
-  - README §11 Checklist: shader-pipeline-on verification line.
-  - Version badge 3.0 → 3.1. Companion bumped to v3.1
-    (5 .opt files modified; 27 opt keys / 49 cfg keys unchanged).
-
-2026-04-19  Ryan Musante
-
-- v3.0: MAJOR — version-sync release.
-  - Establishes lockstep versioning: both `retroarch-appletv4k`
-    and `retroarch-configs` share a single MAJOR.MINOR tag from
-    here forward.
-  - Pre-sync: appletv4k v2.95, configs v1.57.
-  - No `retroarch.cfg` or .cfg/.opt content changes — file
-    contents byte-identical to v2.95 / companion v1.57.
-  - README §13 Versioning: rewritten to document lockstep
-    convention; MAJOR clause expanded to include cross-repo
-    version-sync events.
-  - Version badge 2.95 → 3.0. Companion bumped to v3.0.

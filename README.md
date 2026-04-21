@@ -1,12 +1,12 @@
 # RetroArch on Apple TV 4K
 
-![version](https://img.shields.io/badge/version-3.4-blue)
+![version](https://img.shields.io/badge/version-3.6-blue)
 ![RetroArch](https://img.shields.io/badge/RetroArch-v1.22.x-green)
 ![license](https://img.shields.io/badge/license-MIT-green)
 
 **RetroArch v1.22.x** · **tvOS 26** · **Apple TV 4K 3rd Gen (64 GB Wi-Fi · j255ap · A2737)** · **April 2026**
 
-This package ships a baseline configuration as of v3.4. The global shader pipeline is enabled (`video_shader_enable = "true"`); no preset is set in `retroarch.cfg` — users select presets per-core via Quick Menu → Shaders → Save Core Preset (see §8). Tier 1 core overrides explicitly enable Run Ahead where it has been validated. Global low-latency features that require per-core validation remain disabled in the baseline `retroarch.cfg`.
+This package ships a baseline configuration as of v3.6. The 90-key global baseline applies Metal-path latency tuning (`video_frame_rest`, `audio_latency = "48"`, `menu_pause_libretro = "false"`, `input_auto_game_focus = "1"`), explicit command-surface and HDR hardening, and XMB animation trims for the A15. The global shader pipeline is enabled (`video_shader_enable = "true"`); no preset is set in `retroarch.cfg` — users select presets per-core via Quick Menu → Shaders → Save Core Preset (see §8). Tier 1 core overrides explicitly enable Run Ahead where it has been validated. Global low-latency features that require per-core validation remain disabled in the baseline `retroarch.cfg`.
 
 RetroArch setup guide for Apple TV 4K (3rd generation). Covers installation, ROM/BIOS setup, controllers, performance tuning, and CRT shaders. Includes a companion `retroarch.cfg`. Directory paths (ROMs, BIOS, saves, states) are set in-app per §4 — not via `retroarch.cfg`.
 
@@ -298,9 +298,11 @@ The PS/Xbox home button opens tvOS Control Center, not RetroArch's menu. A contr
 | Run-Ahead Mode | `run_ahead_secondary_instance = "false"` | Single instance, ~½ CPU cost; Tier 1 frames=2; flip to `true` per-core for crackle |
 | Preemptive Frames | `preemptive_frames_enable = "false"` | RA v1.15.0 ([PR #14832](https://github.com/libretro/RetroArch/pull/14832)); per-core only; exclusive with `run_ahead_enabled` |
 | Automatic Frame Delay | `video_frame_delay_auto = "true"` | Mupen pinned `false` ([#14201](https://github.com/libretro/RetroArch/issues/14201)) |
-| Fast Forward Ratio | `fastforward_ratio = "5.0"` | v3.3 cap (was uncapped `0.0`); Tier 1 reaches 5× on A15. Revert to `"4.0"` if FF fails to engage on Metal |
 | Static Frame Delay | `video_frame_delay = "0"` | Test nonzero per-core |
+| Frame Rest | `video_frame_rest = "1"` | v3.5; RA 1.17 CPU end-of-frame sleep; 1–3 ms CPU→display; fixed-refresh only |
 | Input Poll Mode | `input_poll_type_behavior = "2"` | Late sampling; ~0.5–1 frame reduction; netplay forces `0` |
+| Fast Forward Ratio | `fastforward_ratio = "4.0"` | v3.6 standard cap (was `"5.0"` in v3.3–v3.5, uncapped `"0.0"` pre-v3.3); 4× matches community standalone-emulator norms and reduces thermal load during sustained FF bursts on passive A15 |
+| Fast Forward Frameskip | `fastforward_frameskip = "true"` | v3.5; drops GPU ~50% when FF engages; inert at 1× |
 
 ### TV output
 
@@ -318,11 +320,12 @@ Apple TV supports only QMS VRR (media frame-rate switching), not real-time game 
 
 ### Additional settings
 
-The companion `retroarch.cfg` includes hardening, input, menu performance, and logging settings. Command and remote-control interfaces are disabled by default.
+The companion `retroarch.cfg` includes hardening, input, menu performance, and logging settings. Command and remote-control interfaces are explicitly disabled (`stdin_cmd_enable`, `network_cmd_enable`, `network_remote_enable` all `false` as of v3.5). tvOS-inert driver subsystems (bluetooth, wifi, midi, record, camera, location) are set to `null` to skip init.
 
 | Category | Setting | Value | Notes |
 |----------|---------|-------|-------|
-| Security | stdin Command, Camera, Location | `stdin_cmd_enable = "false"`, `camera_allow = "false"`, `location_allow = "false"` | Network command interface (UDP 55355, 55400–55420) inherits upstream default |
+| Security | stdin Command, Camera, Location | `stdin_cmd_enable = "false"`, `camera_allow = "false"`, `location_allow = "false"` | — |
+| Security | Network Command Surfaces | `network_cmd_enable = "false"`, `network_remote_enable = "false"` | v3.5; explicit-off UDP command / remote-control paths (port 55355) |
 | Security | On-Demand Thumbnails | `network_on_demand_thumbnails = "false"` | Hangs on slow thumbnail server ([#17242](https://github.com/libretro/RetroArch/issues/17242)) |
 | Cloud | Cloud Sync | `cloud_sync_enable = "false"` | Master gate; sub-keys inherit |
 | Network | Netplay Public Announce | `netplay_public_announce = "false"` | Upstream default ON |
@@ -330,15 +333,26 @@ The companion `retroarch.cfg` includes hardening, input, menu performance, and l
 | Network | Netplay MITM Server | `netplay_use_mitm_server = "false"` | Drift-guard |
 | Network | Netplay Start as Spectator | `netplay_start_as_spectator = "false"` | Drift-guard |
 | Network | Discord RPC | `discord_allow = "false"` | — |
+| Drivers | Null subsystems | `bluetooth_driver`, `wifi_driver`, `midi_driver`, `record_driver`, `camera_driver`, `location_driver` = `"null"` | v3.5; tvOS handles these at OS level — RA skip-init |
 | Menu | Widgets (Animated Notifications) | `menu_enable_widgets = "false"` | Removes GPU compositing overhead |
+| Menu | XMB Animations | `menu_xmb_animation_opening_main_menu`, `menu_xmb_animation_horizontal_highlight`, `menu_xmb_animation_move_up_down` = `"0"` | v3.5; instant menu cuts; drops idle-menu GPU load |
+| Menu | RGUI Inline Thumbnails | `rgui_inline_thumbnails = "false"` | v3.5; cache + CPU save |
+| Menu | Menu Sublabels | `menu_show_sublabels = "false"` | v3.5; complements `playlist_show_sublabels = "false"` |
+| Menu | Core Info Cache | `core_info_cache_enable = "true"` | v3.5; cold-start win on 64 GB purgeable-cache |
 | Video | Waitable Swapchains | `video_waitable_swapchains = "false"` | Pacing overhead unneeded on fixed-refresh tvOS |
+| Video | OSD Font Rendering | `video_font_enable = "false"` | v3.5; OSD text path disabled (FPS counter / notifications no longer draw) |
+| Video | Black Frame Insertion | `video_black_frame_insertion = "0"`, `video_bfi_dark_frames = "1"` | v3.5; explicit 0 for 60 Hz panel; BFI dark-frame count drift-guard |
+| Video | Shader Subframes | `video_shader_subframes = "1"` | v3.5; defensive default vs future release drift |
+| Video | HDR | `video_hdr_enable = "false"`, `video_hdr_max_nits = "1000"`, `video_hdr_contrast = "5.0"` | v3.5; explicit-off guard against Metal HDR10 negotiation on DV/HDR10 TV modes (see §7 TV output — keep tvOS in 4K SDR) |
 | Input | Joypad Driver | `input_joypad_driver = "mfi"` | Apple GCController; only viable driver |
 | Input | Menu Toggle Combo | `input_menu_toggle_gamepad_combo = "2"` | L3+R3 |
 | Input | Overlay Subsystem | `input_overlay_enable = "false"` | No touch surface on tvOS |
+| Input | Auto Game Focus | `input_auto_game_focus = "1"` | v3.5; auto-grabs focus on content load; prevents Siri Remote leak |
+| Input | Bind Timeout | `input_bind_timeout = "3"` | v3.5; BT HID retry window; default 5 s drops GCController samples |
 | Menu | Favorites / History Size | `content_favorites_size = "10"`, `content_history_size = "10"` | Default 200; reduced for 4 GB RAM |
-| Menu | Pause on Menu | `menu_pause_libretro = "true"` | A15 relief in Quick Menu |
+| Menu | Pause on Menu | `menu_pause_libretro = "false"` | v3.5; was `"true"` — was neutralizing Run Ahead catch-up and FF engagement through menu open. Core keeps running behind Quick Menu |
 | Menu | Menu Driver | `menu_driver = "xmb"` | Restart required to switch |
-| Menu | Pause on Focus Loss | `pause_nonactive = "true"` | Reduces OS-kill probability |
+| Menu | Pause on Focus Loss | `pause_nonactive = "false"` | v3.5; was `"true"` — tvOS briefly marks app inactive on Siri Remote / Control Center / HDMI CEC, causing audio glitch |
 | Menu | Playlist Sub-labels | `playlist_show_sublabels = "false"` | Prevents XMB scroll lag |
 | Saving | Auto-Index States | `savestate_auto_index = "true"` | Required for slot rotation |
 | Saving | Auto-Save on Exit | `savestate_auto_save = "true"` | Captures on Close Content; manual load via Select + L1 |
@@ -352,7 +366,7 @@ The companion `retroarch.cfg` includes hardening, input, menu performance, and l
 | Logging | Verbosity / File Logging | `log_verbosity = "false"`, `log_to_file = "false"` | `os_log` per-message alloc cost |
 | Audio | Audio Driver | `audio_driver = "coreaudio"` | Pinned; `coreaudio3` is master-only — do not use |
 | Audio | `audio_out_rate` | `48000` Hz | Native HDMI; no resampling |
-| Audio | Audio Latency | `audio_latency = "64"` | Global baseline; PCSX pins `48`; v3.3 Mupen pins `96` (E-core + GC + scheduler variance) |
+| Audio | Audio Latency | `audio_latency = "48"` | v3.6; was `"32"` in v3.5, `"64"` pre-v3.5. 48 is the sweet spot (~3 frames @ 60 Hz) — preserves most of the 32 benefit while eliminating thermal-throttle crackle risk. PCSX mirrors `48` (drift-guard); Mupen pins `64` (+16 ms for E-core + GC + scheduler variance). Revert to 64 if crackle under sustained load |
 | Audio | Resampler Quality | `audio_resampler_quality = "1"` | v3.1: lowered from 2; imperceptible at 48 kHz |
 | Audio | Audio Sync | `audio_sync = "true"` | Drift-guard; v3.3 Mupen pins `false` (clean dropped frames vs pitch rubber-band) |
 | Video | Threaded Video | `video_threaded = "false"` | Force-disabled on all Apple platforms ([#14978](https://github.com/libretro/RetroArch/issues/14978)) |
