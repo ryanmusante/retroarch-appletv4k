@@ -1,3 +1,31 @@
+2026-04-22  Ryan Musante
+
+- v3.7: 3 documentation-only edits; 0 cfg/opt value changes.
+  90 `retroarch.cfg` keys byte-identical to v3.6.
+
+  `retroarch.cfg`: no changes.
+
+  README:
+  - §9 Tier 2 Mupen row: "(P-core pin on 2P+4E A15)" →
+    "(P-core pin on 2P+3E binned A15)". Apple TV 4K 3rd Gen
+    ships a binned A15 with one efficiency core fused off
+    (2P+3E, 5 cores total), a distinct variant from the
+    iPhone 13/14 A15 despite sharing the marketing name.
+  - §6 Controllers: qualify "up to four simultaneous Bluetooth
+    controllers" with tvOS RetroArch cap at three
+    ([#16685](https://github.com/libretro/RetroArch/issues/16685)).
+  - §10 Known Issues: new row #7 for #16685.
+  - Landing paragraph: "as of v3.6" → "as of v3.7".
+
+  Version badge 3.6 → 3.7. Companion bumped to v3.7 (README
+  §1/§4 doc-only 2P+4E → 2P+3E corrections + Mupen64Plus-Next
+  .cfg/.opt inline-comment corrections + CHANGELOG history
+  corrections on 4 lines; all .cfg / .opt key=value lines
+  byte-identical to v3.6).
+
+  Sources: https://en.wikipedia.org/wiki/Apple_A15;
+  https://www.macrumors.com/2022/11/14/new-apple-tv-5-core-cpu/
+
 2026-04-21  Ryan Musante
 
 - v3.6: 2 `retroarch.cfg` value changes; companion ships 1 value
@@ -150,18 +178,3 @@
   - Version badge 3.2 → 3.3. Companion bumped to v3.3
     (Mupen.cfg 5→9 keys, PCSX.cfg 7→9 keys, Mupen.opt 1 value
     change; total cfg 49→55, opt unchanged at 27).
-
-2026-04-19  Ryan Musante
-
-- v3.2: stale-reference cleanup; companion ships .opt enum fixes.
-  - `retroarch.cfg`: header stamps bumped to v3.2; 65 keys
-    byte-identical to v3.1.
-  - README §7 Video: removed stale Mupen `swapchain=3` clause
-    (pin was dropped in companion v1.57).
-  - README §7 Latency: removed stale "PCE Fast = 1 (CDROM)"
-    clause (PCE moved to 2-frame parity in companion v2.95).
-  - Version badge 3.1 → 3.2. Companion bumped to v3.2
-    (`mGBA.opt` `mgba_color_correction` "Game Boy Advance" → "Auto"
-    [HIGH; enum mismatch silently disabled correction since
-    introduction]; `Genesis Plus GX.opt` `genesis_plus_gx_audio_filter`
-    "off" → "disabled" [correctness; same effect]).

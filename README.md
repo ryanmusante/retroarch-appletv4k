@@ -1,12 +1,12 @@
 # RetroArch on Apple TV 4K
 
-![version](https://img.shields.io/badge/version-3.6-blue)
+![version](https://img.shields.io/badge/version-3.7-blue)
 ![RetroArch](https://img.shields.io/badge/RetroArch-v1.22.x-green)
 ![license](https://img.shields.io/badge/license-MIT-green)
 
 **RetroArch v1.22.x** · **tvOS 26** · **Apple TV 4K 3rd Gen (64 GB Wi-Fi · j255ap · A2737)** · **April 2026**
 
-This package ships a baseline configuration as of v3.6. The 90-key global baseline applies Metal-path latency tuning (`video_frame_rest`, `audio_latency = "48"`, `menu_pause_libretro = "false"`, `input_auto_game_focus = "1"`), explicit command-surface and HDR hardening, and XMB animation trims for the A15. The global shader pipeline is enabled (`video_shader_enable = "true"`); no preset is set in `retroarch.cfg` — users select presets per-core via Quick Menu → Shaders → Save Core Preset (see §8). Tier 1 core overrides explicitly enable Run Ahead where it has been validated. Global low-latency features that require per-core validation remain disabled in the baseline `retroarch.cfg`.
+This package ships a baseline configuration as of v3.7. The 90-key global baseline applies Metal-path latency tuning (`video_frame_rest`, `audio_latency = "48"`, `menu_pause_libretro = "false"`, `input_auto_game_focus = "1"`), explicit command-surface and HDR hardening, and XMB animation trims for the A15. The global shader pipeline is enabled (`video_shader_enable = "true"`); no preset is set in `retroarch.cfg` — users select presets per-core via Quick Menu → Shaders → Save Core Preset (see §8). Tier 1 core overrides explicitly enable Run Ahead where it has been validated. Global low-latency features that require per-core validation remain disabled in the baseline `retroarch.cfg`.
 
 RetroArch setup guide for Apple TV 4K (3rd generation). Covers installation, ROM/BIOS setup, controllers, performance tuning, and CRT shaders. Includes a companion `retroarch.cfg`. Directory paths (ROMs, BIOS, saves, states) are set in-app per §4 — not via `retroarch.cfg`.
 
@@ -226,7 +226,7 @@ Use **Main Menu → Import Content → Manual Scan** — point at each system su
 
 ## 6. Controllers
 
-The Apple TV supports up to four simultaneous Bluetooth controllers. The Siri Remote navigates menus only and cannot be used as a gamepad.
+The Apple TV supports up to four simultaneous Bluetooth controllers at the OS level, though RetroArch on tvOS currently recognizes a maximum of three ([#16685](https://github.com/libretro/RetroArch/issues/16685)). The Siri Remote navigates menus only and cannot be used as a gamepad.
 
 ### Pairing
 
@@ -439,7 +439,7 @@ Tier definitions: **1** = Flawless (full speed, shaders enabled), **2** = Good (
 | 1 | PC Engine / TG-16 | Beetle PCE Fast | Yes | — |
 | 1 | Neo Geo, Arcade (CPS1/2/3) | FinalBurn Neo | Yes | Rewind pinned `false` ([#16374](https://github.com/libretro/RetroArch/issues/16374)) |
 | 2 | PlayStation 1 | PCSX-ReARMed | Yes | No JIT; Run Ahead `false`; `pcsx_rearmed_psxclock="100"` (underclock 75/50 per-game for Tony Hawk, Spyro 2/3, Tekken 3); v3.3 pins `video_max_swapchain_images=3` + `autosave_interval=0` |
-| 2 | Nintendo 64 | Mupen64Plus-Next | Yes | Angrylion + CXD4 (platform-forced on Metal build). v3.3 `mupen64plus-angrylion-multithread = "2"` (P-core pin on 2P+4E A15). Pins: `video_threaded=false` ([#14978](https://github.com/libretro/RetroArch/issues/14978)), `video_frame_delay_auto=false` ([#14201](https://github.com/libretro/RetroArch/issues/14201)), `rewind_enable=false` ([#18300](https://github.com/libretro/RetroArch/issues/18300)), `run_ahead_enabled=false`, `audio_latency=96`, `video_max_swapchain_images=3`, `audio_sync=false`, `autosave_interval=0` |
+| 2 | Nintendo 64 | Mupen64Plus-Next | Yes | Angrylion + CXD4 (platform-forced on Metal build). v3.3 `mupen64plus-angrylion-multithread = "2"` (P-core pin on 2P+3E binned A15). Pins: `video_threaded=false` ([#14978](https://github.com/libretro/RetroArch/issues/14978)), `video_frame_delay_auto=false` ([#14201](https://github.com/libretro/RetroArch/issues/14201)), `rewind_enable=false` ([#18300](https://github.com/libretro/RetroArch/issues/18300)), `run_ahead_enabled=false`, `audio_latency=96`, `video_max_swapchain_images=3`, `audio_sync=false`, `autosave_interval=0` |
 
 ### Systems not supported (JIT required)
 
@@ -455,6 +455,7 @@ Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version
 | 4 | Mupen64Plus-Next auto frame delay incompatible | [#14201](https://github.com/libretro/RetroArch/issues/14201) | Open | `video_frame_delay_auto = "false"` per-core (global `true` as of v2.66); do not re-enable per-game; refactored upstream v1.20.0 |
 | 5 | N64 rendering glitches (game-specific) | [#16598](https://github.com/libretro/RetroArch/issues/16598) | Open | Per-game overrides |
 | 6 | Threaded video force-disabled on all Apple platforms | [#14978](https://github.com/libretro/RetroArch/issues/14978) | Persists | Upstream `gfx/video_driver.c` `#if defined(__MACH__) && defined(__APPLE__)` — NSWindow/UIWindow concurrency; no upstream fix; `video_threaded=false` globally; Tier 2 cfgs pin |
+| 7 | RetroArch on tvOS caps at 3 simultaneous controllers despite OS supporting 4 | [#16685](https://github.com/libretro/RetroArch/issues/16685) | Open | Limit multiplayer to 3 controllers; fourth pad not recognized |
 
 ## 11. Setup Checklist
 
