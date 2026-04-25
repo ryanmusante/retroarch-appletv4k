@@ -1,5 +1,31 @@
 2026-04-24  Ryan Musante
 
+- v3.18: doc-correctness sync; 0 key-value changes.
+  * retroarch.cfg: bump header stamp v3.17 -> v3.18; 77 keys byte-identical.
+  * README.md: §7 Hotkeys callout `autosave_interval` "150" -> "300";
+    "every 2.5 min" -> "every 5 min" -- claim was stale against the
+    shipped global value (300 s = 5 min) since v3.5 raised the
+    interval; the 150 s figure traced to a pre-v3.5 draft and never
+    re-synced when the cfg was bumped.
+  * README.md: §7 Additional settings adds Menu row for
+    `menu_enable_widgets = "true"` -- drift-guard pin on upstream
+    default, gates the OSD widget surface used by task notifications
+    per v3.13 `fps_show` rationale clarification; was the only key in
+    `retroarch.cfg` previously undocumented in §7.
+  * README.md: badge 3.17 -> 3.18.
+  * CHANGELOG.md: trim v3.13 entry per 5-release retention; retained
+    entries are now v3.14-v3.18.
+  * Companion v3.18: 8 `.cfg` stamps v3.17 -> v3.18 (header stamps and
+    "paired with retroarch-appletv4k" pairing stamps; bodies byte-
+    identical to v3.17); 8 `.opt` files unchanged (no version stamps
+    per v3.12 design); README §4 Frontend Override Keys
+    `autosave_interval` row rationale "every 2.5 min" -> "every 5
+    min" matching companion global; README badge 3.17 -> 3.18;
+    CHANGELOG trim v3.13 per matching 5-release retention.
+  * cfg 30, opt 28, cfg+opt 58 -- unchanged.
+
+2026-04-24  Ryan Musante
+
 - v3.17: README structural trim; 0 key-value changes.
   * README.md: remove `#### Baseline (v3.16 · 77 keys)` H4 section
     (8 bullets covering Metal-path latency, command-surface/HDR
@@ -107,23 +133,3 @@
     entries are now v3.10-v3.14.
   * Companion v3.14: 8 `.cfg` stamps v3.13 -> v3.14; same CHANGELOG
     format pass; cfg 32, opt 28, cfg+opt 60 -- unchanged.
-
-2026-04-24  Ryan Musante
-
-- v3.13: documentation-correctness pass; 0 key or structure changes.
-  * retroarch.cfg: bump header stamp v3.12 -> v3.13; 80 keys byte-identical.
-  * README.md: §7 Video `fps_show` row rationale corrected -- inherits
-    upstream default `video_font_enable = "true"` (removed as drift-guard
-    in v3.9), not an explicit pin; task notifications render via
-    `menu_enable_widgets`, not `video_font_enable`.
-  * README.md: §7 Menu row added for `menu_show_sublabels = "false"`
-    (shipped pre-v3.5, previously undocumented).
-  * README.md: §7 Logging row added for `log_verbosity = "false"`
-    (shipped pre-v3.5, previously undocumented).
-  * README.md: landing paragraph appends v3.13 correctness-pass sentence;
-    badge 3.12 -> 3.13.
-  * CHANGELOG.md: v3.12 historical `fps_show` rationale patched
-    (text-only; preserves key-swap narrative and 80-key count).
-  * Companion v3.13: 8 `.cfg` stamps v3.12 -> v3.13; README §4
-    `audio_latency` row drops ambiguous "pre-v3.5 was tighter-than-
-    global 64" clause (pre-v3.5 global was also 64).

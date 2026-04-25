@@ -1,6 +1,6 @@
 # RetroArch on Apple TV 4K
 
-![version](https://img.shields.io/badge/version-3.17-blue)
+![version](https://img.shields.io/badge/version-3.18-blue)
 ![RetroArch](https://img.shields.io/badge/RetroArch-v1.22.x-green)
 ![license](https://img.shields.io/badge/license-MIT-green)
 
@@ -267,7 +267,7 @@ The PS/Xbox home button opens tvOS Control Center, not RetroArch's menu. A contr
 | State Slot − | Select + D-Pad Left |
 | Close Content | Select + Start |
 
-> ℹ️ **Save state behavior.** `savestate_auto_save = "true"` captures in-memory state on Close Content; `savestate_auto_load` is left at upstream default `false` so launches start clean. Use Select + L1 to manually load the auto-saved state. SRAM is flushed every 2.5 min via `autosave_interval = "150"`; `block_sram_overwrite = "true"` prevents a manual state-load from clobbering live SRAM. Up to 10 auto-indexed slots rotate (`savestate_max_keep = "10"`). **v3.3:** Tier 2 cores pin `autosave_interval = "0"` per-core to prevent purgeable-cache stall; save-on-close still applies.
+> ℹ️ **Save state behavior.** `savestate_auto_save = "true"` captures in-memory state on Close Content; `savestate_auto_load` is left at upstream default `false` so launches start clean. Use Select + L1 to manually load the auto-saved state. SRAM is flushed every 5 min via `autosave_interval = "300"`; `block_sram_overwrite = "true"` prevents a manual state-load from clobbering live SRAM. Up to 10 auto-indexed slots rotate (`savestate_max_keep = "10"`). **v3.3:** Tier 2 cores pin `autosave_interval = "0"` per-core to prevent purgeable-cache stall; save-on-close still applies.
 
 > ⚠️ **Warning:** Without Close Content configured, there is no method to exit a running game without force-quitting the app.
 
@@ -339,6 +339,7 @@ The companion `retroarch.cfg` includes hardening, input, menu performance, and l
 | Menu | Pause on Menu | `menu_pause_libretro = "false"` | v3.5; was `"true"` — was neutralizing Run Ahead catch-up and FF engagement through menu open. Core keeps running behind Quick Menu |
 | Menu | Menu Driver | `menu_driver = "xmb"` | Restart required to switch |
 | Menu | Sublabels | `menu_show_sublabels = "false"` | Hide item-description text beneath XMB entries; denser menu |
+| Menu | Widgets / Task Notifications | `menu_enable_widgets = "true"` | Drift-guard pin on upstream default; gates the OSD widget surface that renders task notifications (Online Updater progress, save-state confirmations, shader-load toasts). Distinct from `video_font_enable` which gates the OSD text path used by `fps_show` (see Video table) |
 | Menu | Pause on Focus Loss | `pause_nonactive = "false"` | v3.5; was `"true"` — tvOS briefly marks app inactive on Siri Remote / Control Center / HDMI CEC, causing audio glitch |
 | Saving | Auto-Index States | `savestate_auto_index = "true"` | Required for slot rotation |
 | Saving | Auto-Save on Exit | `savestate_auto_save = "true"` | Captures on Close Content; manual load via Select + L1 |
