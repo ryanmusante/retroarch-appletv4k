@@ -1,25 +1,12 @@
 # RetroArch on Apple TV 4K
 
-![version](https://img.shields.io/badge/version-3.16-blue)
+![version](https://img.shields.io/badge/version-3.17-blue)
 ![RetroArch](https://img.shields.io/badge/RetroArch-v1.22.x-green)
 ![license](https://img.shields.io/badge/license-MIT-green)
 
 **RetroArch v1.22.x** · **tvOS 26** · **Apple TV 4K 3rd Gen (64 GB Wi-Fi · j255ap · A2737)** · **April 2026**
 
 RetroArch setup guide for Apple TV 4K (3rd generation). Covers installation, ROM/BIOS setup, controllers, performance tuning, and CRT shaders. Ships with a companion 77-key `retroarch.cfg`. Directory paths (ROMs, BIOS, saves, states) are set in-app per §4 — not via `retroarch.cfg`.
-
-#### Baseline (v3.16 · 77 keys)
-
-- **Metal-path latency** — `audio_latency = "48"`, `menu_pause_libretro = "false"`, `input_auto_game_focus = "1"`.
-- **Command-surface and HDR hardening** — stdin/network command sockets off, HDR off.
-- **Partial XMB animation kill** — `menu_xmb_animation_move_up_down = "2"` (None — only key in the trio with a "None" enum value); `menu_xmb_animation_horizontal_highlight = "0"` and `menu_xmb_animation_opening_main_menu = "0"` (Easing Out Quad, the least-pronounced option — neither key has a "None" value in `menu/menu_setting.c`); `menu_horizontal_animation = "false"`; `menu_show_load_content_animation = "false"`; `menu_shader_pipeline = "0"` static wallpaper.
-- **Explicit A15 appearance pins** — Gray Dark background `xmb_menu_color_theme = "20"`, shadows off `xmb_shadows_enable = "false"`. Monochrome icons and Boxart thumbnails inherit from upstream defaults since v3.11.
-- **On-screen FPS + task notifications** — `fps_show = "true"` (v3.12) renders via the OSD text path (upstream default `video_font_enable = "true"`); `menu_enable_widgets = "true"` drives graphical task-notification cards.
-- **60 Hz SDR refresh-rate seed** — `video_refresh_rate = "60.000000"` (v3.10) matches Apple TV's 60 Hz SDR output, not NTSC 59.94. Users should still run Settings → Video → Output → Estimated Screen Refresh Rate (~8192 frames) and accept the measured value for DRC (<0.1% accuracy).
-- **Shader pipeline enabled, no preset** — `video_shader_enable = "true"`; users pick presets per-core via Quick Menu → Shaders → Save Core Preset (see §8).
-- **Tier 1 cores explicitly enable Run Ahead** via per-core overrides where validated; global low-latency features that require per-core validation remain disabled in the baseline.
-
-See [CHANGELOG](CHANGELOG.md) for release history.
 
 ### Quick Start
 

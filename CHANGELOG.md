@@ -1,5 +1,26 @@
 2026-04-24  Ryan Musante
 
+- v3.17: README structural trim; 0 key-value changes.
+  * README.md: remove `#### Baseline (v3.16 · 77 keys)` H4 section
+    (8 bullets covering Metal-path latency, command-surface/HDR
+    hardening, XMB animation kill, A15 appearance pins, FPS+task
+    notifications, 60 Hz SDR seed, shader pipeline, Run Ahead) and
+    its trailing "See [CHANGELOG]" pointer -- per-key documentation
+    retained in §7 Configuration. Standalone `[changelog]` link
+    after Quick Start preserved.
+  * README.md: badge 3.16 -> 3.17.
+  * retroarch.cfg: bump header stamp v3.16 -> v3.17; 77 keys byte-identical.
+  * CHANGELOG.md: trim v3.12 entry per 5-release retention; retained
+    entries are now v3.13-v3.17.
+  * Companion v3.17: 8 `.cfg` stamps v3.16 -> v3.17 (header stamps
+    and "paired with retroarch-appletv4k" pairing stamps; bodies
+    byte-identical to v3.16); 8 `.opt` files unchanged (no version
+    stamps per v3.12 design); README badge 3.16 -> 3.17; CHANGELOG
+    trim v3.12 per matching 5-release retention.
+  * cfg 30, opt 28, cfg+opt 58 -- unchanged.
+
+2026-04-24  Ryan Musante
+
 - v3.16: doc-correctness sync; 0 key-value changes.
   * retroarch.cfg: bump header stamp v3.15 -> v3.16; 77 keys byte-identical.
   * README.md: §7 Audio table `audio_sync` row corrected -- "v3.3 Mupen
@@ -106,25 +127,3 @@
   * Companion v3.13: 8 `.cfg` stamps v3.12 -> v3.13; README §4
     `audio_latency` row drops ambiguous "pre-v3.5 was tighter-than-
     global 64" clause (pre-v3.5 global was also 64).
-
-2026-04-24  Ryan Musante
-
-- v3.12: retroarch.cfg net-zero key swap; 80 keys unchanged.
-  * retroarch.cfg: add `fps_show = "true"` (on-screen FPS counter;
-    renders via OSD text path, upstream default `video_font_enable =
-    "true"`; no additional GPU cost).
-  * retroarch.cfg: remove `netplay_start_as_spectator = "false"`
-    (drift-guard matching upstream default; runtime unchanged).
-  * retroarch.cfg: Netplay section header drops "spectator" mention:
-    `# === Netplay (disable public announce, NAT-PMP/UPnP, MITM relay) ===`.
-  * retroarch.cfg: 4-line file header collapsed to single-line form
-    per v3.12 comment-style unification.
-  * README.md: landing paragraph rewritten for v3.12; §7 Video adds
-    On-Screen FPS row; §7 Additional Network removes Spectator row;
-    badge 3.11 -> 3.12.
-  * CHANGELOG.md: trim v3.7 entry per 5-release retention.
-  * Companion v3.12: 8 `.cfg` stamps v3.11 -> v3.12; 16 override files'
-    comment blocks collapsed to single-line form (headers, section-
-    header inline rationales, WARNING blocks reduced to one line with
-    `·` and `;` separators preserving content); 0 key-value changes
-    across any `.cfg` or `.opt`; cfg 32, opt 28, cfg+opt 60 -- unchanged.
