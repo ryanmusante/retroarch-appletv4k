@@ -1,180 +1,130 @@
-2026-04-22  Ryan Musante
+2026-04-24  Ryan Musante
 
-- v3.7: 3 documentation-only edits; 0 cfg/opt value changes.
-  90 `retroarch.cfg` keys byte-identical to v3.6.
+- v3.16: doc-correctness sync; 0 key-value changes.
+  * retroarch.cfg: bump header stamp v3.15 -> v3.16; 77 keys byte-identical.
+  * README.md: §7 Audio table `audio_sync` row corrected -- "v3.3 Mupen
+    pins false" rationale was stale since v3.9 flip to "true"; row now
+    documents v3.9 flip with DRC pitch-shift rationale matching §9
+    Mupen row. Resolves §7-vs-§9 internal contradiction.
+  * README.md: §7 Hotkeys callout `savestate_auto_load` reworded --
+    key is absent from `retroarch.cfg` (upstream default `false`);
+    prior phrasing implied a configured pin among actually-pinned
+    siblings.
+  * README.md: badge 3.15 -> 3.16; baseline header label
+    `(v3.15 · 77 keys)` -> `(v3.16 · 77 keys)`.
+  * CHANGELOG.md: trim v3.11 entry per 5-release retention; retained
+    entries are now v3.12-v3.16.
+  * Companion v3.16: 8 `.cfg` stamps v3.15 -> v3.16; README §7 path
+    frame aligned to WebDAV-relative `config/<core>/` -- was
+    `Documents/RetroArch/config/<core>/` (native sandbox path that
+    would resolve to a wrong location if followed literally via the
+    WebDAV transfer flow documented in companion §4); cfg 30, opt 28,
+    cfg+opt 58 -- unchanged.
 
-  `retroarch.cfg`: no changes.
+2026-04-24  Ryan Musante
 
-  README:
-  - §9 Tier 2 Mupen row: "(P-core pin on 2P+4E A15)" →
-    "(P-core pin on 2P+3E binned A15)". Apple TV 4K 3rd Gen
-    ships a binned A15 with one efficiency core fused off
-    (2P+3E, 5 cores total), a distinct variant from the
-    iPhone 13/14 A15 despite sharing the marketing name.
-  - §6 Controllers: qualify "up to four simultaneous Bluetooth
-    controllers" with tvOS RetroArch cap at three
-    ([#16685](https://github.com/libretro/RetroArch/issues/16685)).
-  - §10 Known Issues: new row #7 for #16685.
-  - Landing paragraph: "as of v3.6" → "as of v3.7".
+- v3.15: upstream-correctness pass; 6 dead/wrong keys removed or fixed.
+  82 -> 77 keys.
+  * retroarch.cfg: bump header stamp v3.14 -> v3.15; "80 keys" ->
+    "77 keys".
+  * retroarch.cfg: remove `video_frame_rest = "1"` -- key removed in RA
+    v1.20.0 per upstream `CHANGES.md` L401 ("Remove Frame Rest, obsoleted
+    by Frame Delay refactor"); absent from `configuration.c`,
+    `config.def.h`, `menu_setting.c` in v1.22.0 source.
+  * retroarch.cfg: remove `video_hdr_contrast = "5.0"` -- key does not
+    exist in RA v1.22.0; real key is `video_hdr_display_contrast` per
+    `configuration.c:2356`; inert anyway with `video_hdr_enable = "false"`.
+  * retroarch.cfg: remove `video_max_swapchain_images = "2"` -- Metal
+    driver hardcodes `MAX_INFLIGHT 1` in `gfx/common/metal/metal_common.h`
+    L30 with TODO comment "implement triple buffering"; metal.m never
+    reads the setting; CAMetalLayer falls back to Apple defaults
+    regardless of frontend value.
+  * retroarch.cfg: `menu_xmb_animation_horizontal_highlight` "2" -> "0";
+    `menu_xmb_animation_opening_main_menu` "2" -> "0". Per
+    `menu/menu_setting.c` v1.22.0 L4123-4175, value 2 maps to "Easing
+    Out Bounce" (range 0-2) and "Easing Out Expo" (range 0-3)
+    respectively -- neither key exposes a "None" enum value. Only
+    `menu_xmb_animation_move_up_down` has case 2 =
+    `MENU_ENUM_LABEL_VALUE_NONE` (kept at "2"). v3.9-v3.14 set all
+    three to "2", which produced the bounciest animations on two of
+    them -- the opposite of intent. v3.15 pins both to "0" (Easing Out
+    Quad, the upstream `DEFAULT_XMB_ANIMATION`).
+  * retroarch.cfg: `audio_resampler_quality` "1" -> "2" (LOWEST ->
+    LOWER per `libretro-common/include/audio/audio_resampler.h` L52-57
+    enum); audible quality gain on cores not native to 48 kHz at sub-1%
+    A15 CPU cost.
+  * README.md: badge 3.14 -> 3.15; landing paragraph "80-key" ->
+    "77-key"; baseline summary rewritten -- Metal-path latency bullet
+    drops `video_frame_rest`, animation kill bullet rewritten as
+    "partial" with explicit per-key None-availability disclosure;
+    §7 Video drops Max Swapchain Images row; §7 Latency drops Frame
+    Rest row; §7 Additional XMB Animations row rewritten with
+    enum-correctness rationale; §7 HDR row drops `video_hdr_contrast`;
+    §7 Resampler Quality row updated for v3.15 raise; §9 Mupen + PCSX
+    rows drop `video_max_swapchain_images = 3` mention; §9 PCSX row
+    notes `gpu_thread_rendering = "enabled"` v3.15 fix.
+  * CHANGELOG.md: trim v3.10 entry per 5-release retention; retained
+    entries are now v3.11-v3.15.
+  * Companion v3.15: 8 `.cfg` stamps v3.14 -> v3.15;
+    `Mupen64Plus-Next.cfg` 9 -> 8 keys (drop swapchain);
+    `PCSX-ReARMed.cfg` 9 -> 8 keys (drop swapchain);
+    `PCSX-ReARMed.opt` `pcsx_rearmed_gpu_thread_rendering` "async" ->
+    "enabled" (was invalid value silently falling back to default
+    "auto"); `PCSX-ReARMed.opt` header drops incorrect `cd_readahead`
+    WARNING (V(333000) IS in the dropdown enum on tvOS per
+    `pcsx_rearmed_opts.h` L186-189). cfg 30, opt 28, cfg+opt 58.
 
-  Version badge 3.6 → 3.7. Companion bumped to v3.7 (README
-  §1/§4 doc-only 2P+4E → 2P+3E corrections + Mupen64Plus-Next
-  .cfg/.opt inline-comment corrections + CHANGELOG history
-  corrections on 4 lines; all .cfg / .opt key=value lines
-  byte-identical to v3.6).
+2026-04-24  Ryan Musante
 
-  Sources: https://en.wikipedia.org/wiki/Apple_A15;
-  https://www.macrumors.com/2022/11/14/new-apple-tv-5-core-cpu/
+- v3.14: doc format pass; GitHub-style README, kernel.org-style CHANGELOG.
+  * retroarch.cfg: bump header stamp v3.13 -> v3.14; 80 keys byte-identical.
+  * README.md: tighten landing paragraph (split 450-word block into intro,
+    baseline summary, history pointer); badge 3.13 -> 3.14.
+  * CHANGELOG.md: rewrite all retained entries in kernel.org style
+    (file-first bullets, imperative mood, trimmed prose).
+  * CHANGELOG.md: trim v3.9 entry per 5-release retention; retained
+    entries are now v3.10-v3.14.
+  * Companion v3.14: 8 `.cfg` stamps v3.13 -> v3.14; same CHANGELOG
+    format pass; cfg 32, opt 28, cfg+opt 60 -- unchanged.
 
-2026-04-21  Ryan Musante
+2026-04-24  Ryan Musante
 
-- v3.6: 2 `retroarch.cfg` value changes; companion ships 1 value
-  change + 1 doc-sync comment. 90 keys unchanged.
+- v3.13: documentation-correctness pass; 0 key or structure changes.
+  * retroarch.cfg: bump header stamp v3.12 -> v3.13; 80 keys byte-identical.
+  * README.md: §7 Video `fps_show` row rationale corrected -- inherits
+    upstream default `video_font_enable = "true"` (removed as drift-guard
+    in v3.9), not an explicit pin; task notifications render via
+    `menu_enable_widgets`, not `video_font_enable`.
+  * README.md: §7 Menu row added for `menu_show_sublabels = "false"`
+    (shipped pre-v3.5, previously undocumented).
+  * README.md: §7 Logging row added for `log_verbosity = "false"`
+    (shipped pre-v3.5, previously undocumented).
+  * README.md: landing paragraph appends v3.13 correctness-pass sentence;
+    badge 3.12 -> 3.13.
+  * CHANGELOG.md: v3.12 historical `fps_show` rationale patched
+    (text-only; preserves key-swap narrative and 80-key count).
+  * Companion v3.13: 8 `.cfg` stamps v3.12 -> v3.13; README §4
+    `audio_latency` row drops ambiguous "pre-v3.5 was tighter-than-
+    global 64" clause (pre-v3.5 global was also 64).
 
-  `retroarch.cfg`:
-  - `fastforward_ratio` "5.0" → "4.0" (MED; 4× matches community
-    standalone-emulator norms and reduces thermal load during
-    sustained FF bursts on passive A15; v3.3 5× cap was set as a
-    Tier 2 audio-underrun mitigation over uncapped 0.0, which 4×
-    also satisfies).
-  - `audio_latency` "32" → "48" (HIGH; v3.5 32 ms was aggressive —
-    crackle risk under thermal throttle and tight buffer on FBNeo
-    secondary-instance workload. 48 ms ≈ 3 frames @ 60 Hz is the
-    sweet spot: preserves most of the 32 benefit, matches standalone
-    emulator community norms, and degrades gracefully. Tier 2 pins
-    adjusted per companion v3.6 — Mupen absolute 64, PCSX mirrors
-    global 48).
-  - 90 keys, byte-identical to v3.5 apart from the two values and
-    the header version stamps.
+2026-04-24  Ryan Musante
 
-  README:
-  - Landing paragraph: `audio_latency = "32"` → `"48"`; version
-    stamp 3.5 → 3.6.
-  - §7 Latency table: Fast Forward Ratio row rewritten for
-    4.0 + thermal/community-norm rationale.
-  - §7 Additional table: Audio Latency row rewritten for 48 +
-    sweet-spot rationale; Tier 2 pin values updated (PCSX=48
-    drift-guard mirror, Mupen=64).
-
-  Version badge 3.5 → 3.6. Companion bumped to v3.6
-  (`Mupen64Plus-Next.cfg` `audio_latency` "96" → "64";
-  `PCSX-ReARMed.cfg` inline comment doc-synced — value "48"
-  unchanged but rationale now "drift-guard mirror of v3.6
-  global" instead of "tighter than global 64"; all 8 .cfg
-  header "paired with" stamps v3.5 → v3.6; .opt content
-  byte-identical to v3.5).
-
-2026-04-21  Ryan Musante
-
-- v3.5: `retroarch.cfg` latency + hardening refresh (3 modifications,
-  25 additions; cfg 65 → 90 keys). Companion unchanged.
-
-  Modifications:
-  - `menu_pause_libretro` "true" → "false" (HIGH; was neutralizing
-    Tier 1 Run Ahead catch-up and Fast Forward engagement on every
-    menu open; core now keeps running behind Quick Menu).
-  - `pause_nonactive` "true" → "false" (MED; tvOS briefly marks
-    app inactive on Siri Remote wake / Control Center / HDMI CEC —
-    causes audio-buffer glitch and spurious mid-run pause).
-  - `audio_latency` "64" → "32" (HIGH; A15 + CoreAudio sustains
-    32 ms; halves audio buffer depth. Tier 2 pins unaffected —
-    PCSX 48, Mupen 96 override up. Revert to 48 or 64 if crackle
-    under thermal throttle).
-
-  Additions (25 keys):
-
-  Menu / UI (6):
-  - `core_info_cache_enable = "true"` (cold-start win on 64 GB
-    purgeable-cache).
-  - `menu_xmb_animation_opening_main_menu = "0"`,
-    `menu_xmb_animation_horizontal_highlight = "0"`,
-    `menu_xmb_animation_move_up_down = "0"` (kills XMB ribbon /
-    transition GPU load; instant menu cuts).
-  - `rgui_inline_thumbnails = "false"`,
-    `menu_show_sublabels = "false"` (small cache + CPU save).
-
-  Video (8):
-  - `video_frame_rest = "1"` (HIGH; RA 1.17 CPU end-of-frame
-    sleep; frees Metal queue for earlier present; 1–3 ms
-    CPU→display reduction; fixed-refresh only).
-  - `video_font_enable = "false"` (disables OSD text render;
-    FPS counter / savestate notifications no longer drawn).
-  - `video_black_frame_insertion = "0"` (explicit 0 for 60 Hz
-    panel; drift-guard).
-  - `video_bfi_dark_frames = "1"`, `video_shader_subframes = "1"`
-    (defensive defaults vs future release drift; inert at 60 Hz).
-  - `video_hdr_enable = "false"`, `video_hdr_max_nits = "1000"`,
-    `video_hdr_contrast = "5.0"` (explicit-off guard against
-    Metal HDR10 surface negotiation on DV / HDR10 TV modes;
-    §7 TV output still directs user to 4K SDR).
-
-  Input (2):
-  - `input_auto_game_focus = "1"` (auto-grabs focus on content
-    load; prevents tvOS Siri Remote leak into game focus).
-  - `input_bind_timeout = "3"` (BT HID 125 Hz retry window;
-    default 5 s frequently drops bind samples on GCController).
-
-  Latency (1):
-  - `fastforward_frameskip = "true"` (pairs with
-    `fastforward_ratio = "5.0"`; drops GPU ~50% when FF engages;
-    no effect at 1×).
-
-  Security (2):
-  - `network_cmd_enable = "false"`, `network_remote_enable = "false"`
-    (explicit-off RA UDP command surfaces; complements existing
-    `stdin_cmd_enable = "false"` pin).
-
-  Null drivers (6):
-  - `bluetooth_driver = "null"`, `wifi_driver = "null"`,
-    `midi_driver = "null"`, `record_driver = "null"`,
-    `camera_driver = "null"`, `location_driver = "null"`
-    (tvOS-inert subsystems handled at OS level; skip RA-side
-    init entirely).
-
-  Layout:
-  - `retroarch.cfg`: keys re-grouped for new sections; new
-    "Null drivers" section added. Header 65 → 90.
-
-  README:
-  - §7 Latency table: new rows `video_frame_rest`,
-    `fastforward_frameskip`.
-  - §7 Additional table: `menu_pause_libretro` "true" → "false"
-    (note rewritten); `pause_nonactive` "true" → "false";
-    `audio_latency` "64" → "32" note updated; new rows for
-    Menu/UI, Video, Input, Security, Null drivers additions.
-  - Landing paragraph: key count 65 → 90; companion v3.5.
-
-  Version badge 3.4 → 3.5. Companion bumped to v3.5 (SYNC;
-  all 8 `.cfg` "paired with" stamps v3.4 → v3.5; .cfg/.opt
-  content byte-identical to v3.4).
-
-2026-04-20  Ryan Musante
-
-- v3.4: SYNC — doc-alignment release; companion ships §4 drift fix.
-  - `retroarch.cfg`: header version stamps bumped to v3.4; all
-    65 key values byte-identical to v3.3.
-  - README: landing paragraph + badge bumped 3.3 → 3.4.
-  - Version badge 3.3 → 3.4. Companion bumped to v3.4
-    (configs README §4 `run_ahead_frames` row: "All 7 Tier 1
-    cores" → "All 6 Tier 1 cores" [stale count; 6 cores ship
-    `run_ahead_frames = "2"`, matching §1 Tier 1 rollup]; all
-    8 `.cfg` header "paired with" stamps bumped; no .cfg/.opt
-    content changes).
-
-2026-04-19  Ryan Musante
-
-- v3.3: companion v3.3 Tier 2 stutter-mitigation alignment.
-  - `retroarch.cfg`: `fastforward_ratio` "0.0" → "5.0" (uncapped FF
-    drove audio underrun on Tier 2 interpreter stack; 5× cap
-    transparent to Tier 2, preserves Tier 1 headroom; revert to
-    "4.0" if FF fails to engage on Metal).
-  - `retroarch.cfg`: header version stamps bumped to v3.3; all
-    65 key values otherwise byte-identical to v3.2.
-  - README §7 Latency: Fast Forward row updated.
-  - README §7 Additional: Audio Latency, Audio Sync, Max
-    Swapchain notes flagged Tier 2 per-core pins.
-  - README §7 Hotkeys callout: Tier 2 `autosave_interval=0` noted.
-  - README §9 Mupen + PCSX rows: rewritten for v3.3 pins.
-  - Version badge 3.2 → 3.3. Companion bumped to v3.3
-    (Mupen.cfg 5→9 keys, PCSX.cfg 7→9 keys, Mupen.opt 1 value
-    change; total cfg 49→55, opt unchanged at 27).
+- v3.12: retroarch.cfg net-zero key swap; 80 keys unchanged.
+  * retroarch.cfg: add `fps_show = "true"` (on-screen FPS counter;
+    renders via OSD text path, upstream default `video_font_enable =
+    "true"`; no additional GPU cost).
+  * retroarch.cfg: remove `netplay_start_as_spectator = "false"`
+    (drift-guard matching upstream default; runtime unchanged).
+  * retroarch.cfg: Netplay section header drops "spectator" mention:
+    `# === Netplay (disable public announce, NAT-PMP/UPnP, MITM relay) ===`.
+  * retroarch.cfg: 4-line file header collapsed to single-line form
+    per v3.12 comment-style unification.
+  * README.md: landing paragraph rewritten for v3.12; §7 Video adds
+    On-Screen FPS row; §7 Additional Network removes Spectator row;
+    badge 3.11 -> 3.12.
+  * CHANGELOG.md: trim v3.7 entry per 5-release retention.
+  * Companion v3.12: 8 `.cfg` stamps v3.11 -> v3.12; 16 override files'
+    comment blocks collapsed to single-line form (headers, section-
+    header inline rationales, WARNING blocks reduced to one line with
+    `·` and `;` separators preserving content); 0 key-value changes
+    across any `.cfg` or `.opt`; cfg 32, opt 28, cfg+opt 60 -- unchanged.
