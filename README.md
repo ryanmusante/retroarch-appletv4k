@@ -1,6 +1,6 @@
 # RetroArch on Apple TV 4K
 
-![version](https://img.shields.io/badge/version-3.22-blue)
+![version](https://img.shields.io/badge/version-3.23-blue)
 ![RetroArch](https://img.shields.io/badge/RetroArch-v1.22.x-green)
 ![license](https://img.shields.io/badge/license-MIT-green)
 
@@ -264,7 +264,7 @@ The PS/Xbox home button opens tvOS Control Center, not RetroArch's menu. A contr
 | State Slot − | Select + D-Pad Left |
 | Close Content | Select + Start |
 
-> ℹ️ **Save state behavior.** `savestate_auto_save = "true"` captures in-memory state on Close Content; `savestate_auto_load` is left at upstream default `false` so launches start clean. Use Select + L1 to manually load the auto-saved state. SRAM is flushed every 5 min via `autosave_interval = "300"`; `block_sram_overwrite = "true"` prevents a manual state-load from clobbering live SRAM. Up to 10 auto-indexed slots rotate (`savestate_max_keep = "10"`). **v3.3:** Tier 2 cores pin `autosave_interval = "0"` per-core to prevent purgeable-cache stall; save-on-close still applies.
+> ℹ️ **Save state behavior.** `savestate_auto_save = "true"` captures in-memory state on Close Content; `savestate_auto_load` is left at upstream default `false` so launches start clean. Use Select + L1 to manually load the auto-saved state. SRAM is flushed every 5 min via `autosave_interval = "300"`; `block_sram_overwrite = "true"` prevents a manual state-load from clobbering live SRAM. Up to 10 auto-indexed slots rotate (`savestate_max_keep = "10"`). Tier 2 cores pin `autosave_interval = "0"` per-core to prevent purgeable-cache stall; save-on-close still applies.
 
 > ⚠️ **Warning:** Without Close Content configured, there is no method to exit a running game without force-quitting the app.
 
@@ -279,19 +279,19 @@ The PS/Xbox home button opens tvOS Control Center, not RetroArch's menu. A contr
 | Video Shaders | `video_shader_enable = "true"` | Pipeline on; no global preset — assign per-core (§8) |
 | GPU Screenshot | `video_gpu_screenshot = "true"` | Post-shader capture |
 | VSync | `video_vsync = "true"` | Drift-guard pin |
-| Refresh Rate | `video_refresh_rate = "60.000000"` | v3.10; 60 Hz SDR seed (not NTSC 59.94). Calibrate via Settings → Video → Output |
-| On-Screen FPS | `fps_show = "true"` | v3.12; draws frame-rate counter in the corner. Renders via the OSD text path (inherits upstream default `video_font_enable = "true"`; removed as drift-guard in v3.9) — no additional GPU cost beyond the OSD text surface |
+| Refresh Rate | `video_refresh_rate = "60.000000"` | 60 Hz SDR seed (not NTSC 59.94). Calibrate via Settings → Video → Output |
+| On-Screen FPS | `fps_show = "true"` | Draws frame-rate counter in the corner. Renders via the OSD text path (inherits upstream default `video_font_enable = "true"`) — no additional GPU cost beyond the OSD text surface |
 
 ### Latency reduction
 
 | Setting | Value | Notes |
 |---------|-------|-------|
 | Sync to Exact Content Framerate | `vrr_runloop_enable = "false"` | Fixed-refresh ATV; keeps DRC active |
-| Run Ahead | `run_ahead_enabled = "false"`, `run_ahead_frames = "2"` | Tier 1 per-core `true`; Tier 2 explicit `false`. Tier 1 inherits global `run_ahead_frames = "2"` (v3.11 — companion no longer pins the count; global value applies) |
-| Run-Ahead Mode | `run_ahead_secondary_instance = "false"` | Single instance, ~½ CPU cost. FBN pins `"true"` ([#16374](https://github.com/libretro/RetroArch/issues/16374) — secondary instance required for FBN run-ahead); other Tier 1 cores inherit global `"false"` as of v3.11 |
+| Run Ahead | `run_ahead_enabled = "false"`, `run_ahead_frames = "2"` | Tier 1 per-core `true`; Tier 2 explicit `false`. Tier 1 inherits global `run_ahead_frames = "2"` |
+| Run-Ahead Mode | `run_ahead_secondary_instance = "false"` | Single instance, ~½ CPU cost. FBN pins `"true"` ([#16374](https://github.com/libretro/RetroArch/issues/16374) — secondary instance required for FBN run-ahead); other Tier 1 cores inherit the global `"false"` |
 | Preemptive Frames | `preemptive_frames_enable = "false"` | RA v1.15.0 ([PR #14832](https://github.com/libretro/RetroArch/pull/14832)); per-core only; exclusive with `run_ahead_enabled` |
 | Automatic Frame Delay | `video_frame_delay_auto = "true"` | Mupen pinned `false` ([#14201](https://github.com/libretro/RetroArch/issues/14201)) |
-| Fast Forward Ratio | `fastforward_ratio = "4.0"` | v3.6 standard cap (was `"5.0"` in v3.3–v3.5, uncapped `"0.0"` pre-v3.3); 4× matches community standalone-emulator norms and reduces thermal load during sustained FF bursts on passive A15 |
+| Fast Forward Ratio | `fastforward_ratio = "4.0"` | 4× matches community standalone-emulator norms and reduces thermal load during sustained FF bursts on passive A15 |
 
 ### TV output
 
@@ -309,52 +309,52 @@ Apple TV supports only QMS VRR (media frame-rate switching), not real-time game 
 
 ### Additional settings
 
-The companion `retroarch.cfg` includes hardening, input, menu performance, and logging settings. The Security and Netplay blocks were trimmed and partially restored across v3.19–v3.21: v3.19 dropped `stdin_cmd_enable`, `camera_allow`, `location_allow`; v3.20 dropped `network_cmd_enable`, `network_remote_enable`, `netplay_use_mitm_server`, `discord_allow`; v3.21 restored `network_cmd_enable`, `network_remote_enable`, `netplay_use_mitm_server` as drift-guards on the three real UDP cmd-surface / relay paths (port 55355 cmd listener, network gamepad remote, MITM relay routing), keeping the platform-absent surfaces removed (no stdin, no camera HW, no Discord RPC on tvOS). The two retained Netplay pins (`netplay_public_announce`, `netplay_nat_traversal`) actively flip upstream `true → false` and are real hardening; the two retained Security pins (`network_on_demand_thumbnails` per [#17242](https://github.com/libretro/RetroArch/issues/17242), `cloud_sync_enable` master gate) keep substantive functional rationale. tvOS-inert driver subsystems (bluetooth, wifi, midi, record, camera, location) are set to `null` to skip init.
+The companion `retroarch.cfg` includes hardening, input, menu performance, and logging settings. The Security and Netplay blocks ship as functional pins plus drift-guards on real UDP and relay attack surfaces; tvOS-inert driver subsystems (bluetooth, wifi, midi, record, camera, location) are set to `null` to skip init.
 
 | Category | Setting | Value | Notes |
 |----------|---------|-------|-------|
-| Security | Network Command Surfaces | `network_cmd_enable = "false"`, `network_remote_enable = "false"` | v3.21 restored (dropped v3.20); UDP cmd port 55355 listener + network gamepad remote drift-guards. Upstream defaults `false` but explicit pin protects against an imported config flipping the surfaces |
-| Network | Netplay MITM Server | `netplay_use_mitm_server = "false"` | v3.21 restored (dropped v3.20); blocks netplay traffic from routing through libretro's MITM relay if user accidentally engages netplay UI |
+| Security | Network Command Surfaces | `network_cmd_enable = "false"`, `network_remote_enable = "false"` | Drift-guard on UDP cmd port 55355 listener + network gamepad remote |
+| Network | Netplay MITM Server | `netplay_use_mitm_server = "false"` | Blocks netplay traffic from routing through libretro's MITM relay |
 | Security | On-Demand Thumbnails | `network_on_demand_thumbnails = "false"` | Hangs on slow thumbnail server ([#17242](https://github.com/libretro/RetroArch/issues/17242)) |
 | Cloud | Cloud Sync | `cloud_sync_enable = "false"` | Master gate; sub-keys inherit |
-| Network | Netplay Public Announce | `netplay_public_announce = "false"` | Upstream default ON — real hardening |
-| Network | Netplay NAT Traversal | `netplay_nat_traversal = "false"` | Blocks UPnP/NAT-PMP probing — real hardening |
-| Drivers | Null subsystems | `bluetooth_driver`, `wifi_driver`, `midi_driver`, `record_driver`, `camera_driver`, `location_driver` = `"null"` | v3.5; tvOS handles these at OS level — RA skip-init |
-| Menu | XMB Animations | `menu_xmb_animation_move_up_down = "2"` (None); `menu_xmb_animation_horizontal_highlight = "0"`, `menu_xmb_animation_opening_main_menu = "0"` (Easing Out Quad — least pronounced); `menu_horizontal_animation = "false"`; `menu_show_load_content_animation = "false"` | v3.15 enum-correctness fix — verified against `menu/menu_setting.c` v1.22.0 L4123-4175. Only `move_up_down` exposes a "None" value (case 2); `horizontal_highlight` enum is {0=Quad, 1=Sine, 2=Bounce} and `opening_main_menu` enum is {0=Quad, 1=Circ, 2=Expo, 3=Bounce} — neither has a "None" option. v3.9–v3.14 set all three to `"2"`, which gave the *bounciest* animations on two of them, the opposite of intent. v3.15 pins both to `"0"` (the least-pronounced easing). v3.8 `menu_horizontal_animation` + `menu_show_load_content_animation` additions continue to disable the horizontal-tab slide and content-load splash |
-| Menu | XMB Shader Pipeline (Animated Background) | `menu_shader_pipeline = "0"` | v3.8; `0` = static wallpaper, no animated ribbon/snow/bokeh (upstream default is `2` = ribbon). Stops the menu background shader from running every frame while the menu is open |
-| Menu | XMB Color Theme | `xmb_menu_color_theme = "20"` | v3.8; `20` = Gray Dark. Enum from `menu/menu_defines.h` (0=LegacyRed … 19=Midgar, 20=GrayDark, 21=GrayLight) |
-| Menu | XMB Shadows | `xmb_shadows_enable = "false"` | v3.8; drop shadows off on icons / text / thumbnails (upstream default `true`). Small GPU save + cleaner look against gray background |
-| Menu | Core Info Cache | `core_info_cache_enable = "true"` | v3.5; cold-start win on 64 GB purgeable-cache |
-| Video | HDR | `video_hdr_enable = "false"`, `video_hdr_max_nits = "1000"` | v3.5; explicit-off guard against Metal HDR10 negotiation on DV/HDR10 TV modes (see §7 TV output — keep tvOS in 4K SDR). v3.15 dropped `video_hdr_contrast = "5.0"` — that key never existed in RA v1.22.0 (real key is `video_hdr_display_contrast` per `configuration.c:2356`); inert anyway with HDR off |
+| Network | Netplay Public Announce | `netplay_public_announce = "false"` | Hardening — flips upstream default ON |
+| Network | Netplay NAT Traversal | `netplay_nat_traversal = "false"` | Hardening — blocks UPnP/NAT-PMP probing |
+| Drivers | Null subsystems | `bluetooth_driver`, `wifi_driver`, `midi_driver`, `record_driver`, `camera_driver`, `location_driver` = `"null"` | tvOS handles these at OS level — RA skip-init |
+| Menu | XMB Animations | `menu_xmb_animation_move_up_down = "2"` (None); `menu_xmb_animation_horizontal_highlight = "0"`, `menu_xmb_animation_opening_main_menu = "0"` (Easing Out Quad — least pronounced); `menu_horizontal_animation = "false"`; `menu_show_load_content_animation = "false"` | Enum mappings verified against `menu/menu_setting.c` L4123-4175. Only `move_up_down` exposes a "None" value (case 2); the other two pin to Quad (`0`) for least-pronounced easing. Disables horizontal-tab slide and content-load splash |
+| Menu | XMB Shader Pipeline (Animated Background) | `menu_shader_pipeline = "0"` | Static wallpaper, no animated ribbon/snow/bokeh — stops menu background shader running every frame |
+| Menu | XMB Color Theme | `xmb_menu_color_theme = "20"` | Gray Dark per `menu/menu_defines.h` enum |
+| Menu | XMB Shadows | `xmb_shadows_enable = "false"` | Drop shadows off on icons / text / thumbnails — small GPU save + cleaner look against gray background |
+| Menu | Core Info Cache | `core_info_cache_enable = "true"` | Cold-start win on 64 GB purgeable-cache |
+| Video | HDR | `video_hdr_enable = "false"`, `video_hdr_max_nits = "1000"` | Explicit-off guard against Metal HDR10 negotiation on DV/HDR10 TV modes (keep tvOS in 4K SDR — see TV output above) |
 | Input | Joypad Driver | `input_joypad_driver = "mfi"` | Apple GCController; only viable driver |
 | Input | Menu Toggle Combo | `input_menu_toggle_gamepad_combo = "2"` | L3+R3 |
 | Input | Overlay Subsystem | `input_overlay_enable = "false"` | No touch surface on tvOS |
-| Input | Auto Game Focus | `input_auto_game_focus = "1"` | v3.5; auto-grabs focus on content load; prevents Siri Remote leak |
+| Input | Auto Game Focus | `input_auto_game_focus = "1"` | Auto-grabs focus on content load; prevents Siri Remote leak |
 | Menu | Favorites / History Size | `content_favorites_size = "10"`, `content_history_size = "10"` | Default 200; reduced for 4 GB RAM |
-| Menu | Pause on Menu | `menu_pause_libretro = "true"` | v3.21 reverts to upstream default; was `"false"` v3.5–v3.20 with stale "Run Ahead catch-up + FF through menu" rationale. Run Ahead operates on gameplay frames only (irrelevant during menu); FF is a held hotkey (not entered through Quick Menu). Pausing during menu reduces thermal load on passive A15, silences audio cleanly behind the menu, and gives deterministic save-state capture/restore at the paused frame. No interaction with Tier 2 stutter mitigations (`audio_sync`, `FrameDuping`) — those operate inside cores during gameplay |
+| Menu | Pause on Menu | `menu_pause_libretro = "true"` | Pauses emulation while Quick Menu open — reduces thermal load on passive A15, silences audio, gives deterministic save-state capture |
 | Menu | Menu Driver | `menu_driver = "xmb"` | Restart required to switch |
 | Menu | Sublabels | `menu_show_sublabels = "false"` | Hide item-description text beneath XMB entries; denser menu |
-| Menu | Widgets / Task Notifications | `menu_enable_widgets = "true"` | Drift-guard pin on upstream default; gates the OSD widget surface that renders task notifications (Online Updater progress, save-state confirmations, shader-load toasts). Distinct from `video_font_enable` which gates the OSD text path used by `fps_show` (see Video table) |
-| Menu | Pause on Focus Loss | `pause_nonactive = "false"` | v3.5; was `"true"` — tvOS briefly marks app inactive on Siri Remote / Control Center / HDMI CEC, causing audio glitch |
+| Menu | Widgets / Task Notifications | `menu_enable_widgets = "true"` | Drift-guard pin on upstream default; gates the OSD widget surface that renders task notifications (Online Updater progress, save-state confirmations, shader-load toasts) |
+| Menu | Pause on Focus Loss | `pause_nonactive = "false"` | tvOS briefly marks app inactive on Siri Remote / Control Center / HDMI CEC; pinned `false` to prevent audio glitch |
 | Saving | Auto-Index States | `savestate_auto_index = "true"` | Required for slot rotation |
 | Saving | Auto-Save on Exit | `savestate_auto_save = "true"` | Captures on Close Content; manual load via Select + L1 |
 | Saving | Save Config on Exit | `config_save_on_exit = "false"` | Prevents accidental overwrite |
 | Saving | Max Auto-Increment States | `savestate_max_keep = "10"` | — |
 | Saving | Save State Compression | `savestate_file_compression = "true"` | — |
 | Saving | SaveRAM Compression | `save_file_compression = "true"` | — |
-| Saving | State Thumbnails | `savestate_thumbnail_enable = "false"` | v3.1: skips PNG encode per save |
+| Saving | State Thumbnails | `savestate_thumbnail_enable = "false"` | Skips PNG encode per save |
 | Saving | Sort Save Files / States | `sort_savefiles_enable = "true"`, `sort_savestates_enable = "true"` | Per-core subfolders (drift-guard) |
 | Audio | Audio Driver | `audio_driver = "coreaudio"` | Pinned; `coreaudio3` is master-only — do not use |
 | Audio | `audio_out_rate` | `48000` Hz | Native HDMI; no resampling |
-| Audio | Audio Latency | `audio_latency = "48"` | v3.6; was `"32"` in v3.5, `"64"` pre-v3.5. 48 is the sweet spot (~3 frames @ 60 Hz) — preserves most of the 32 benefit while eliminating thermal-throttle crackle risk. Mupen pins `64` (+16 ms for E-core + GC + scheduler variance). Revert to 64 if crackle under sustained load |
-| Audio | Resampler Quality | `audio_resampler_quality = "2"` | v3.15: raised from `"1"` (LOWEST) to `"2"` (LOWER) per `libretro-common/include/audio/audio_resampler.h` enum (DONTCARE=0, LOWEST=1, LOWER=2, NORMAL=3, HIGHER=4, HIGHEST=5); audible quality gain on cores not native to 48 kHz (NES/SNES 32040 Hz, GEN 53267 Hz all resample to your 48000 sink) at sub-1% A15 CPU cost |
-| Audio | Audio Sync | `audio_sync = "true"` | Drift-guard; v3.9 Mupen flipped `false` → `true` (DRC <0.5% pitch shift imperceptible vs audible audio gaps under interpreter+sw-RDP timing variance) |
+| Audio | Audio Latency | `audio_latency = "48"` | Sweet spot (~3 frames @ 60 Hz) — minimises latency without thermal-throttle crackle risk. Mupen pins `64` (+16 ms for E-core + GC + scheduler variance). Revert to 64 if crackle under sustained load |
+| Audio | Resampler Quality | `audio_resampler_quality = "2"` | LOWER per `libretro-common/include/audio/audio_resampler.h` enum (DONTCARE=0, LOWEST=1, LOWER=2, NORMAL=3, HIGHER=4, HIGHEST=5); audible quality gain on cores not native to 48 kHz (NES/SNES 32040 Hz, GEN 53267 Hz all resample to the 48000 sink) at sub-1% A15 CPU cost |
+| Audio | Audio Sync | `audio_sync = "true"` | DRC <0.5% pitch shift is imperceptible; prevents audible audio gaps under timing variance |
 | Video | Threaded Video | `video_threaded = "false"` | Force-disabled on all Apple platforms ([#14978](https://github.com/libretro/RetroArch/issues/14978)) |
 | Video | Aspect Ratio | `aspect_ratio_index = "22"` | Core Provided |
 | Menu | Playlist Compression | `playlist_compression = "true"` | ~90% reduction |
 | System | Screensaver Suspend | `suspend_screensaver_enable = "true"` | tvOS may still fire while paused |
 | Latency | Run Ahead Hide Warnings | `run_ahead_hide_warnings = "true"` | Per-core overrides handle incompatibility |
-| Logging | Log Verbosity | `log_verbosity = "false"` | Quiet logs; suppresses INFO/DEBUG spam on cold-start and during Online Updater operations |
+| Logging | Log Verbosity | `log_verbosity = "false"` | Quiet logs; suppresses INFO/DEBUG spam |
 
 See also the [WebDAV security warning](#4-file-transfers) in §4.
 
@@ -413,7 +413,7 @@ Tier definitions: **1** = Flawless (full speed, shaders enabled), **2** = Good (
 | 1 | Genesis / MD / CD, SMS | Genesis Plus GX | Yes | Overscale 224p; Run Ahead per-core |
 | 1 | PC Engine / TG-16 | Beetle PCE Fast | Yes | — |
 | 1 | Neo Geo, Arcade (CPS1/2/3) | FinalBurn Neo | Yes | Rewind pinned `false` ([#16374](https://github.com/libretro/RetroArch/issues/16374)) |
-| 2 | Nintendo 64 | Mupen64Plus-Next | Yes | Angrylion + CXD4 (platform-forced on Metal build). v3.3 `mupen64plus-angrylion-multithread = "2"` (P-core pin on 2P+3E binned A15). v3.9 `mupen64plus-FrameDuping = "True"` (Switch-parity low-end smoothing). v3.21 `mupen64plus-pak1/2/3/4 = "rumble"` (4P rumble parity). Pins: `video_threaded=false` ([#14978](https://github.com/libretro/RetroArch/issues/14978)), `video_frame_delay_auto=false` ([#14201](https://github.com/libretro/RetroArch/issues/14201)), `rewind_enable=false` ([#18300](https://github.com/libretro/RetroArch/issues/18300)), `run_ahead_enabled=false`, `audio_latency=64` (v3.10; was 96 in v3.9, sufficient at 64 when paired with FrameDuping + audio_sync=true mitigations), `audio_sync=true` (v3.9; DRC pitch shift instead of frame drops), `autosave_interval=0` |
+| 2 | Nintendo 64 | Mupen64Plus-Next | Yes | Angrylion + CXD4 (platform-forced on Metal build). `mupen64plus-angrylion-multithread = "2"` (P-core pin on 2P+3E binned A15). `mupen64plus-FrameDuping = "True"` (Switch-parity low-end smoothing). `mupen64plus-pak1/2/3/4 = "rumble"` (4P rumble parity). Pins: `video_threaded=false` ([#14978](https://github.com/libretro/RetroArch/issues/14978)), `video_frame_delay_auto=false` ([#14201](https://github.com/libretro/RetroArch/issues/14201)), `rewind_enable=false` ([#18300](https://github.com/libretro/RetroArch/issues/18300)), `run_ahead_enabled=false`, `audio_latency=64` (+16 ms over global 48 — sufficient when paired with FrameDuping + `audio_sync=true`), `audio_sync=true` (DRC pitch shift instead of frame drops), `autosave_interval=0` |
 
 ### Systems not supported (JIT required)
 
@@ -426,7 +426,7 @@ Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version
 | 1 | Switch Pro B button exits app | [#18286](https://github.com/libretro/RetroArch/issues/18286) | Open | Avoid Switch Pro Controller |
 | 2 | Ghost inputs with multiple controllers | [#18447](https://github.com/libretro/RetroArch/issues/18447) | Open | Use single controller or test carefully |
 | 3 | Mupen64Plus-Next rewind feature request | [#18300](https://github.com/libretro/RetroArch/issues/18300) | Open | `rewind_enable = "false"` per-core + global; do not re-enable per-game |
-| 4 | Mupen64Plus-Next auto frame delay incompatible | [#14201](https://github.com/libretro/RetroArch/issues/14201) | Open | `video_frame_delay_auto = "false"` per-core (global `true` as of v2.66); do not re-enable per-game; refactored upstream v1.20.0 |
+| 4 | Mupen64Plus-Next auto frame delay incompatible | [#14201](https://github.com/libretro/RetroArch/issues/14201) | Open | `video_frame_delay_auto = "false"` per-core (global stays `true`); do not re-enable per-game |
 | 5 | N64 rendering glitches (game-specific) | [#16598](https://github.com/libretro/RetroArch/issues/16598) | Open | Per-game overrides |
 | 6 | Threaded video force-disabled on all Apple platforms | [#14978](https://github.com/libretro/RetroArch/issues/14978) | Persists | Upstream `gfx/video_driver.c` `#if defined(__MACH__) && defined(__APPLE__)` — NSWindow/UIWindow concurrency; no upstream fix; `video_threaded=false` globally; Tier 2 cfgs pin |
 | 7 | RetroArch on tvOS caps at 3 simultaneous controllers despite OS supporting 4 | [#16685](https://github.com/libretro/RetroArch/issues/16685) | Open | Limit multiplayer to 3 controllers; fourth pad not recognized |
@@ -487,7 +487,7 @@ Dreamcast, GameCube, Wii, and PS2 require JIT compilation. The App Store version
 
 ## 13. Versioning
 
-This repository uses `vMAJOR.MINOR` (no patch component) in lockstep with its companion repository — both `retroarch-appletv4k` and `retroarch-configs` share a single MAJOR.MINOR tag that increments together on every release, regardless of which side contains the real file changes. `MAJOR` increments on incompatible structural changes (filesystem layout, breaking config schema, removed features) or cross-repo version-sync events (e.g. v3.0 re-aligned the two repos after they had evolved independently at v2.95 / v1.57). `MINOR` increments on every release — additive changes, key additions/removals, documentation syncs, and conservative defaults adjustments. Each release ships with a matching `CHANGELOG.md` entry in GNU ChangeLog style (`YYYY-MM-DD<SP><SP>Author Name`; date and author separated by two spaces). `CHANGELOG.md` retains the last 5 MINOR version entries; older entries are trimmed on each release.
+This repository uses `vMAJOR.MINOR` (no patch component) in lockstep with its companion repository — both `retroarch-appletv4k` and `retroarch-configs` share a single MAJOR.MINOR tag that increments together on every release, regardless of which side contains the real file changes. `MAJOR` increments on incompatible structural changes (filesystem layout, breaking config schema, removed features) or cross-repo version-sync events. `MINOR` increments on every release — additive changes, key additions/removals, documentation syncs, and conservative defaults adjustments. Each release ships with a matching `CHANGELOG.md` entry in GNU ChangeLog style (`YYYY-MM-DD<SP><SP>Author Name`; date and author separated by two spaces). `CHANGELOG.md` retains the last 5 MINOR version entries; older entries are trimmed on each release.
 
 ## 14. License
 

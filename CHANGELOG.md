@@ -1,5 +1,56 @@
 2026-04-25  Ryan Musante
 
+- v3.23: README de-versioning pass; 0 cfg key-value changes.
+  * retroarch.cfg: bump header stamp v3.22 -> v3.23; 73 keys
+    byte-identical.
+  * README.md: §7 Additional settings preamble rewritten to drop
+    v3.19/v3.20/v3.21 trim-and-restore history; replaced with terse
+    one-paragraph summary of current state.
+  * README.md: §7 Additional settings table -- 14 row Notes columns
+    de-versioned (drop "v3.5"/"v3.8"/"v3.15"/"v3.21" annotations
+    from Drivers/XMB Animations/XMB Shader Pipeline/XMB Color
+    Theme/XMB Shadows/Core Info Cache/HDR/Auto Game Focus/Pause on
+    Menu/Pause on Focus Loss/State Thumbnails/Audio Latency/Resampler
+    Quality/Audio Sync rows).
+  * README.md: §7 Hotkeys callout drops "v3.3:" prefix on Tier 2
+    autosave_interval line.
+  * README.md: §7 Video table -- Refresh Rate row drops "v3.10";
+    On-Screen FPS row drops "v3.12" + "removed as drift-guard in
+    v3.9"; Run Ahead row drops "(v3.11 -- companion no longer pins...)";
+    Run-Ahead Mode row drops "as of v3.11"; Fast Forward Ratio row
+    drops "v3.6 standard cap (was 5.0 in v3.3-v3.5...)".
+  * README.md: §9 Mupen Tier 2 row de-versioned (drops v3.3/v3.9/
+    v3.21 annotations on multithread/FrameDuping/pak1-4 + v3.10/v3.9
+    on audio_latency + v3.9 on audio_sync).
+  * README.md: §10 Known Issues #4 row drops "global true as of v2.66"
+    + "refactored upstream v1.20.0".
+  * README.md: §13 Versioning drops historical re-alignment example
+    "(e.g. v3.0 re-aligned the two repos after they had evolved
+    independently at v2.95 / v1.57)".
+  * README.md: badge 3.22 -> 3.23.
+  * CHANGELOG.md: trim v3.18 entry per 5-release retention; retained
+    entries are now v3.19-v3.23.
+  * Companion v3.23: 7 `.cfg` paired stamps v3.22 -> v3.23 (bodies
+    byte-identical to v3.22). Mupen64Plus-Next.cfg header drops
+    "(v3.3 stutter mitigations)" inline annotation. Mupen64Plus-Next.opt
+    header drops "(v3.3 Angrylion-MT heterogeneous-ARM tune)" and
+    "(v3.21 P2-P4 parity for [titles])"; pak2/3/4 inline comment
+    drops "v3.21:" prefix. README §1 Genesis row drops "(v3.1 off;
+    v3.2 enum fix)"; mGBA row drops "(v3.9 enum fix...)" + "(v3.2
+    enum fix...)"; Mupen row drops v3.21/v3.3/v3.9 annotations.
+    README §4 Frontend Override Keys table -- run_ahead_secondary_instance
+    drops v3.11; audio_latency drops v3.10/v3.9/v3.6-v3.8; audio_sync
+    drops v3.9/v3.3-v3.8; autosave_interval drops v3.3; video_frame_delay_auto
+    drops v3.11; closing inherited-keys paragraph drops v3.11.
+    README §11 Versioning drops the same v3.0/v2.95/v1.57 historical
+    example. CHANGELOG trim v3.18 per matching 5-release retention.
+    cfg+opt 47 -- unchanged.
+  * Establishes editorial rule going forward: README narrative does
+    not carry per-version history; CHANGELOG is the sole record of
+    what changed when.
+
+2026-04-25  Ryan Musante
+
 - v3.22: PlayStation 1 / PCSX-ReARMed core retired; shader recommendations
   trimmed to primary set. 0 key-value changes in retroarch.cfg.
   * retroarch.cfg: bump header stamp v3.21 -> v3.22; 73 keys byte-identical.
@@ -190,31 +241,5 @@
     byte-identical to v3.18); 8 `.opt` files unchanged (no version
     stamps per v3.12 design); README badge 3.18 -> 3.19; CHANGELOG
     trim v3.14 per matching 5-release retention.
-  * cfg 30, opt 28, cfg+opt 58 -- unchanged.
-
-2026-04-24  Ryan Musante
-
-- v3.18: doc-correctness sync; 0 key-value changes.
-  * retroarch.cfg: bump header stamp v3.17 -> v3.18; 77 keys byte-identical.
-  * README.md: §7 Hotkeys callout `autosave_interval` "150" -> "300";
-    "every 2.5 min" -> "every 5 min" -- claim was stale against the
-    shipped global value (300 s = 5 min) since v3.5 raised the
-    interval; the 150 s figure traced to a pre-v3.5 draft and never
-    re-synced when the cfg was bumped.
-  * README.md: §7 Additional settings adds Menu row for
-    `menu_enable_widgets = "true"` -- drift-guard pin on upstream
-    default, gates the OSD widget surface used by task notifications
-    per v3.13 `fps_show` rationale clarification; was the only key in
-    `retroarch.cfg` previously undocumented in §7.
-  * README.md: badge 3.17 -> 3.18.
-  * CHANGELOG.md: trim v3.13 entry per 5-release retention; retained
-    entries are now v3.14-v3.18.
-  * Companion v3.18: 8 `.cfg` stamps v3.17 -> v3.18 (header stamps and
-    "paired with retroarch-appletv4k" pairing stamps; bodies byte-
-    identical to v3.17); 8 `.opt` files unchanged (no version stamps
-    per v3.12 design); README §4 Frontend Override Keys
-    `autosave_interval` row rationale "every 2.5 min" -> "every 5
-    min" matching companion global; README badge 3.17 -> 3.18;
-    CHANGELOG trim v3.13 per matching 5-release retention.
   * cfg 30, opt 28, cfg+opt 58 -- unchanged.
 
