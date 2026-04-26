@@ -1,6 +1,6 @@
 # RetroArch on Apple TV 4K
 
-![version](https://img.shields.io/badge/version-3.18-blue)
+![version](https://img.shields.io/badge/version-3.22-blue)
 ![RetroArch](https://img.shields.io/badge/RetroArch-v1.22.x-green)
 ![license](https://img.shields.io/badge/license-MIT-green)
 
@@ -87,7 +87,7 @@ Minimum recommended version: **RetroArch v1.20.0** (required for WebDAV, automat
 | RetroArch | Free from the tvOS App Store |
 | Web browser | Safari, Chrome, Firefox, or Edge on the transfer computer |
 | ROM files | Legally acquired game files for systems you own |
-| BIOS files | Required for PS1, Sega CD, Neo Geo (see [ROM and BIOS Setup](#5-rom-and-bios-setup)) |
+| BIOS files | Required for Sega CD, Neo Geo (see [ROM and BIOS Setup](#5-rom-and-bios-setup)) |
 
 ## 2. Installation
 
@@ -156,7 +156,6 @@ Available in RetroArch v1.20.0+. Port 8080.
     ├── ROMs/                  ← game files, organized by system
     │   ├── nes/
     │   ├── snes/
-    │   ├── psx/
     │   └── ...                   (see §5 ROM folder reference)
     ├── BIOS/                  ← system BIOS files (case-sensitive)
     ├── saves/                 ← in-game saves (.srm), sorted per core
@@ -197,7 +196,6 @@ Place ROMs in `config/ROMs/<folder>/` using the folder names below. These names 
 | PC Engine / TG-16 | `pce/` | `.pce`, `.cue`, `.chd` | Beetle PCE Fast |
 | Neo Geo | `neogeo/` | `.zip` | FinalBurn Neo |
 | Arcade (CPS1/2/3) | `fbneo/` | `.zip` | FinalBurn Neo |
-| PlayStation 1 | `psx/` | `.cue`, `.bin`, `.chd`, `.pbp` | PCSX-ReARMed |
 | Nintendo 64 | `n64/` | `.n64`, `.z64`, `.v64` | Mupen64Plus-Next |
 
 See [Supported Systems and Per-Core Overrides](#9-supported-systems-and-per-core-overrides) for tier classification and per-core notes.
@@ -210,13 +208,12 @@ Most 8/16-bit cores include built-in BIOS support. The following CD-based, arcad
 
 | System | Required File(s) | Required? |
 |--------|-----------------|-----------|
-| PlayStation 1 | `scph5501.bin` (NA), `scph5502.bin` (EU), `scph5500.bin` (JP), or `scph1001.bin` | Yes |
 | Sega CD / Mega CD | `bios_CD_U.bin`, `bios_CD_E.bin`, `bios_CD_J.bin` | Yes |
 | TurboGrafx-CD | `syscard3.pce` | Yes |
 | Neo Geo | `neogeo.zip` | Yes |
 | Game Boy Advance | `gba_bios.bin` | Optional |
 
-Neo Geo requires `neogeo.zip` in **both** `config/BIOS/` and `config/ROMs/neogeo/`. BIOS filenames are case-sensitive — use exact names (e.g., `scph5501.bin`, not `SCPH5501.BIN`).
+Neo Geo requires `neogeo.zip` in **both** `config/BIOS/` and `config/ROMs/neogeo/`. BIOS filenames are case-sensitive — use exact names.
 
 ### Scanning games
 
@@ -277,7 +274,7 @@ The PS/Xbox home button opens tvOS Control Center, not RetroArch's menu. A contr
 |---------|-------|-------|
 | Video driver | `video_driver = "metal"` | Apple silicon |
 | Integer Scale | `video_scale_integer = "true"` | Pixel-perfect; borders at 4K. Mupen inherits but uses no overscale mode |
-| Integer Overscale | Per-core | NES, SNES, Genesis, PCE, mGBA, FBN (224p–304p), PCSX (variable 256–640) |
+| Integer Overscale | Per-core | NES, SNES, Genesis, PCE, mGBA, FBN (224p–304p) |
 | Bilinear Filtering | `video_smooth = "false"` | Required for shader rendering |
 | Video Shaders | `video_shader_enable = "true"` | Pipeline on; no global preset — assign per-core (§8) |
 | GPU Screenshot | `video_gpu_screenshot = "true"` | Post-shader capture |
@@ -312,18 +309,16 @@ Apple TV supports only QMS VRR (media frame-rate switching), not real-time game 
 
 ### Additional settings
 
-The companion `retroarch.cfg` includes hardening, input, menu performance, and logging settings. Command and remote-control interfaces are explicitly disabled (`stdin_cmd_enable`, `network_cmd_enable`, `network_remote_enable` all `false` as of v3.5). tvOS-inert driver subsystems (bluetooth, wifi, midi, record, camera, location) are set to `null` to skip init.
+The companion `retroarch.cfg` includes hardening, input, menu performance, and logging settings. The Security and Netplay blocks were trimmed and partially restored across v3.19–v3.21: v3.19 dropped `stdin_cmd_enable`, `camera_allow`, `location_allow`; v3.20 dropped `network_cmd_enable`, `network_remote_enable`, `netplay_use_mitm_server`, `discord_allow`; v3.21 restored `network_cmd_enable`, `network_remote_enable`, `netplay_use_mitm_server` as drift-guards on the three real UDP cmd-surface / relay paths (port 55355 cmd listener, network gamepad remote, MITM relay routing), keeping the platform-absent surfaces removed (no stdin, no camera HW, no Discord RPC on tvOS). The two retained Netplay pins (`netplay_public_announce`, `netplay_nat_traversal`) actively flip upstream `true → false` and are real hardening; the two retained Security pins (`network_on_demand_thumbnails` per [#17242](https://github.com/libretro/RetroArch/issues/17242), `cloud_sync_enable` master gate) keep substantive functional rationale. tvOS-inert driver subsystems (bluetooth, wifi, midi, record, camera, location) are set to `null` to skip init.
 
 | Category | Setting | Value | Notes |
 |----------|---------|-------|-------|
-| Security | stdin Command, Camera, Location | `stdin_cmd_enable = "false"`, `camera_allow = "false"`, `location_allow = "false"` | — |
-| Security | Network Command Surfaces | `network_cmd_enable = "false"`, `network_remote_enable = "false"` | v3.5; explicit-off UDP command / remote-control paths (port 55355) |
+| Security | Network Command Surfaces | `network_cmd_enable = "false"`, `network_remote_enable = "false"` | v3.21 restored (dropped v3.20); UDP cmd port 55355 listener + network gamepad remote drift-guards. Upstream defaults `false` but explicit pin protects against an imported config flipping the surfaces |
+| Network | Netplay MITM Server | `netplay_use_mitm_server = "false"` | v3.21 restored (dropped v3.20); blocks netplay traffic from routing through libretro's MITM relay if user accidentally engages netplay UI |
 | Security | On-Demand Thumbnails | `network_on_demand_thumbnails = "false"` | Hangs on slow thumbnail server ([#17242](https://github.com/libretro/RetroArch/issues/17242)) |
 | Cloud | Cloud Sync | `cloud_sync_enable = "false"` | Master gate; sub-keys inherit |
-| Network | Netplay Public Announce | `netplay_public_announce = "false"` | Upstream default ON |
-| Network | Netplay NAT Traversal | `netplay_nat_traversal = "false"` | Blocks UPnP/NAT-PMP probing |
-| Network | Netplay MITM Server | `netplay_use_mitm_server = "false"` | Drift-guard |
-| Network | Discord RPC | `discord_allow = "false"` | — |
+| Network | Netplay Public Announce | `netplay_public_announce = "false"` | Upstream default ON — real hardening |
+| Network | Netplay NAT Traversal | `netplay_nat_traversal = "false"` | Blocks UPnP/NAT-PMP probing — real hardening |
 | Drivers | Null subsystems | `bluetooth_driver`, `wifi_driver`, `midi_driver`, `record_driver`, `camera_driver`, `location_driver` = `"null"` | v3.5; tvOS handles these at OS level — RA skip-init |
 | Menu | XMB Animations | `menu_xmb_animation_move_up_down = "2"` (None); `menu_xmb_animation_horizontal_highlight = "0"`, `menu_xmb_animation_opening_main_menu = "0"` (Easing Out Quad — least pronounced); `menu_horizontal_animation = "false"`; `menu_show_load_content_animation = "false"` | v3.15 enum-correctness fix — verified against `menu/menu_setting.c` v1.22.0 L4123-4175. Only `move_up_down` exposes a "None" value (case 2); `horizontal_highlight` enum is {0=Quad, 1=Sine, 2=Bounce} and `opening_main_menu` enum is {0=Quad, 1=Circ, 2=Expo, 3=Bounce} — neither has a "None" option. v3.9–v3.14 set all three to `"2"`, which gave the *bounciest* animations on two of them, the opposite of intent. v3.15 pins both to `"0"` (the least-pronounced easing). v3.8 `menu_horizontal_animation` + `menu_show_load_content_animation` additions continue to disable the horizontal-tab slide and content-load splash |
 | Menu | XMB Shader Pipeline (Animated Background) | `menu_shader_pipeline = "0"` | v3.8; `0` = static wallpaper, no animated ribbon/snow/bokeh (upstream default is `2` = ribbon). Stops the menu background shader from running every frame while the menu is open |
@@ -336,7 +331,7 @@ The companion `retroarch.cfg` includes hardening, input, menu performance, and l
 | Input | Overlay Subsystem | `input_overlay_enable = "false"` | No touch surface on tvOS |
 | Input | Auto Game Focus | `input_auto_game_focus = "1"` | v3.5; auto-grabs focus on content load; prevents Siri Remote leak |
 | Menu | Favorites / History Size | `content_favorites_size = "10"`, `content_history_size = "10"` | Default 200; reduced for 4 GB RAM |
-| Menu | Pause on Menu | `menu_pause_libretro = "false"` | v3.5; was `"true"` — was neutralizing Run Ahead catch-up and FF engagement through menu open. Core keeps running behind Quick Menu |
+| Menu | Pause on Menu | `menu_pause_libretro = "true"` | v3.21 reverts to upstream default; was `"false"` v3.5–v3.20 with stale "Run Ahead catch-up + FF through menu" rationale. Run Ahead operates on gameplay frames only (irrelevant during menu); FF is a held hotkey (not entered through Quick Menu). Pausing during menu reduces thermal load on passive A15, silences audio cleanly behind the menu, and gives deterministic save-state capture/restore at the paused frame. No interaction with Tier 2 stutter mitigations (`audio_sync`, `FrameDuping`) — those operate inside cores during gameplay |
 | Menu | Menu Driver | `menu_driver = "xmb"` | Restart required to switch |
 | Menu | Sublabels | `menu_show_sublabels = "false"` | Hide item-description text beneath XMB entries; denser menu |
 | Menu | Widgets / Task Notifications | `menu_enable_widgets = "true"` | Drift-guard pin on upstream default; gates the OSD widget surface that renders task notifications (Online Updater progress, save-state confirmations, shader-load toasts). Distinct from `video_font_enable` which gates the OSD text path used by `fps_show` (see Video table) |
@@ -351,9 +346,9 @@ The companion `retroarch.cfg` includes hardening, input, menu performance, and l
 | Saving | Sort Save Files / States | `sort_savefiles_enable = "true"`, `sort_savestates_enable = "true"` | Per-core subfolders (drift-guard) |
 | Audio | Audio Driver | `audio_driver = "coreaudio"` | Pinned; `coreaudio3` is master-only — do not use |
 | Audio | `audio_out_rate` | `48000` Hz | Native HDMI; no resampling |
-| Audio | Audio Latency | `audio_latency = "48"` | v3.6; was `"32"` in v3.5, `"64"` pre-v3.5. 48 is the sweet spot (~3 frames @ 60 Hz) — preserves most of the 32 benefit while eliminating thermal-throttle crackle risk. PCSX mirrors `48` (drift-guard); Mupen pins `64` (+16 ms for E-core + GC + scheduler variance). Revert to 64 if crackle under sustained load |
-| Audio | Resampler Quality | `audio_resampler_quality = "2"` | v3.15: raised from `"1"` (LOWEST) to `"2"` (LOWER) per `libretro-common/include/audio/audio_resampler.h` enum (DONTCARE=0, LOWEST=1, LOWER=2, NORMAL=3, HIGHER=4, HIGHEST=5); audible quality gain on cores not native to 48 kHz (NES/SNES 32040 Hz, GEN 53267 Hz, PS1 44100 Hz all resample to your 48000 sink) at sub-1% A15 CPU cost |
-| Audio | Audio Sync | `audio_sync = "true"` | Drift-guard; v3.9 Mupen flipped `false` → `true` (DRC <0.5% pitch shift imperceptible vs audible audio gaps under interpreter+sw-RDP timing variance); PCSX inherits global |
+| Audio | Audio Latency | `audio_latency = "48"` | v3.6; was `"32"` in v3.5, `"64"` pre-v3.5. 48 is the sweet spot (~3 frames @ 60 Hz) — preserves most of the 32 benefit while eliminating thermal-throttle crackle risk. Mupen pins `64` (+16 ms for E-core + GC + scheduler variance). Revert to 64 if crackle under sustained load |
+| Audio | Resampler Quality | `audio_resampler_quality = "2"` | v3.15: raised from `"1"` (LOWEST) to `"2"` (LOWER) per `libretro-common/include/audio/audio_resampler.h` enum (DONTCARE=0, LOWEST=1, LOWER=2, NORMAL=3, HIGHER=4, HIGHEST=5); audible quality gain on cores not native to 48 kHz (NES/SNES 32040 Hz, GEN 53267 Hz all resample to your 48000 sink) at sub-1% A15 CPU cost |
+| Audio | Audio Sync | `audio_sync = "true"` | Drift-guard; v3.9 Mupen flipped `false` → `true` (DRC <0.5% pitch shift imperceptible vs audible audio gaps under interpreter+sw-RDP timing variance) |
 | Video | Threaded Video | `video_threaded = "false"` | Force-disabled on all Apple platforms ([#14978](https://github.com/libretro/RetroArch/issues/14978)) |
 | Video | Aspect Ratio | `aspect_ratio_index = "22"` | Core Provided |
 | Menu | Playlist Compression | `playlist_compression = "true"` | ~90% reduction |
@@ -388,21 +383,15 @@ Grouped by GPU cost at 4K output on the passively-cooled A15:
 
 | GPU Cost | Shader | Best For |
 |----------|--------|----------|
-| Minimal | `zfast_crt.slangp` | All systems, especially PS1/N64 |
-| Minimal | `crt-pi.slangp` | Heaviest cores; comparable weight to zfast_crt |
-| Minimal | `crt-potato-warm/cool.slangp` | All systems (lookup-texture based) |
-| Low | `crt-easymode.slangp` | **Recommended starting point** (all cores); cleaner 4K phosphor mask than crt-aperture; integer-scale safe (no shader geometry); all 2D systems |
-| Low | `crt-hyllian.slangp` | SNES, Genesis (Trinitron aesthetic) |
-| Low | `crt-aperture.slangp` | Aperture-grille look; best all-rounder across 2D systems, lighter than crt-hyllian |
-| Low | `fakelottes.slangp` | 16-bit systems (lighter crt-lottes) |
-| Medium | `crt-geom.slangp` | All 2D systems (scanlines + curvature) |
-| Medium | `crt-lottes-fast.slangp` | 16-bit systems (slot mask + bloom) |
+| Low | `crt-easymode.slangp` | **Recommended starting point** (all cores); single-pass, integer-scale safe (no shader geometry), cleaner 4K phosphor mask than crt-aperture; all 2D systems |
+| Low | `crt-aperture.slangp` | Aperture-grille classic; best all-rounder across 2D systems |
+| Medium | `crt-geom.slangp` | All 2D systems (scanlines + curvature) — multi-pass with geometry |
 
-Applying `crt-easymode.slangp` per-core (Low cost) is a safe starting point across all cores including Tier 2. If Tier 2 cores drop frames or thermally throttle, swap per-core to a Minimal preset (`zfast_crt`, `crt-pi`, `crt-potato-warm/cool`). If complex shaders cause issues at 4K globally, switch Apple TV output to 1080p SDR 60 Hz — the TV's scaler handles upscaling and GPU load drops significantly.
+Applying `crt-easymode.slangp` per-core is a safe starting point across all cores including Tier 2. If Tier 2 cores drop frames or thermally throttle, drop the shader entirely or switch Apple TV output to 1080p SDR 60 Hz — the TV's scaler handles upscaling and GPU load drops significantly.
 
 **Avoid on Apple TV:** CRT-Royale, CRT-Geom-Deluxe, Guest-Dr-Venom, Guest-Advanced, and all Mega Bezel shaders exceed the A15's GPU budget.
 
-> **Integer Scaling Conflict:** Multi-pass CRT shaders that perform their own geometry (crt-geom, crt-hyllian) expect to control the full output resolution. `video_scale_integer = ON` constrains the viewport *before* the shader processes it, resulting in a smaller and potentially distorted image. Set `video_scale_integer = OFF` in per-core overrides where geometry shaders are used. Simple scanline-only shaders (zfast_crt, crt-pi) are unaffected.
+> **Integer Scaling Conflict:** Multi-pass CRT shaders that perform their own geometry (crt-geom) expect to control the full output resolution. `video_scale_integer = ON` constrains the viewport *before* the shader processes it, resulting in a smaller and potentially distorted image. Set `video_scale_integer = OFF` in per-core overrides where geometry shaders are used. Single-pass shaders (crt-easymode, crt-aperture) are unaffected.
 
 **crt-easymode 4K parameters:** `crt-easymode.slangp` exposes SHARPNESS_IMAGE, SHARPNESS_EDGES, GLOW_WIDTH/HEIGHT/HALATION/DIFFUSION, MASK_COLORS, MASK_STRENGTH, MASK_SIZE, SCANLINE_SIZE_MIN/MAX, SCANLINE_SHAPE, GAMMA_INPUT/OUTPUT, and BRIGHTNESS via Quick Menu → Shaders → Shader Parameters. Starting values are reasonable out-of-the-box on a 4K display; tune to taste.
 
@@ -424,8 +413,7 @@ Tier definitions: **1** = Flawless (full speed, shaders enabled), **2** = Good (
 | 1 | Genesis / MD / CD, SMS | Genesis Plus GX | Yes | Overscale 224p; Run Ahead per-core |
 | 1 | PC Engine / TG-16 | Beetle PCE Fast | Yes | — |
 | 1 | Neo Geo, Arcade (CPS1/2/3) | FinalBurn Neo | Yes | Rewind pinned `false` ([#16374](https://github.com/libretro/RetroArch/issues/16374)) |
-| 2 | PlayStation 1 | PCSX-ReARMed | Yes | No JIT; Run Ahead `false`; `pcsx_rearmed_psxclock="100"` (underclock 75/50 per-game for Tony Hawk, Spyro 2/3, Tekken 3); v3.3 pins `autosave_interval=0`; v3.15 fixes `pcsx_rearmed_gpu_thread_rendering="enabled"` (was `"async"` — invalid value, silently fell back to default `"auto"`) |
-| 2 | Nintendo 64 | Mupen64Plus-Next | Yes | Angrylion + CXD4 (platform-forced on Metal build). v3.3 `mupen64plus-angrylion-multithread = "2"` (P-core pin on 2P+3E binned A15). v3.9 `mupen64plus-FrameDuping = "True"` (Switch-parity low-end smoothing). Pins: `video_threaded=false` ([#14978](https://github.com/libretro/RetroArch/issues/14978)), `video_frame_delay_auto=false` ([#14201](https://github.com/libretro/RetroArch/issues/14201)), `rewind_enable=false` ([#18300](https://github.com/libretro/RetroArch/issues/18300)), `run_ahead_enabled=false`, `audio_latency=64` (v3.10; was 96 in v3.9, sufficient at 64 when paired with FrameDuping + audio_sync=true mitigations), `audio_sync=true` (v3.9; DRC pitch shift instead of frame drops), `autosave_interval=0` |
+| 2 | Nintendo 64 | Mupen64Plus-Next | Yes | Angrylion + CXD4 (platform-forced on Metal build). v3.3 `mupen64plus-angrylion-multithread = "2"` (P-core pin on 2P+3E binned A15). v3.9 `mupen64plus-FrameDuping = "True"` (Switch-parity low-end smoothing). v3.21 `mupen64plus-pak1/2/3/4 = "rumble"` (4P rumble parity). Pins: `video_threaded=false` ([#14978](https://github.com/libretro/RetroArch/issues/14978)), `video_frame_delay_auto=false` ([#14201](https://github.com/libretro/RetroArch/issues/14201)), `rewind_enable=false` ([#18300](https://github.com/libretro/RetroArch/issues/18300)), `run_ahead_enabled=false`, `audio_latency=64` (v3.10; was 96 in v3.9, sufficient at 64 when paired with FrameDuping + audio_sync=true mitigations), `audio_sync=true` (v3.9; DRC pitch shift instead of frame drops), `autosave_interval=0` |
 
 ### Systems not supported (JIT required)
 
