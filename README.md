@@ -1,12 +1,12 @@
 # RetroArch on Apple TV 4K
 
-![version](https://img.shields.io/badge/version-3.23-blue)
+![version](https://img.shields.io/badge/version-3.24-blue)
 ![RetroArch](https://img.shields.io/badge/RetroArch-v1.22.x-green)
 ![license](https://img.shields.io/badge/license-MIT-green)
 
 **RetroArch v1.22.x** · **tvOS 26** · **Apple TV 4K 3rd Gen (64 GB Wi-Fi)** · **April 2026**
 
-RetroArch setup guide for Apple TV 4K (3rd generation). Covers installation, ROM/BIOS setup, controllers, performance tuning, and CRT shaders. Ships with a companion 77-key `retroarch.cfg`. Directory paths (ROMs, BIOS, saves, states) are set in-app per §4 — not via `retroarch.cfg`.
+RetroArch setup guide for Apple TV 4K (3rd generation). Covers installation, ROM/BIOS setup, controllers, performance tuning, and CRT shaders. Ships with a companion 73-key `retroarch.cfg`. Directory paths (ROMs, BIOS, saves, states) are set in-app per §4 — not via `retroarch.cfg`.
 
 ### Quick Start
 
@@ -372,28 +372,25 @@ The companion `retroarch-configs` `.cfg` files likewise do not set `video_shader
 
 1. Launch a game → Quick Menu (L3 + R3) → Shaders → Video Shaders: **ON**.
 2. Load Preset → `shaders_slang` → `crt` (or `handheld` for LCD-style systems) → select a preset.
-3. Adjust parameters as needed (see **crt-easymode 4K parameters** below if using that preset).
+3. Adjust parameters as needed (see **zfast-crt 4K parameters** below if using that preset).
 4. Save Preset → **Save Core Preset** (writes a per-core shader preset so it reloads automatically for that core).
 
-> **Handheld note:** `crt-easymode` is a CRT shader. For mGBA (GBA/GB/GBC) users who prefer the LCD aesthetic, apply `handheld/lcd-grid-v2.slangp` via Save Core Preset per the steps above.
+> **Handheld note:** `zfast-crt` is a CRT shader. For mGBA (GBA/GB/GBC) users who prefer the LCD aesthetic, apply `handheld/lcd-grid-v2.slangp` via Save Core Preset per the steps above.
 
 ### Recommended presets
 
-Grouped by GPU cost at 4K output on the passively-cooled A15:
+Two presets cover the Apple TV 4K's GPU budget cleanly at 4K output on the passively-cooled A15:
 
 | GPU Cost | Shader | Best For |
 |----------|--------|----------|
-| Low | `crt-easymode.slangp` | **Recommended starting point** (all cores); single-pass, integer-scale safe (no shader geometry), cleaner 4K phosphor mask than crt-aperture; all 2D systems |
-| Low | `crt-aperture.slangp` | Aperture-grille classic; best all-rounder across 2D systems |
-| Medium | `crt-geom.slangp` | All 2D systems (scanlines + curvature) — multi-pass with geometry |
+| Minimal | `crt/zfast-crt.slangp` | **Recommended for all 2D systems** (Tier 1 + Tier 2 cores); single-pass, integer-scale safe (`scale_type = viewport`, no shader geometry); designed for low-end GPUs and fits comfortably within the A15 budget at 4K |
+| Minimal | `handheld/lcd-grid-v2.slangp` | **Recommended for mGBA only** (GBA/GB/GBC) when the LCD aesthetic is preferred over a CRT mask |
 
-Applying `crt-easymode.slangp` per-core is a safe starting point across all cores including Tier 2. If Tier 2 cores drop frames or thermally throttle, drop the shader entirely or switch Apple TV output to 1080p SDR 60 Hz — the TV's scaler handles upscaling and GPU load drops significantly.
+Applying `zfast-crt.slangp` per-core is a safe starting point across all cores including Tier 2. If Tier 2 cores drop frames or thermally throttle, drop the shader entirely or switch Apple TV output to 1080p SDR 60 Hz — the TV's scaler handles upscaling and GPU load drops significantly.
 
 **Avoid on Apple TV:** CRT-Royale, CRT-Geom-Deluxe, Guest-Dr-Venom, Guest-Advanced, and all Mega Bezel shaders exceed the A15's GPU budget.
 
-> **Integer Scaling Conflict:** Multi-pass CRT shaders that perform their own geometry (crt-geom) expect to control the full output resolution. `video_scale_integer = ON` constrains the viewport *before* the shader processes it, resulting in a smaller and potentially distorted image. Set `video_scale_integer = OFF` in per-core overrides where geometry shaders are used. Single-pass shaders (crt-easymode, crt-aperture) are unaffected.
-
-**crt-easymode 4K parameters:** `crt-easymode.slangp` exposes SHARPNESS_IMAGE, SHARPNESS_EDGES, GLOW_WIDTH/HEIGHT/HALATION/DIFFUSION, MASK_COLORS, MASK_STRENGTH, MASK_SIZE, SCANLINE_SIZE_MIN/MAX, SCANLINE_SHAPE, GAMMA_INPUT/OUTPUT, and BRIGHTNESS via Quick Menu → Shaders → Shader Parameters. Starting values are reasonable out-of-the-box on a 4K display; tune to taste.
+**zfast-crt 4K parameters:** `crt/zfast-crt.slangp` exposes BLURSCALEX, LOWLUMSCAN, HILUMSCAN, BRIGHTBOOST, MASK_DARK, and MASK_FADE via Quick Menu → Shaders → Shader Parameters. Defaults are tuned for general-purpose use; tune to taste.
 
 > **Note:** If `config/shaders/shaders_slang/crt/` appears empty after an update, re-run Online Updater → Update Slang Shaders. If that fails, upload presets manually via WebDAV to `config/shaders/shaders_slang/crt/`.
 

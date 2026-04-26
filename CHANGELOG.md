@@ -1,5 +1,60 @@
 2026-04-25  Ryan Musante
 
+- v3.24: §8 shader lineup narrowed to zfast-crt and lcd-grid-v2;
+  0 cfg key-value changes.
+  * retroarch.cfg: bump header stamp v3.23 -> v3.24; 73 keys
+    byte-identical.
+  * README.md: §8 Recommended presets table replaced -- 3 rows
+    (`crt-easymode`, `crt-aperture`, `crt-geom`) -> 2 rows
+    (`crt/zfast-crt.slangp` Minimal cost as sole CRT recommendation;
+    `handheld/lcd-grid-v2.slangp` Minimal cost as sole mGBA-LCD
+    recommendation). zfast-crt characteristics: single-pass,
+    `scale_type = viewport`, integer-scale safe, designed for
+    low-end GPUs. Filenames verified against upstream
+    `libretro/slang-shaders` master.
+  * README.md: §8 "Handheld note" callout updates `crt-easymode` ->
+    `zfast-crt` reference. "Applying ... per-core is a safe starting
+    point" sentence retargets `crt-easymode.slangp` ->
+    `zfast-crt.slangp`.
+  * README.md: §8 parameter callout retargeted -- "crt-easymode 4K
+    parameters" (SHARPNESS_IMAGE/EDGES, GLOW_*, MASK_COLORS/STRENGTH/
+    SIZE, SCANLINE_*, GAMMA_*, BRIGHTNESS) -> "zfast-crt 4K
+    parameters" (BLURSCALEX, LOWLUMSCAN, HILUMSCAN, BRIGHTBOOST,
+    MASK_DARK, MASK_FADE). Parameter names verified against
+    `crt/shaders/zfast_crt/zfast_crt_impl.inc` on
+    libretro/slang-shaders master.
+  * README.md: §8 "Integer Scaling Conflict" callout dropped
+    entirely -- both recommended presets are single-pass +
+    integer-scale safe; geometry-shader caveat is no longer
+    relevant to the documented lineup. Multi-pass shaders that
+    would conflict (CRT-Royale, CRT-Geom-Deluxe, Mega Bezel, etc.)
+    remain covered by the surviving "Avoid on Apple TV" line.
+  * README.md: §8 "Applying a shader" step 3 cross-reference
+    updated from "crt-easymode 4K parameters" to "zfast-crt 4K
+    parameters".
+  * README.md: badge 3.23 -> 3.24.
+  * README.md: intro paragraph "77-key `retroarch.cfg`" -> "73-key
+    `retroarch.cfg`". Drift since v3.19; key count moved 77 -> 74
+    (v3.19) -> 70 (v3.20) -> 73 (v3.21) and has held at 73 through
+    v3.22-v3.24. Intro was missed in each of those passes.
+  * CHANGELOG.md: strip audit references from retained v3.21 entry
+    (single-sentence menu_pause_libretro audit-attribution clause)
+    per editorial directive. Substantive technical rationale
+    preserved verbatim.
+  * CHANGELOG.md: trim v3.19 entry per 5-release retention; retained
+    entries are now v3.20-v3.24.
+  * Companion v3.24: 7 `.cfg` paired stamps v3.23 -> v3.24 (bodies
+    byte-identical to v3.23). README §5 Shaders retargets
+    recommended-starting-point reference from `crt-easymode.slangp`
+    to `crt/zfast-crt.slangp`; concurrent fix to stale "8 per-core
+    `.cfg` files" -> "7 per-core `.cfg` files" (v3.22 dropped
+    PCSX-ReARMed; §1 supported cores table was updated then but
+    §5 prose was missed). mGBA LCD recommendation
+    (`handheld/lcd-grid-v2.slangp`) unchanged. CHANGELOG trim v3.19
+    per matching 5-release retention. cfg+opt 47 -- unchanged.
+
+2026-04-25  Ryan Musante
+
 - v3.23: README de-versioning pass; 0 cfg key-value changes.
   * retroarch.cfg: bump header stamp v3.22 -> v3.23; 73 keys
     byte-identical.
@@ -115,8 +170,7 @@
     audio cleanly behind menu, gives deterministic save-state
     capture/restore at the paused frame. No interaction with Tier 2
     stutter mitigations (audio_sync, FrameDuping operate inside cores
-    during gameplay only). Closes the longest-standing MED finding
-    in the v3.18 audit.
+    during gameplay only).
   * retroarch.cfg: restore `network_cmd_enable = "false"` (dropped
     v3.20). Drift-guard on UDP cmd port 55355 listener -- explicit
     pin protects against imported config flipping the surface.
@@ -203,43 +257,5 @@
     byte-identical to v3.19); 8 `.opt` files unchanged (no version
     stamps per v3.12 design); README badge 3.19 -> 3.20; CHANGELOG
     trim v3.15 per matching 5-release retention.
-  * cfg 30, opt 28, cfg+opt 58 -- unchanged.
-
-2026-04-25  Ryan Musante
-
-- v3.19: defense-in-depth trim; 3 redundant drift-guard pins removed.
-  77 -> 74 keys.
-  * retroarch.cfg: bump header stamp v3.18 -> v3.19; "77 keys" ->
-    "74 keys".
-  * retroarch.cfg: remove `stdin_cmd_enable = "false"` -- upstream
-    default already `false` per `def_v1220.h` `DEFAULT_STDIN_CMD_ENABLE
-    false`; tvOS RA has no stdin/console path (the stdin command
-    interface is a desktop-only feature); pin was triple-redundant
-    (default match + platform-absent surface + paired with no
-    optimization story). Pure noise on tvOS.
-  * retroarch.cfg: remove `camera_allow = "false"` -- upstream default
-    already `false` per `cfg_v1220.c:2244` (4th SETTING_BOOL arg);
-    Apple TV 4K 3rd Gen hardware has no camera; `camera_driver = "null"`
-    already pins skip-init path on line 88. Triple-redundant.
-  * retroarch.cfg: remove `location_allow = "false"` -- upstream default
-    already `false` per `cfg_v1220.c:2245`; RA on tvOS does not invoke
-    Core Location in any code path; `location_driver = "null"` already
-    pins skip-init on line 89. Triple-redundant.
-  * Surviving Security block: `network_cmd_enable`, `network_remote_enable`
-    (port 55355 UDP cmd surfaces), `network_on_demand_thumbnails` (#17242
-    hang mitigation), `cloud_sync_enable` (master gate). All retain
-    substantive rationale.
-  * README.md: §7 Additional settings table drops the "stdin Command,
-    Camera, Location" Security row entirely; preamble rewritten to
-    disclose v3.19 removals + rationale (upstream defaults match +
-    Apple TV 4K hardware lacks underlying surfaces).
-  * README.md: badge 3.18 -> 3.19.
-  * CHANGELOG.md: trim v3.14 entry per 5-release retention; retained
-    entries are now v3.15-v3.19.
-  * Companion v3.19: 8 `.cfg` stamps v3.18 -> v3.19 (header stamps
-    and "paired with retroarch-appletv4k" pairing stamps; bodies
-    byte-identical to v3.18); 8 `.opt` files unchanged (no version
-    stamps per v3.12 design); README badge 3.18 -> 3.19; CHANGELOG
-    trim v3.14 per matching 5-release retention.
   * cfg 30, opt 28, cfg+opt 58 -- unchanged.
 
