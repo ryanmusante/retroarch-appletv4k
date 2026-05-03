@@ -1,3 +1,57 @@
+2026-05-02  Ryan Musante
+
+- v3.25: audit fix pass; retroarch.cfg 73 -> 74 keys.
+  * retroarch.cfg: `audio_resampler_quality "2" -> "3"`. Real flip from
+    tvOS upstream LOWER default (`config.def.h __MACH__ && IOS` branch
+    -> RESAMPLER_QUALITY_LOWER=2) up to non-mobile RESAMPLER_QUALITY_NORMAL=3.
+    Prior "2" was a drift-guard pin matching default — README §7
+    "audible quality gain" claim was inaccurate. NORMAL delivers actual
+    SINC-quality bump over LOWER's linear interpolation at sub-1% A15
+    CPU cost. Verified via `libretro-common/include/audio/audio_resampler.h`
+    enum + `config.def.h` v1.22.0.
+  * retroarch.cfg: + `input_max_users = "4"`. Was unset; v1.22.0
+    non-DINGUX default = 8 (`def_v1.22.h:1645`). tvOS RA hard-cap = 3
+    per #16685; Mupen pins pak1-4 = "rumble" for 4P parity. Value "4"
+    matches Mupen 4P pak alignment + forward-compat headroom if cap
+    raised; prevents phantom slots 5-8 in input config UI.
+  * retroarch.cfg: bump header stamp v3.24 -> v3.25; "73 keys" ->
+    "74 keys".
+  * README.md: §7 Audio resampler row rewritten — "audible quality gain"
+    narrative replaced with accurate "real flip from tvOS LOWER default
+    to NORMAL; SINC vs linear; sub-1% A15 CPU cost". Value "2" -> "3".
+  * README.md: §7 Input section + new row for `input_max_users = "4"`
+    (slot cap rationale + #16685 cross-reference + 4P alignment note).
+  * README.md: intro paragraph "73-key" -> "74-key".
+  * README.md: badge 3.24 -> 3.25.
+  * CHANGELOG.md: trim v3.20 entry per 5-release retention; retained
+    entries are now v3.21-v3.25.
+  * Companion v3.25: 7 `.cfg` paired stamps v3.24 -> v3.25 (6 bodies
+    byte-identical; Mupen64Plus-Next.cfg trims one verbose multi-clause
+    audio comment line to single-line per editorial). 2 `.opt` files
+    trimmed: `Genesis Plus GX.opt` 6 keys -> 3 keys (drift-guard pins
+    `genesis_plus_gx_ym2612`, `genesis_plus_gx_audio_filter`,
+    `genesis_plus_gx_render` removed — all match upstream
+    Genesis-Plus-GX `libretro_core_options.h` defaults at L444/L475/L347
+    respectively); `Mupen64Plus-Next.opt` 10 keys -> 9 keys (inert
+    `mupen64plus-43screensize = "320x240"` removed — under HAVE_THR_AL
+    angrylion path, value is read at libretro/mupen64plus-libretro-nx
+    `libretro/libretro.c:1348` then explicitly overwritten at
+    L1370-1371 by `if(current_rdp_type == RDP_PLUGIN_ANGRYLION)`
+    forced override to `retro_screen_width=640, retro_screen_height=480,
+    retro_screen_aspect=4.0/3.0, AspectRatio=1`). 3 `.opt` files
+    (Mesen / Mupen / mGBA) trim verbose multi-clause comments to
+    single-line + drop legacy `(v3.X)` historical annotations per
+    established v3.23 editorial rule (Beetle PCE Fast.opt /
+    FinalBurn Neo.opt / Snes9x.opt unchanged — already minimal).
+    1 `.cfg` file (Mupen64Plus-Next.cfg) trims one verbose
+    multi-clause audio comment line to single-line; remaining 6
+    `.cfg` bodies byte-identical to v3.24. README §1 Genesis row
+    keys 6 -> 3; Mupen row keys 10 -> 9 (drift-guard rationales
+    removed where keys removed; 43screensize reference removed).
+    README badge 3.24 -> 3.25. CHANGELOG trim v3.20 per matching
+    5-release retention.
+  * cfg 22, opt 25 -> 21, cfg+opt 47 -> 43.
+
 2026-04-25  Ryan Musante
 
 - v3.24: §8 shader lineup narrowed to zfast-crt and lcd-grid-v2;
@@ -209,53 +263,4 @@
     overrides retain pak swap (e.g. Pokémon Stadium needs transfer
     pak). README badge 3.20 -> 3.21; CHANGELOG trim v3.16.
   * cfg 30, opt 28 -> 31, cfg+opt 58 -> 61.
-
-2026-04-25  Ryan Musante
-
-- v3.20: defense-in-depth trim continued; 4 more drift-guard pins removed.
-  74 -> 70 keys (cumulative -7 since v3.18).
-  * retroarch.cfg: bump header stamp v3.19 -> v3.20; "74 keys" ->
-    "70 keys".
-  * retroarch.cfg: remove `network_cmd_enable = "false"` -- upstream
-    default already `false` per `def_v1220.h DEFAULT_NETWORK_CMD_ENABLE
-    false`; UDP cmd port 55355 listener never opens unless this flips
-    `true`; drift-guard with no functional effect.
-  * retroarch.cfg: remove `network_remote_enable = "false"` -- upstream
-    default `false` per `cfg_v1220.c:2240` (4th SETTING_BOOL arg);
-    network gamepad remote path never opens unless this flips; key
-    has TODO marker upstream but tvOS lacks the relevant binding code.
-  * retroarch.cfg: remove `netplay_use_mitm_server = "false"` -- upstream
-    default `false` per `def_v1220.h DEFAULT_NETPLAY_USE_MITM_SERVER
-    false`; only relevant during active netplay session with MITM relay
-    selection; pure pin.
-  * retroarch.cfg: remove `discord_allow = "false"` -- upstream default
-    `false` per `cfg_v1220.c:2247` (4th SETTING_BOOL arg); Discord Rich
-    Presence requires desktop overlay infrastructure absent on tvOS;
-    pure pin.
-  * Surviving Security/Netplay block: 4 keys total. Two retained
-    Netplay pins (`netplay_public_announce`, `netplay_nat_traversal`)
-    flip upstream `true -> false` -- real hardening (lobby.libretro.com
-    broadcast suppression + UPnP/NAT-PMP probe block). Two retained
-    Security pins (`network_on_demand_thumbnails` per #17242 hang
-    mitigation, `cloud_sync_enable` master gate) keep substantive
-    functional rationale.
-  * Surviving driver=null block: 6 keys (`bluetooth_driver`,
-    `wifi_driver`, `midi_driver`, `record_driver`, `camera_driver`,
-    `location_driver`) all retained -- these actively skip driver
-    init code paths (e.g. `record_driver` would otherwise default to
-    `wav` or `ffmpeg` per `def_v1220.h:597-599`); not pure DiD.
-  * README.md: §7 preamble rewritten to disclose cumulative v3.19 +
-    v3.20 trim with full key-by-key rationale and platform-absence
-    citation. §7 table drops 3 rows: "Network Command Surfaces",
-    "Netplay MITM Server", "Discord RPC". Retained Netplay rows
-    annotated as "real hardening" (vs the dropped drift-guards).
-  * README.md: badge 3.19 -> 3.20.
-  * CHANGELOG.md: trim v3.15 entry per 5-release retention; retained
-    entries are now v3.16-v3.20.
-  * Companion v3.20: 8 `.cfg` stamps v3.19 -> v3.20 (header stamps
-    and "paired with retroarch-appletv4k" pairing stamps; bodies
-    byte-identical to v3.19); 8 `.opt` files unchanged (no version
-    stamps per v3.12 design); README badge 3.19 -> 3.20; CHANGELOG
-    trim v3.15 per matching 5-release retention.
-  * cfg 30, opt 28, cfg+opt 58 -- unchanged.
 
