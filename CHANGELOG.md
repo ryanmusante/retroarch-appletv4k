@@ -1,3 +1,36 @@
+# 3.27 - 2026-05-09
+
+- v3.27: README trim pass to vital information only; retroarch.cfg byte-identical to v3.26 (header stamp only; 74 keys unchanged).
+- retroarch.cfg: bump header stamp v3.26 -> v3.27.
+- README.md: §10 Known Issues — 7 rows -> 3 rows. Closed entries removed:
+  - #3 [#18300](https://github.com/libretro/RetroArch/issues/18300) (per-core rewind config) — Closed; cfg-side `rewind_enable = "false"` pin retained as drift-guard against per-game re-enable; row dropped from README.
+  - #4 [#14201](https://github.com/libretro/RetroArch/issues/14201) (Mupen auto frame delay) — Closed; cfg-side `video_frame_delay_auto = "false"` pin retained as drift-guard; row dropped from README.
+  - #5 [#16598](https://github.com/libretro/RetroArch/issues/16598) (N64 rendering glitches) — Closed; per-game override mechanism retained for residuals; row dropped from README.
+  - #6 [#14978](https://github.com/libretro/RetroArch/issues/14978) (Threaded video Apple-platform force-disable) — Closed (force-disabled upstream); `gfx/video_driver.c` `__MACH__ && __APPLE__` runtime override remains the actual mechanism; row dropped from README.
+  - Open rows retained: #18286 (Switch Pro B-button), #18447 (multi-controller ghost inputs), #16685 (3-controller cap on tvOS).
+- README.md: §11 Setup Checklist dropped entirely. Section was ~50 lines of redundancy with §1-§9 (every checkbox restated content already documented above); a "punch-list" view of an already-tight document offers no information not in the body. Quick Start at top serves as the de-facto checklist.
+- README.md: section renumbering to fill the §11 gap. §12 Files in This Repository -> §11; §13 Versioning -> §12; §14 License -> §13. Internal anchor links (`#11-files-in-this-repository`, `#12-versioning`, `#13-license`) updated; Table of Contents regenerated.
+- README.md: §3 Storage Persistence — 3 subsections (Automatic config backup / Recommended setup / inline detail) collapsed to 1 paragraph + warning callout. Substantive info preserved: 500 KB persistent cap, NSUserDefaults config mirror (RA v1.16.0+), shader auto-extract (v1.19.0+), Settings → Directory paths setup. Drops historical-version subsections and "Recommended setup" numbered list.
+- README.md: §6 Controllers — Compatibility table 6 rows -> 4. Pairing 4-step list collapsed to 1 sentence. Recommendation grouping: PS5 / Xbox Series (Recommended), PS4 / 8BitDo Pro 2 / Nimbus+ merged into "Excellent" row, Switch Pro retained as "Avoid". Pairing-method column dropped (covered by tvOS UI).
+- README.md: §7 Hotkeys — recommended bindings table 8 rows -> 5 (Save State / Load State paired on one row, Fast Forward / Rewind paired on one row, State Slot ± paired on one row). Save state behavior callout 5 sentences -> 3.
+- README.md: §7 Video settings — table 11 rows -> 7. Drops `video_gpu_screenshot` (post-shader capture detail; not user-facing), Integer Overscale (per-core; covered by §9), Refresh Rate calibration prose absorbed into Notes. fps_show Notes column shortened.
+- README.md: §7 Latency reduction — table 6 rows; row content compressed (Notes shortened, paired settings on single row).
+- README.md: §7 Additional settings — full 40-row table replaced by 1-paragraph hardening summary + 7-row "may want to flip" table. Summary covers: network / netplay / cloud-sync hardening, null driver subsystems, menu-perf reductions, conservative auto-save, quiet logging. The 7-row table retains only settings users might consciously flip per their setup (HDR, audio_latency, audio_resampler_quality, input_max_users, fastforward_ratio, menu_pause_libretro, pause_nonactive). Pointer-to-cfg note added: "The full key list is in retroarch.cfg." Netplay subsection (1-paragraph) dropped — non-actionable boilerplate.
+- README.md: §9 Supported Systems — Tier 2 Mupen Notes column compressed; trims explicit per-key list of frontend pins (covered by [retroarch-configs §4](https://github.com/ryanmusante/retroarch-configs#4-frontend-override-keys)).
+- README.md: §1 Prerequisites — Hardware (4 rows) + Software (5 rows) tables merged into single 7-row table. Drops Notes column on Apple TV row beyond "A15 Bionic" (purgeable-cache detail moved to §3 where it's actually relevant).
+- README.md: §4 File Transfers — Web interface 5-step list collapsed to 1 sentence. WebDAV 2-row table inlined into 1 sentence per-platform. "Note about Wi-Fi" callout dropped (covered by §1 row "no Ethernet on 64 GB model"). Filesystem layout tree compressed (`...` for less-relevant subtrees; drops per-shader-folder / per-core-dir enumeration in favor of pointer to retroarch-configs §7).
+- README.md: §5 ROM and BIOS Setup — Scanning subsection 2-paragraph -> 1-sentence. BIOS table dropped detailed prose around Neo Geo dual-location requirement (folded into table Notes column).
+- README.md: §8 Shaders — applying-a-shader 4-step retained but step prose tightened. Recommended presets 2-row table retained. zfast-crt 4K parameters callout retained but compressed. Drops "If `config/shaders/...` appears empty" callout (recovery instructions are in Online Updater UX itself).
+- README.md: §2 Installation — 4-step list retained verbatim; trailing "Bluetooth keyboard support" callout dropped (covered implicitly; not a setup blocker).
+- README.md: §11 Files in This Repository (was §12) - 4-row table retained.
+- README.md: §12 Versioning (was §13) — paragraph compressed from ~120 words to ~50 (drops historical re-alignment context, retention restated tersely).
+- README.md: §13 License (was §14) — 2 lines retained.
+- README.md: badge 3.26 -> 3.27.
+- README.md: line count 494 -> 270 (~45% reduction); preserved all behavior-relevant content; cuts duplication, historical context, and redundant checklists.
+- CHANGELOG.md: trim v3.22 entry per 5-release retention; retained entries are now v3.23-v3.27.
+- Companion v3.27: 7 `.cfg` paired stamps v3.26 -> v3.27; bodies byte-identical to v3.26. 7 `.opt` files unchanged. README trim pass — §1 Notes column compressed (Mupen ~150w -> ~40w; others to single-sentence); §4 Notes simplified across 9 rows; §5 Shaders compressed to 2 sentences; §7 Manual Install 28-line full-tree -> 4-line example tree + 1-line note enumerating other 6 core dir names; §11 Versioning compressed; "Apple TV / tvOS" subheader inside §7 dropped (single-platform; subheader was filler); badge 3.26 -> 3.27. CHANGELOG trim v3.22 per matching 5-release retention.
+- cfg 22, opt 19, cfg+opt 41 — unchanged.
+
 # 3.26 - 2026-05-09
 
 - v3.26: paired companion default-matching-key trim + documentation accuracy pass; retroarch.cfg 74 keys byte-identical to v3.25 (header stamp only).
@@ -62,20 +95,3 @@
 - CHANGELOG.md: trim v3.18 entry per 5-release retention; retained entries are now v3.19-v3.23.
 - Companion v3.23: 7 `.cfg` paired stamps v3.22 -> v3.23 (bodies byte-identical to v3.22). Mupen64Plus-Next.cfg header drops "(v3.3 stutter mitigations)" inline annotation. Mupen64Plus-Next.opt header drops "(v3.3 Angrylion-MT heterogeneous-ARM tune)" and "(v3.21 P2-P4 parity for [titles])"; pak2/3/4 inline comment drops "v3.21:" prefix. README §1 Genesis row drops "(v3.1 off; v3.2 enum fix)"; mGBA row drops "(v3.9 enum fix...)" + "(v3.2 enum fix...)"; Mupen row drops v3.21/v3.3/v3.9 annotations. README §4 Frontend Override Keys table — run_ahead_secondary_instance drops v3.11; audio_latency drops v3.10/v3.9/v3.6-v3.8; audio_sync drops v3.9/v3.3-v3.8; autosave_interval drops v3.3; video_frame_delay_auto drops v3.11; closing inherited-keys paragraph drops v3.11. README §11 Versioning drops the same v3.0/v2.95/v1.57 historical example. CHANGELOG trim v3.18 per matching 5-release retention. cfg+opt 47 — unchanged.
 - Establishes editorial rule going forward: README narrative does not carry per-version history; CHANGELOG is the sole record of what changed when.
-
-# 3.22 - 2026-04-25
-
-- v3.22: PlayStation 1 / PCSX-ReARMed core retired; shader recommendations trimmed to primary set. 0 key-value changes in retroarch.cfg.
-- retroarch.cfg: bump header stamp v3.21 -> v3.22; 73 keys byte-identical.
-- README.md: §1 BIOS files row drops "PS1" from the requires-BIOS list.
-- README.md: §4 Filesystem layout tree drops `psx/` ROMs subfolder.
-- README.md: §5 ROM folder reference drops PlayStation 1 row.
-- README.md: §5 BIOS files table drops PlayStation 1 row; prose drops `scph5501.bin` case-sensitivity example (no longer applicable).
-- README.md: §7 Video table Integer Overscale row drops "PCSX (variable 256-640)" mention.
-- README.md: §7 Audio table — Audio Latency row drops "PCSX mirrors `48` (drift-guard)" clause; Resampler Quality row drops "PS1 44100 Hz" example; Audio Sync row drops "PCSX inherits global" clause.
-- README.md: §8 Recommended presets table trimmed from 9 shaders to 3 primary CRT shaders — `crt-easymode.slangp` (recommended starting point, single-pass + integer-scale safe), `crt-aperture.slangp` (aperture-grille classic), `crt-geom.slangp` (curvature classic). Drops Minimal-cost row entries (`zfast_crt`, `crt-pi`, `crt-potato-warm/cool`), additional Low-cost variants (`crt-hyllian`, `fakelottes`), and Medium `crt-lottes-fast`. "Apply crt-easymode" follow-up paragraph rewritten to drop Minimal-preset fallback list. Integer Scaling Conflict callout drops `crt-hyllian` from multi-pass examples and `zfast_crt` / `crt-pi` from simple-shader examples (only `crt-geom` / `crt-easymode` / `crt-aperture` remain referenced).
-- README.md: §9 Supported Systems table drops Tier 2 PlayStation 1 row (Mupen64Plus-Next is now sole Tier 2 entry); Mupen row gains v3.21 `pak1/2/3/4 = "rumble"` mention.
-- README.md: badge 3.21 -> 3.22.
-- CHANGELOG.md: trim v3.17 entry per 5-release retention; retained entries are now v3.18-v3.22.
-- Companion v3.22: cores 8 -> 7. `config/PCSX-ReARMed.cfg` deleted (-8 keys); `config/PCSX-ReARMed.opt` deleted (-6 keys); 7 surviving `.cfg` paired stamps v3.21 -> v3.22; README cores badge 8 -> 7; §1 supported cores table drops PCSX row (Mupen row updated for v3.21 pak1-4 rumble); §2 file structure tree drops 2 PCSX entries; §2 ZIP-ships line "8/8" -> "7/7"; §4 Frontend Override Keys table de-PCSX'd across 9 rows (`run_ahead_enabled`, `run_ahead_secondary_instance`, `audio_latency`, `audio_sync`, `autosave_interval`, `video_scale_integer` row dropped entirely as no longer applicable, `video_scale_integer_scaling`, `video_frame_delay_auto`, `rewind_enable`); §7 install tree drops PCSX-ReARMed/ block; §8 Overclocking drops `psxclock` paragraph entirely; CHANGELOG trim v3.17 per matching 5-release retention.
-- cfg 30 -> 22, opt 31 -> 25, cfg+opt 61 -> 47.
