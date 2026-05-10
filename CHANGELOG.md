@@ -1,3 +1,14 @@
+# 3.28 - 2026-05-10
+
+- v3.28: paired companion FBN secondary-instance correction + Beetle PCE Fast cdspeed rebase; retroarch.cfg 74 keys byte-identical to v3.27 (header stamp only).
+- retroarch.cfg: bump header stamp v3.27 -> v3.28.
+- README.md: §7 Latency reduction `run_ahead_secondary_instance` row Notes column updated. Prior text "FBN pins `true`; others inherit global `false`" no longer holds. Per upstream FBN libretro README at libretro/FBNeo `src/burner/libretro/README.md`: "This core widely supports the RetroArch input latency reduction features, with runahead single instance and preemptive frames being the recommended methods. Proper support for runahead second instance is not guaranteed because it doesn't exist in standalone FBNeo unlike the other methods." Updated text: "All cores inherit; single-instance per upstream FBN libretro README".
+- README.md: §9 Tier 1 FBN row Notes column updated. Drops "Run Ahead 2 + secondary instance"; replaced with "Run Ahead 2 single-instance (per upstream FBN libretro README)". `[#16374]` rewind-tracker reference retained.
+- README.md: badge 3.27 -> 3.28; intro April 2026 -> May 2026.
+- CHANGELOG.md: trim v3.23 entry per 5-release retention; retained entries are now v3.24-v3.28.
+- Companion v3.28: 7 `.cfg` paired stamps v3.27 -> v3.28. FinalBurn Neo.cfg drops `run_ahead_secondary_instance = "true"` per upstream FBN libretro README guidance — second-instance support is not guaranteed because the feature does not exist in standalone FBNeo; FBN now inherits global `false` for single-instance runahead, the upstream-recommended method. Beetle PCE Fast.opt: `pce_fast_cdspeed "4" -> "2"` per beetle-pce-fast-libretro upstream advisory at `libretro_core_options.h` ("Higher values enable faster loading times but can cause issues with a couple of games") and community-standard reference at wiki.rg35xx.com; per-game override to "4" remains available where compatibility permits. README §1 FBN row keys 4 -> 3; Beetle PCE Fast Notes column compressed; §4 Frontend Override Keys table `run_ahead_secondary_instance` row Purpose column rewritten to drop the FBN `true` reference. CHANGELOG trim v3.23 per matching 5-release retention.
+- cfg 22 -> 21, opt 19, cfg+opt 41 -> 40.
+
 # 3.27 - 2026-05-09
 
 - v3.27: README trim pass to vital information only; retroarch.cfg byte-identical to v3.26 (header stamp only; 74 keys unchanged).
@@ -80,18 +91,3 @@
 - CHANGELOG.md: trim v3.19 entry per 5-release retention; retained entries are now v3.20-v3.24.
 - Companion v3.24: 7 `.cfg` paired stamps v3.23 -> v3.24 (bodies byte-identical to v3.23). README §5 Shaders retargets recommended-starting-point reference from `crt-easymode.slangp` to `crt/zfast-crt.slangp`; concurrent fix to stale "8 per-core `.cfg` files" -> "7 per-core `.cfg` files" (v3.22 dropped PCSX-ReARMed; §1 supported cores table was updated then but §5 prose was missed). mGBA LCD recommendation (`handheld/lcd-grid-v2.slangp`) unchanged. CHANGELOG trim v3.19 per matching 5-release retention. cfg+opt 47 — unchanged.
 
-# 3.23 - 2026-04-25
-
-- v3.23: README de-versioning pass; 0 cfg key-value changes.
-- retroarch.cfg: bump header stamp v3.22 -> v3.23; 73 keys byte-identical.
-- README.md: §7 Additional settings preamble rewritten to drop v3.19/v3.20/v3.21 trim-and-restore history; replaced with terse one-paragraph summary of current state.
-- README.md: §7 Additional settings table — 14 row Notes columns de-versioned (drop "v3.5"/"v3.8"/"v3.15"/"v3.21" annotations from Drivers/XMB Animations/XMB Shader Pipeline/XMB Color Theme/XMB Shadows/Core Info Cache/HDR/Auto Game Focus/Pause on Menu/Pause on Focus Loss/State Thumbnails/Audio Latency/Resampler Quality/Audio Sync rows).
-- README.md: §7 Hotkeys callout drops "v3.3:" prefix on Tier 2 autosave_interval line.
-- README.md: §7 Video table — Refresh Rate row drops "v3.10"; On-Screen FPS row drops "v3.12" + "removed as drift-guard in v3.9"; Run Ahead row drops "(v3.11 — companion no longer pins...)"; Run-Ahead Mode row drops "as of v3.11"; Fast Forward Ratio row drops "v3.6 standard cap (was 5.0 in v3.3-v3.5...)".
-- README.md: §9 Mupen Tier 2 row de-versioned (drops v3.3/v3.9/v3.21 annotations on multithread/FrameDuping/pak1-4 + v3.10/v3.9 on audio_latency + v3.9 on audio_sync).
-- README.md: §10 Known Issues #4 row drops "global true as of v2.66" + "refactored upstream v1.20.0".
-- README.md: §13 Versioning drops historical re-alignment example "(e.g. v3.0 re-aligned the two repos after they had evolved independently at v2.95 / v1.57)".
-- README.md: badge 3.22 -> 3.23.
-- CHANGELOG.md: trim v3.18 entry per 5-release retention; retained entries are now v3.19-v3.23.
-- Companion v3.23: 7 `.cfg` paired stamps v3.22 -> v3.23 (bodies byte-identical to v3.22). Mupen64Plus-Next.cfg header drops "(v3.3 stutter mitigations)" inline annotation. Mupen64Plus-Next.opt header drops "(v3.3 Angrylion-MT heterogeneous-ARM tune)" and "(v3.21 P2-P4 parity for [titles])"; pak2/3/4 inline comment drops "v3.21:" prefix. README §1 Genesis row drops "(v3.1 off; v3.2 enum fix)"; mGBA row drops "(v3.9 enum fix...)" + "(v3.2 enum fix...)"; Mupen row drops v3.21/v3.3/v3.9 annotations. README §4 Frontend Override Keys table — run_ahead_secondary_instance drops v3.11; audio_latency drops v3.10/v3.9/v3.6-v3.8; audio_sync drops v3.9/v3.3-v3.8; autosave_interval drops v3.3; video_frame_delay_auto drops v3.11; closing inherited-keys paragraph drops v3.11. README §11 Versioning drops the same v3.0/v2.95/v1.57 historical example. CHANGELOG trim v3.18 per matching 5-release retention. cfg+opt 47 — unchanged.
-- Establishes editorial rule going forward: README narrative does not carry per-version history; CHANGELOG is the sole record of what changed when.

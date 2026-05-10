@@ -1,10 +1,10 @@
 # RetroArch on Apple TV 4K
 
-![version](https://img.shields.io/badge/version-3.27-blue)
+![version](https://img.shields.io/badge/version-3.28-blue)
 ![RetroArch](https://img.shields.io/badge/RetroArch-v1.22.x-green)
 ![license](https://img.shields.io/badge/license-MIT-green)
 
-**RetroArch v1.22.x** · **tvOS 26** · **Apple TV 4K 3rd Gen (64 GB Wi-Fi)** · **April 2026**
+**RetroArch v1.22.x** · **tvOS 26** · **Apple TV 4K 3rd Gen (64 GB Wi-Fi)** · **May 2026**
 
 RetroArch setup guide for Apple TV 4K (3rd generation). Covers installation, ROM/BIOS setup, controllers, performance tuning, and CRT shaders. Ships with a companion 74-key `retroarch.cfg`. Directory paths (ROMs, BIOS, saves, states) are set in-app per §4 — not via `retroarch.cfg`.
 
@@ -181,7 +181,7 @@ Save state captures on Close Content; load manually with Select + L1. SRAM flush
 |---------|-------|-------|
 | `vrr_runloop_enable` | `false` | Apple TV is fixed-refresh; keeps DRC active |
 | `run_ahead_enabled` / `_frames` | `false` / `2` | Tier 1 per-core `true`; Tier 2 explicit `false` |
-| `run_ahead_secondary_instance` | `false` | FBN pins `true`; others inherit global `false` |
+| `run_ahead_secondary_instance` | `false` | All cores inherit; single-instance per upstream FBN libretro README |
 | `preemptive_frames_enable` | `false` | Per-core only; mutually exclusive with `run_ahead_enabled` |
 | `video_frame_delay_auto` | `true` | Mupen pinned `false` ([#14201](https://github.com/libretro/RetroArch/issues/14201)) |
 | `fastforward_ratio` | `4.0` | 4× cap; reduces thermal load on passive A15 |
@@ -248,7 +248,7 @@ Tier 1 = full speed with shaders; Tier 2 = most titles at full speed. JIT-requir
 | 1 | GB / GBC / GBA | mGBA | — |
 | 1 | Genesis / MD / CD, SMS | Genesis Plus GX | Per-game BRAM (system + cart); Run Ahead per-core |
 | 1 | PC Engine / TG-16 | Beetle PCE Fast | CD precache + 4× streaming; Run Ahead single-instance |
-| 1 | Neo Geo, Arcade (CPS1/2/3) | FinalBurn Neo | Run Ahead 2 + secondary instance; rewind pinned `false` ([#16374](https://github.com/libretro/RetroArch/issues/16374)) |
+| 1 | Neo Geo, Arcade (CPS1/2/3) | FinalBurn Neo | Run Ahead 2 single-instance (per upstream FBN libretro README); rewind pinned `false` ([#16374](https://github.com/libretro/RetroArch/issues/16374)) |
 | 2 | Nintendo 64 | Mupen64Plus-Next | tvOS Metal-only stack (angrylion + cxd4); P-core multithread pin; FrameDuping; 4P rumble parity. Frontend pins per [retroarch-configs §4](https://github.com/ryanmusante/retroarch-configs#4-frontend-override-keys) |
 
 ## 10. Known Issues
