@@ -1,3 +1,22 @@
+# 4.0 - 2026-05-16
+
+- v4.0: MAJOR bump — README restructured to ry-install style (breaking anchor schema); retroarch.cfg 74 keys byte-identical to v3.28 (header stamp + §2 reference fix only).
+- retroarch.cfg: bump header version stamp + paired stamp v3.28 -> v4.0. Trailing `(§2)` reference replaced with `(see README Installation)` — sections are no longer numbered in v4.0. Body byte-identical to v3.28 (verified line-2-onward diff = 0); 74 keys unchanged.
+- README.md: full restructure to ry-install template. Numbered sections dropped (§1-§13 -> unnumbered); all `§N` references removed body-wide. Table of Contents renamed `## Table of Contents` -> `## Contents`; format switched from numbered list to bulleted list.
+- README.md: **BREAKING** anchor schema change — slugs drop the leading `N-` prefix (e.g. `#1-prerequisites` -> `#prerequisites`, `#7-configuration` -> `#configuration`, `#11-files-in-this-repository` -> `#files-in-this-repository`). External inbound links to old anchors will 404. Motivates MAJOR bump per versioning policy.
+- README.md: section restructure — former §7 Configuration top-level + 5 H3 subsections (Hotkeys / Video settings / Latency reduction / TV output / Additional settings) reorganized into `## Configuration` parent + 5 `<details>` collapsibles. Former §4 File Transfers web-interface / WebDAV subsections merged into single `| Server | Port | Endpoint |` table.
+- README.md: 9 reference subsections folded into `<details>` collapsibles — `Filesystem layout` (under File Transfers), `ROM folder reference` + `BIOS files` (under ROM and BIOS Setup), `Hotkeys` + `Video settings` + `Latency reduction` + `TV output` + `Additional settings` (under Configuration), `Assign procedure` (under Shaders). Default-collapsed.
+- README.md: GitHub admonitions replace `⚠️`-style prose callouts. Quick Start gains `> [!IMPORTANT]` (Save Current Config trap, was an inline note in §2 step 4); Storage Persistence retains `> [!IMPORTANT]` (500 KB persistent cap); File Transfers retains `> [!IMPORTANT]` (unauthenticated 80/8080 surface); Controllers gains `> [!NOTE]` (multi-controller ghost inputs); Configuration gains `> [!IMPORTANT]` (no Close Content hotkey = no exit, was a buried warning under §7); Configuration > TV output collapsible gains `> [!IMPORTANT]` (VRR / DRC failure modes, was a trailing paragraph).
+- README.md: cross-repo Supported Systems Mupen row link updated — `retroarch-configs#4-frontend-override-keys` -> `retroarch-configs#configuration` (target now lives inside the companion repo's `<details>` collapsible under the unnumbered Configuration parent).
+- README.md: Quick Start moved to top-level section above Contents (was a `### Quick Start` H3 below the intro tagline).
+- README.md: header gains `[![tvOS]](...)` badge + `[![paired]](...)` cross-link badge to companion repo (4 badges total + license).
+- README.md: License section adopts `MIT © 2026 Ryan Musante` attribution form; RetroArch GPL v3 disclaimer paragraph retained.
+- README.md: badge 3.28 -> 4.0; paired badge `retroarch--configs v3.28` -> `v4.0`.
+- README.md: Latency reduction collapsible `run_ahead_secondary_instance` row Notes column — drops "per upstream FBN libretro README" trailing attribution in line with the companion repo's symmetric trim (citation is carried in CHANGELOG only); replaced with reciprocal "per companion repo" pointer.
+- README.md: byte size 16240 -> 15571 (-4.1%); line count 279 -> 362 (+83 from `<details>` / admonition markup; 9 collapsibles).
+- Companion v4.0: 7 `.cfg` paired stamps v3.28 -> v4.0; bodies byte-identical (cfg 21, opt 19, cfg+opt 40 — unchanged).
+- CHANGELOG.md: trim v3.24 entry per 5-release retention; retained entries are now v3.25-v3.28 + v4.0.
+
 # 3.28 - 2026-05-10
 
 - v3.28: paired companion FBN secondary-instance correction + Beetle PCE Fast cdspeed rebase; retroarch.cfg 74 keys byte-identical to v3.27 (header stamp only).
@@ -76,18 +95,3 @@
 - CHANGELOG.md: trim v3.20 entry per 5-release retention; retained entries are now v3.21-v3.25.
 - Companion v3.25: 7 `.cfg` paired stamps v3.24 -> v3.25 (6 bodies byte-identical; Mupen64Plus-Next.cfg trims one verbose multi-clause audio comment line to single-line per editorial). 2 `.opt` files trimmed: `Genesis Plus GX.opt` 6 keys -> 3 keys (drift-guard pins `genesis_plus_gx_ym2612`, `genesis_plus_gx_audio_filter`, `genesis_plus_gx_render` removed — all match upstream Genesis-Plus-GX `libretro_core_options.h` defaults at L444/L475/L347 respectively); `Mupen64Plus-Next.opt` 10 keys -> 9 keys (inert `mupen64plus-43screensize = "320x240"` removed — under HAVE_THR_AL angrylion path, value is read at libretro/mupen64plus-libretro-nx `libretro/libretro.c:1348` then explicitly overwritten at L1370-1371 by `if(current_rdp_type == RDP_PLUGIN_ANGRYLION)` forced override to `retro_screen_width=640, retro_screen_height=480, retro_screen_aspect=4.0/3.0, AspectRatio=1`). 3 `.opt` files (Mesen / Mupen / mGBA) trim verbose multi-clause comments to single-line + drop legacy `(v3.X)` historical annotations per established v3.23 editorial rule (Beetle PCE Fast.opt / FinalBurn Neo.opt / Snes9x.opt unchanged — already minimal). 1 `.cfg` file (Mupen64Plus-Next.cfg) trims one verbose multi-clause audio comment line to single-line; remaining 6 `.cfg` bodies byte-identical to v3.24. README §1 Genesis row keys 6 -> 3; Mupen row keys 10 -> 9 (drift-guard rationales removed where keys removed; 43screensize reference removed). README badge 3.24 -> 3.25. CHANGELOG trim v3.20 per matching 5-release retention.
 - cfg 22, opt 25 -> 21, cfg+opt 47 -> 43.
-
-# 3.24 - 2026-04-25
-
-- v3.24: §8 shader lineup narrowed to zfast-crt and lcd-grid-v2; 0 cfg key-value changes.
-- retroarch.cfg: bump header stamp v3.23 -> v3.24; 73 keys byte-identical.
-- README.md: §8 Recommended presets table replaced — 3 rows (`crt-easymode`, `crt-aperture`, `crt-geom`) -> 2 rows (`crt/zfast-crt.slangp` Minimal cost as sole CRT recommendation; `handheld/lcd-grid-v2.slangp` Minimal cost as sole mGBA-LCD recommendation). zfast-crt characteristics: single-pass, `scale_type = viewport`, integer-scale safe, designed for low-end GPUs. Filenames verified against upstream `libretro/slang-shaders` master.
-- README.md: §8 "Handheld note" callout updates `crt-easymode` -> `zfast-crt` reference. "Applying ... per-core is a safe starting point" sentence retargets `crt-easymode.slangp` -> `zfast-crt.slangp`.
-- README.md: §8 parameter callout retargeted — "crt-easymode 4K parameters" (SHARPNESS_IMAGE/EDGES, GLOW_*, MASK_COLORS/STRENGTH/SIZE, SCANLINE_*, GAMMA_*, BRIGHTNESS) -> "zfast-crt 4K parameters" (BLURSCALEX, LOWLUMSCAN, HILUMSCAN, BRIGHTBOOST, MASK_DARK, MASK_FADE). Parameter names verified against `crt/shaders/zfast_crt/zfast_crt_impl.inc` on libretro/slang-shaders master.
-- README.md: §8 "Integer Scaling Conflict" callout dropped entirely — both recommended presets are single-pass + integer-scale safe; geometry-shader caveat is no longer relevant to the documented lineup. Multi-pass shaders that would conflict (CRT-Royale, CRT-Geom-Deluxe, Mega Bezel, etc.) remain covered by the surviving "Avoid on Apple TV" line.
-- README.md: §8 "Applying a shader" step 3 cross-reference updated from "crt-easymode 4K parameters" to "zfast-crt 4K parameters".
-- README.md: badge 3.23 -> 3.24.
-- README.md: intro paragraph "77-key `retroarch.cfg`" -> "73-key `retroarch.cfg`". Drift since v3.19; key count moved 77 -> 74 (v3.19) -> 70 (v3.20) -> 73 (v3.21) and has held at 73 through v3.22-v3.24. Intro was missed in each of those passes.
-- CHANGELOG.md: trim v3.19 entry per 5-release retention; retained entries are now v3.20-v3.24.
-- Companion v3.24: 7 `.cfg` paired stamps v3.23 -> v3.24 (bodies byte-identical to v3.23). README §5 Shaders retargets recommended-starting-point reference from `crt-easymode.slangp` to `crt/zfast-crt.slangp`; concurrent fix to stale "8 per-core `.cfg` files" -> "7 per-core `.cfg` files" (v3.22 dropped PCSX-ReARMed; §1 supported cores table was updated then but §5 prose was missed). mGBA LCD recommendation (`handheld/lcd-grid-v2.slangp`) unchanged. CHANGELOG trim v3.19 per matching 5-release retention. cfg+opt 47 — unchanged.
-
