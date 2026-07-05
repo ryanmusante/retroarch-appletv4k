@@ -1,9 +1,9 @@
 # retroarch-appletv4k
 
-[![version](https://img.shields.io/badge/version-4.0-blue.svg)](CHANGELOG.md)
+[![version](https://img.shields.io/badge/version-4.1-blue.svg)](CHANGELOG.md)
 [![RetroArch](https://img.shields.io/badge/RetroArch-v1.22.x-green.svg)](https://www.retroarch.com/)
 [![tvOS](https://img.shields.io/badge/tvOS-26-black.svg)](https://www.apple.com/tvos/)
-[![paired](https://img.shields.io/badge/paired-retroarch--configs%20v4.0-orange.svg)](https://github.com/ryanmusante/retroarch-configs)
+[![paired](https://img.shields.io/badge/paired-retroarch--configs%20v4.1-orange.svg)](https://github.com/ryanmusante/retroarch-configs)
 ![license](https://img.shields.io/badge/license-MIT-green.svg)
 
 > RetroArch setup for Apple TV 4K (3rd Gen). Covers installation,
@@ -272,7 +272,7 @@ key list is in `retroarch.cfg`.
 | Setting | Pinned | Notes |
 |---------|--------|-------|
 | `video_hdr_enable` | `false` | Explicit-off guard against Metal HDR10 negotiation; flip if tvOS is configured for HDR10 / Dolby Vision |
-| `audio_latency` | `48` | ~3 frames @ 60 Hz; raise to `64` if crackle under sustained load |
+| `audio_latency` | `64` | ~4 frames @ 60 Hz; clears libretro 3-frame safe floor, stutter-resistant under passive-A15 throttling. Lower to `48` (~3 frames) to favor latency if audio stays clean |
 | `audio_resampler_quality` | `3` | NORMAL (SINC); real flip from tvOS LOWER default at sub-1% A15 cost |
 | `input_max_users` | `4` | tvOS RA hard-caps at 3 ([#16685](https://github.com/libretro/RetroArch/issues/16685)); 4th slot is forward-compat |
 | `fastforward_ratio` | `4.0` | Sustained FF cap; thermal-friendly on passive A15 |

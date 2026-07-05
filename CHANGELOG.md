@@ -1,3 +1,14 @@
+# 4.1 - 2026-07-05
+
+- v4.1: retroarch.cfg `audio_latency` tuning fix — first cfg body change since v4.0; 74 keys unchanged. Released in lockstep with companion retroarch-configs v4.1 (Beetle PCE Fast.opt precache revert); companion `.cfg` bodies byte-identical, stamps bumped v4.0 -> v4.1.
+- retroarch.cfg: `audio_latency "48" -> "64"`. Prior "48" (2.88 frames @ 60 Hz) sat below the libretro optimal-vsync 3-frame safe floor (52 ms / 3.12 frames) documented at libretro/docs `docs/guides/optimal-vsync.md` ("a little longer than 3 frames like 52ms"). On the passively-cooled A15 (fanless j255ap / A2737), sustained thermal throttling can induce frame-time spikes a sub-3-frame audio buffer fails to absorb, producing intermittent crackle under load. "64" (3.84 frames) clears the safe floor and matches the RetroArch upstream default for this platform (`config.def.h` v1.22.2 `DEFAULT_OUT_LATENCY 64` on the non-Android `#else` branch), trading ~1 frame of audio latency for stutter resistance. Latency-favoring "48" remains available as a per-user flip where audio stays clean. Verified against RetroArch v1.22.2 `config.def.h` + `libretro-common` Metal renderer `MAX_INFLIGHT 1` (video render-ahead already floored; audio buffer is the operative latency knob on this stack).
+- retroarch.cfg: bump header version stamp + paired stamp v4.0 -> v4.1.
+- README.md: Configuration > Additional settings collapsible — `audio_latency` row value `48` -> `64`; Notes column rewritten. Prior "~3 frames @ 60 Hz; raise to `64` if crackle under sustained load" (which framed 64 as an escape hatch) replaced with "~4 frames @ 60 Hz; clears libretro 3-frame safe floor, stutter-resistant under passive-A15 throttling. Lower to `48` (~3 frames) to favor latency if audio stays clean" — 64 is now the shipped default, 48 the documented opt-in.
+- README.md: version badge 4.0 -> 4.1; paired badge `retroarch--configs v4.0` -> `v4.1`.
+- README.md: byte size 15555 -> 15657 (+102 from expanded `audio_latency` Notes cell); line count 362 unchanged; cfg key count 74 unchanged.
+- Companion v4.1: 7 `.cfg` header + paired stamps v4.0 -> v4.1, bodies byte-identical to v4.0. Beetle PCE Fast.opt drops `pce_fast_cdimagecache = "enabled"` (reverts to upstream default `"disabled"`; multi-hundred-MB full-image precache imprudent on the 4 GB fanless ATV4K 3rd Gen — per-game opt-in retained); opt 3 -> 2 keys, cfg+opt 40 -> 39. Remaining 6 `.opt` unchanged. No per-core `audio_latency` override exists (global cfg governs), so no companion cfg-body edit required. CHANGELOG trim v3.25 per matching 5-release retention.
+- CHANGELOG.md: trim v3.25 entry per 5-release retention; retained entries are now v3.26-v4.0 + v4.1.
+
 # 4.0 - 2026-05-16
 
 - v4.0: MAJOR bump — README restructured to ry-install style (breaking anchor schema); retroarch.cfg 74 keys byte-identical to v3.28 (header stamp + §2 reference fix only).
@@ -13,7 +24,7 @@
 - README.md: License section adopts `MIT © 2026 Ryan Musante` attribution form; RetroArch GPL v3 disclaimer paragraph retained.
 - README.md: badge 3.28 -> 4.0; paired badge `retroarch--configs v3.28` -> `v4.0`.
 - README.md: Latency reduction collapsible `run_ahead_secondary_instance` row Notes column — drops "per upstream FBN libretro README" trailing attribution in line with the companion repo's symmetric trim (citation is carried in CHANGELOG only); replaced with reciprocal "per companion repo" pointer.
-- README.md: byte size 16240 -> 15571 (-4.1%); line count 279 -> 362 (+83 from `<details>` / admonition markup; 9 collapsibles).
+- README.md: byte size 16240 -> 15555 (-4.2%); line count 279 -> 362 (+83 from `<details>` / admonition markup; 9 collapsibles).
 - Companion v4.0: 7 `.cfg` paired stamps v3.28 -> v4.0; bodies byte-identical (cfg 21, opt 19, cfg+opt 40 — unchanged).
 - CHANGELOG.md: trim v3.24 entry per 5-release retention; retained entries are now v3.25-v3.28 + v4.0.
 
@@ -81,17 +92,3 @@
 - CHANGELOG.md: trim v3.21 entry per 5-release retention; retained entries are now v3.22-v3.26. Format converted from GNU ChangeLog (`YYYY-MM-DD<SP><SP>Author`) to kernel.org style (`# Version - Date` + bullets) across all retained entries.
 - Companion v3.26: 7 `.cfg` paired stamps v3.25 -> v3.26 (5 bodies byte-identical to v3.25; FinalBurn Neo.cfg + Mupen64Plus-Next.cfg have header rewords). 1 `.opt` body edit: `mGBA.opt` 3 keys -> 1 key (drops `mgba_interframe_blending = "OFF"` and `mgba_audio_low_pass_filter = "disabled"` — both match upstream defaults at libretro/mgba `src/platform/libretro/libretro_core_options.h:208/L223`; same class as v3.25 Genesis Plus GX `audio_filter` trim). Retained: `mgba_color_correction = "Auto"` (real flip from default `"OFF"`). README §1 mGBA `.opt` count 3 -> 1; FBN row `run_ahead_secondary_instance` cite reworded; Mupen row `cpucore` reframed; §4 Frontend Override Keys table FBN `run_ahead_secondary_instance` row drops `[#16374]`; §8 Overclocking rewritten with real key names + values; §11 Versioning converted to kernel.org style. README badge 3.25 -> 3.26. CHANGELOG trim v3.21 per matching 5-release retention.
 - cfg 22, opt 21 -> 19, cfg+opt 43 -> 41.
-
-# 3.25 - 2026-05-02
-
-- v3.25: paired companion default-matching-key trim; retroarch.cfg 73 -> 74 keys.
-- retroarch.cfg: `audio_resampler_quality "2" -> "3"`. Real flip from tvOS upstream LOWER default (`config.def.h __MACH__ && IOS` branch -> RESAMPLER_QUALITY_LOWER=2) up to non-mobile RESAMPLER_QUALITY_NORMAL=3. Prior "2" was a drift-guard pin matching default — README §7 "audible quality gain" claim was inaccurate. NORMAL delivers actual SINC-quality bump over LOWER's linear interpolation at sub-1% A15 CPU cost. Verified via `libretro-common/include/audio/audio_resampler.h` enum + `config.def.h` v1.22.0.
-- retroarch.cfg: + `input_max_users = "4"`. Was unset; v1.22.0 non-DINGUX default = 8 (`config.def.h@v1.22.0:1645`). tvOS RA hard-cap = 3 per #16685; Mupen pins pak1-4 = "rumble" for 4P parity. Value "4" matches Mupen 4P pak alignment + forward-compat headroom if cap raised; prevents phantom slots 5-8 in input config UI.
-- retroarch.cfg: bump header stamp v3.24 -> v3.25; "73 keys" -> "74 keys".
-- README.md: §7 Audio resampler row rewritten — "audible quality gain" narrative replaced with accurate "real flip from tvOS LOWER default to NORMAL; SINC vs linear; sub-1% A15 CPU cost". Value "2" -> "3".
-- README.md: §7 Input section + new row for `input_max_users = "4"` (slot cap rationale + #16685 cross-reference + 4P alignment note).
-- README.md: intro paragraph "73-key" -> "74-key".
-- README.md: badge 3.24 -> 3.25.
-- CHANGELOG.md: trim v3.20 entry per 5-release retention; retained entries are now v3.21-v3.25.
-- Companion v3.25: 7 `.cfg` paired stamps v3.24 -> v3.25 (6 bodies byte-identical; Mupen64Plus-Next.cfg trims one verbose multi-clause audio comment line to single-line per editorial). 2 `.opt` files trimmed: `Genesis Plus GX.opt` 6 keys -> 3 keys (drift-guard pins `genesis_plus_gx_ym2612`, `genesis_plus_gx_audio_filter`, `genesis_plus_gx_render` removed — all match upstream Genesis-Plus-GX `libretro_core_options.h` defaults at L444/L475/L347 respectively); `Mupen64Plus-Next.opt` 10 keys -> 9 keys (inert `mupen64plus-43screensize = "320x240"` removed — under HAVE_THR_AL angrylion path, value is read at libretro/mupen64plus-libretro-nx `libretro/libretro.c:1348` then explicitly overwritten at L1370-1371 by `if(current_rdp_type == RDP_PLUGIN_ANGRYLION)` forced override to `retro_screen_width=640, retro_screen_height=480, retro_screen_aspect=4.0/3.0, AspectRatio=1`). 3 `.opt` files (Mesen / Mupen / mGBA) trim verbose multi-clause comments to single-line + drop legacy `(v3.X)` historical annotations per established v3.23 editorial rule (Beetle PCE Fast.opt / FinalBurn Neo.opt / Snes9x.opt unchanged — already minimal). 1 `.cfg` file (Mupen64Plus-Next.cfg) trims one verbose multi-clause audio comment line to single-line; remaining 6 `.cfg` bodies byte-identical to v3.24. README §1 Genesis row keys 6 -> 3; Mupen row keys 10 -> 9 (drift-guard rationales removed where keys removed; 43screensize reference removed). README badge 3.24 -> 3.25. CHANGELOG trim v3.20 per matching 5-release retention.
-- cfg 22, opt 25 -> 21, cfg+opt 47 -> 43.
