@@ -1,9 +1,9 @@
 # retroarch-appletv4k
 
-[![version](https://img.shields.io/badge/version-4.1-blue.svg)](CHANGELOG.md)
+[![version](https://img.shields.io/badge/version-4.2-blue.svg)](CHANGELOG.md)
 [![RetroArch](https://img.shields.io/badge/RetroArch-v1.22.x-green.svg)](https://www.retroarch.com/)
 [![tvOS](https://img.shields.io/badge/tvOS-26-black.svg)](https://www.apple.com/tvos/)
-[![paired](https://img.shields.io/badge/paired-retroarch--configs%20v4.1-orange.svg)](https://github.com/ryanmusante/retroarch-configs)
+[![paired](https://img.shields.io/badge/paired-retroarch--configs%20v4.2-orange.svg)](https://github.com/ryanmusante/retroarch-configs)
 ![license](https://img.shields.io/badge/license-MIT-green.svg)
 
 > RetroArch setup for Apple TV 4K (3rd Gen). Covers installation,
@@ -55,7 +55,7 @@ See [CHANGELOG](CHANGELOG.md) for release history.
 | Network | Same Wi-Fi/LAN for Apple TV and computer (no Ethernet on 64 GB model) |
 | Computer | Mac, Windows, or Linux with a web browser |
 | tvOS | Latest version |
-| RetroArch | ≥ v1.20.0 (WebDAV, auto frame delay, integer scaling) |
+| RetroArch | ≥ v1.20.0 (WebDAV file transfer); v1.22.x recommended |
 | ROMs / BIOS | Legally acquired; BIOS required for Sega CD, Neo Geo |
 
 ## Installation
@@ -74,11 +74,11 @@ See [CHANGELOG](CHANGELOG.md) for release history.
 > model purges more aggressively than the 128 GB model.
 
 Since RetroArch v1.16.0, `retroarch.cfg` is mirrored to NSUserDefaults
-(the 500 KB persistent area) and shader assets re-extract when
-missing. Saves, states, and ROMs are not protected — back them up via
-WebDAV. Set **Settings → Directory → File Browser** to `config/ROMs/`
-and **System/BIOS** to `config/BIOS/` once on first run; these paths
-persist via NSUserDefaults.
+(the 500 KB persistent area); since v1.18.0, assets re-extract
+automatically when the cache is purged. Saves, states, and ROMs are
+not protected — back them up via WebDAV. Set **Settings → Directory →
+File Browser** to `config/ROMs/` and **System/BIOS** to `config/BIOS/`
+once on first run; these paths persist via NSUserDefaults.
 
 ## File Transfers
 
@@ -119,9 +119,10 @@ Saves and states auto-organize into per-core subfolders via
 
 ## ROM and BIOS Setup
 
-Place ROMs in `config/ROMs/<folder>/` using the folder names below
-(matched by RetroArch's database scanner). Place BIOS in
-`config/BIOS/`; filenames are case-sensitive.
+Place ROMs in `config/ROMs/<folder>/`, one folder per system. The
+names below are a convention, not a matching rule — Manual Scan
+identifies content against the system database you select. Place BIOS
+in `config/BIOS/`; filenames are case-sensitive.
 
 Scan via **Main Menu → Import Content → Manual Scan**, point at each
 system subfolder, pick the system/core, start scan. Playlists appear
@@ -184,12 +185,13 @@ controller in pairing mode → select under "Other Devices."
 
 The PS/Xbox home button opens tvOS Control Center, not RetroArch.
 **Settings → Input → Hotkeys → Menu Toggle Controller Combo → L3 + R3**
-(click both thumbsticks). Optionally set an Enable Hotkeys modifier
-(e.g., Select).
+(click both thumbsticks). Set an Enable Hotkeys modifier (Select) —
+the combos below assume it.
 
 > [!IMPORTANT]
-> Without Close Content configured as a hotkey, there is no way to
-> exit a running game without force-quitting.
+> Configure the Menu Toggle combo before launching content. Without
+> it there is no way back to the menu — and so no way to reach Close
+> Content, save states, or settings — short of force-quitting.
 
 <details>
 <summary><b>Hotkeys</b></summary>
@@ -205,7 +207,9 @@ The PS/Xbox home button opens tvOS Control Center, not RetroArch.
 Save state captures on Close Content; load manually with Select + L1.
 SRAM flushes every 5 min and is protected from state-load clobber. 10
 auto-indexed slots rotate. Tier 2 cores pin `autosave_interval = "0"`
-to prevent purgeable-cache stall.
+to prevent purgeable-cache stall. Game Focus must stay off
+(`input_auto_game_focus = "0"`, shipped) — it blocks every hotkey
+bind while content runs.
 
 </details>
 
@@ -216,7 +220,7 @@ to prevent purgeable-cache stall.
 |---------|-------|-------|
 | `video_driver` | `metal` | Apple silicon |
 | `video_scale_integer` | `true` | Pixel-perfect; per-core integer overscale on 224p / 240p / 304p systems |
-| `video_smooth` | `false` | Required for shader rendering |
+| `video_smooth` | `false` | Nearest-neighbour; avoids pre-shader blur |
 | `video_shader_enable` | `true` | Pipeline on; no global preset — assign per-core |
 | `video_vsync` | `true` | Drift-guard pin |
 | `video_refresh_rate` | `60.000000` | 60 Hz SDR seed; calibrate via Settings → Video → Output |
@@ -233,7 +237,7 @@ to prevent purgeable-cache stall.
 | `run_ahead_enabled` / `_frames` | `false` / `2` | Tier 1 per-core `true`; Tier 2 explicit `false` |
 | `run_ahead_secondary_instance` | `false` | All cores inherit; single-instance per companion repo |
 | `preemptive_frames_enable` | `false` | Per-core only; mutually exclusive with `run_ahead_enabled` |
-| `video_frame_delay_auto` | `true` | Mupen pinned `false` ([#14201](https://github.com/libretro/RetroArch/issues/14201)) |
+| `video_frame_delay_auto` | `true` | Mupen pinned `false` — drift-guard ([#14201](https://github.com/libretro/RetroArch/issues/14201)) |
 | `fastforward_ratio` | `4.0` | 4× cap; reduces thermal load on passive A15 |
 
 </details>
@@ -254,7 +258,7 @@ to prevent purgeable-cache stall.
 > Apple TV supports only QMS VRR (media frame-rate switching), not
 > real-time game VRR. `vrr_runloop_enable` must stay **OFF** —
 > enabling it disables Dynamic Rate Control, causing judder and audio
-> desync on the fixed 59.94 Hz panel. Match Frame Rate (tvOS) targets
+> desync on the fixed 60 Hz output. Match Frame Rate (tvOS) targets
 > AVPlayer, not emulation; leave OFF.
 
 </details>
@@ -278,6 +282,7 @@ key list is in `retroarch.cfg`.
 | `fastforward_ratio` | `4.0` | Sustained FF cap; thermal-friendly on passive A15 |
 | `menu_pause_libretro` | `true` | Pauses emulation while Quick Menu open |
 | `pause_nonactive` | `false` | Pinned `false` — prevents audio glitch when tvOS briefly marks app inactive |
+| `input_auto_game_focus` | `0` | Game Focus blocks every hotkey bind while content runs; enabling it trades all pad hotkeys for keyboard capture |
 
 </details>
 
@@ -326,7 +331,7 @@ supported on the App Store build.
 | 1 | SNES | Snes9x | Per-game `snes9x_overclock_superfx = "200%"` for SuperFX (Star Fox, Yoshi's Island, Doom, Stunt Race FX) |
 | 1 | GB / GBC / GBA | mGBA | — |
 | 1 | Genesis / MD / CD, SMS | Genesis Plus GX | Per-game BRAM (system + cart); Run Ahead |
-| 1 | PC Engine / TG-16 | Beetle PCE Fast | CD precache + 2× streaming; Run Ahead single-instance |
+| 1 | PC Engine / TG-16 | Beetle PCE Fast | 2× CD read speed (full-image precache is per-game opt-in); Run Ahead single-instance |
 | 1 | Neo Geo, Arcade (CPS1/2/3) | FinalBurn Neo | Run Ahead 2 single-instance; rewind `false` ([#16374](https://github.com/libretro/RetroArch/issues/16374)) |
 | 2 | Nintendo 64 | Mupen64Plus-Next | tvOS Metal-only stack; P-core multithread pin; FrameDuping; 4P rumble. Frontend pins per [retroarch-configs](https://github.com/ryanmusante/retroarch-configs#configuration) |
 
@@ -352,7 +357,7 @@ supported on the App Store build.
 `vMAJOR.MINOR` (no patch), in lockstep with `retroarch-configs` —
 both repos share one tag per release. `MAJOR` on incompatible
 structural changes; `MINOR` on every release. `CHANGELOG.md` is
-kernel.org style and retains the last 5 MINOR entries.
+kernel.org style and retains the last 5 releases.
 
 ## License
 
