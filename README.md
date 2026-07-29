@@ -1,10 +1,6 @@
 # retroarch-appletv4k
 
 [![version](https://img.shields.io/badge/version-4.2-blue.svg)](CHANGELOG.md)
-[![RetroArch](https://img.shields.io/badge/RetroArch-v1.22.x-green.svg)](https://www.retroarch.com/)
-[![tvOS](https://img.shields.io/badge/tvOS-26-black.svg)](https://www.apple.com/tvos/)
-[![paired](https://img.shields.io/badge/paired-retroarch--configs%20v4.2-orange.svg)](https://github.com/ryanmusante/retroarch-configs)
-![license](https://img.shields.io/badge/license-MIT-green.svg)
 
 > RetroArch setup for Apple TV 4K (3rd Gen). Covers installation,
 > ROM/BIOS, controllers, performance tuning, and CRT shaders. Ships a
