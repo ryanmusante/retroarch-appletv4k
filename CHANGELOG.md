@@ -1,3 +1,16 @@
+# 4.3 - 2026-08-30
+
+- v4.3: README accuracy pass; retroarch.cfg 74 keys byte-identical to v4.2 (header stamp only). Released in lockstep with companion retroarch-configs v4.3.
+- retroarch.cfg: bump header version stamp + paired stamp v4.2 -> v4.3.
+- README.md: Supported Systems — FinalBurn Neo rewind note corrected. Upstream FBNeo `src/burner/libretro/README.md` struck the #16374 note on 2026-05-12 and RetroArch #16374 is closed. The companion pin equals the global value, so it is a drift-guard, not a live workaround.
+- README.md: Supported Systems — Mupen Notes reworded. `mupen64plus-angrylion-multithread` sets the RDP worker-thread count, not CPU affinity; tvOS exposes no P-core pinning to applications. "Metal-only stack" replaced with "software stack": ParaLLEl-RDP/RSP are compiled into the tvOS core but need Vulkan, which RetroArch tvOS does not provide, and GLideN64 needs a GL context that `video_driver = "metal"` does not provide.
+- README.md: Configuration > Additional settings — `video_hdr_enable` row gains a forward-compatibility note. The key is valid through v1.22.x; RetroArch master replaces it with `video_hdr_mode` (`0` off, `1` HDR10, `2` scRGB). Re-check the pin when moving off the v1.22.x target.
+- README.md: the v4.2 entry recorded byte size 16192 and line count 367 and a `paired` badge bump. The file carries a single version badge and neither figure matched what shipped. Corrected here rather than by editing the historical entry; see the metrics line below.
+- README.md: version badge 4.2 -> 4.3.
+- README.md: byte size 16076; line count 363; cfg key count 74 unchanged.
+- Companion v4.3: 7 `.cfg` header + paired stamps v4.2 -> v4.3; comment corrections in FinalBurn Neo.cfg, Mupen64Plus-Next.cfg, Mupen64Plus-Next.opt; `config/.gitkeep` removed. cfg 21, opt 18, cfg+opt 39 unchanged.
+- CHANGELOG.md: trim v3.27 entry per 5-release retention; retained entries are now v3.28-v4.3.
+
 # 4.2 - 2026-07-26
 
 - v4.2: retroarch.cfg `input_auto_game_focus` correction + README accuracy pass; 74 keys unchanged. Released in lockstep with companion retroarch-configs v4.2.
@@ -54,18 +67,3 @@
 - Companion v3.28: 7 `.cfg` paired stamps v3.27 -> v3.28. FinalBurn Neo.cfg drops `run_ahead_secondary_instance = "true"` and inherits global `false`. Beetle PCE Fast.opt `pce_fast_cdspeed "4" -> "2"` per upstream `libretro_core_options.h` advisory; per-game override to "4" remains available. README FBN row keys 4 -> 3; §4 `run_ahead_secondary_instance` Purpose rewritten.
 - cfg 22 -> 21, opt 19, cfg+opt 41 -> 40.
 - CHANGELOG.md: trim v3.23 entry per 5-release retention.
-
-# 3.27 - 2026-05-09
-
-- v3.27: README trim pass to vital information only; retroarch.cfg byte-identical to v3.26 (header stamp only; 74 keys unchanged).
-- retroarch.cfg: bump header stamp v3.26 -> v3.27.
-- README.md: §10 Known Issues 7 rows -> 3. Closed upstream and dropped: #18300 per-core rewind config, #14201 Mupen auto frame delay, #16598 N64 rendering glitches, #14978 threaded video Apple force-disable. Corresponding cfg pins retained as drift-guards. Open rows retained: #18286, #18447, #16685.
-- README.md: §11 Setup Checklist dropped entirely (~50 lines restating §1-§9); Quick Start serves as the checklist. Sections renumbered to fill the gap; anchors and Table of Contents regenerated.
-- README.md: §3 Storage Persistence 3 subsections -> 1 paragraph + callout; retains 500 KB cap, NSUserDefaults config mirror, asset auto-extract, Settings → Directory paths.
-- README.md: §6 Controllers table 6 rows -> 4 (PS4 / 8BitDo Pro 2 / Nimbus+ merged as "Excellent"); pairing steps -> 1 sentence; pairing-method column dropped.
-- README.md: §7 Hotkeys table 8 rows -> 5 (paired actions per row); save-state callout 5 sentences -> 3. §7 Video settings 11 rows -> 7. §7 Latency reduction Notes compressed. §7 Additional settings 40-row table -> hardening summary + 7-row user-flip table + pointer to `retroarch.cfg`; netplay boilerplate dropped.
-- README.md: §1 Prerequisites hardware + software tables merged to 7 rows; §4 File Transfers collapsed to 1 sentence per method, filesystem tree compressed; §5 ROM and BIOS Setup scanning prose -> 1 sentence; §8 Shaders step prose tightened; §9 Mupen Notes compressed; §12 Versioning ~120 words -> ~50.
-- README.md: badge 3.26 -> 3.27; line count 494 -> 270 (~45% reduction); all behavior-relevant content preserved.
-- Companion v3.27: 7 `.cfg` paired stamps v3.26 -> v3.27; bodies byte-identical. README trim pass across §1 / §4 / §5 / §7 / §11; badge 3.26 -> 3.27.
-- cfg 22, opt 19, cfg+opt 41 — unchanged.
-- CHANGELOG.md: trim v3.22 entry per 5-release retention.

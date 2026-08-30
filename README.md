@@ -1,6 +1,6 @@
 # retroarch-appletv4k
 
-[![version](https://img.shields.io/badge/version-4.2-blue.svg)](CHANGELOG.md)
+[![version](https://img.shields.io/badge/version-4.3-blue.svg)](CHANGELOG.md)
 
 > RetroArch setup for Apple TV 4K (3rd Gen). Covers installation,
 > ROM/BIOS, controllers, performance tuning, and CRT shaders. Ships a
@@ -271,7 +271,7 @@ key list is in `retroarch.cfg`.
 
 | Setting | Pinned | Notes |
 |---------|--------|-------|
-| `video_hdr_enable` | `false` | Explicit-off guard against Metal HDR10 negotiation; flip if tvOS is configured for HDR10 / Dolby Vision |
+| `video_hdr_enable` | `false` | Explicit-off guard against Metal HDR10 negotiation; flip if tvOS is configured for HDR10 / Dolby Vision. Valid through v1.22.x — RetroArch master replaces it with `video_hdr_mode` (`0` off, `1` HDR10, `2` scRGB); re-check when moving off the v1.22.x target |
 | `audio_latency` | `64` | ~4 frames @ 60 Hz; clears libretro 3-frame safe floor, stutter-resistant under passive-A15 throttling. Lower to `48` (~3 frames) to favor latency if audio stays clean |
 | `audio_resampler_quality` | `3` | NORMAL (SINC); real flip from tvOS LOWER default at sub-1% A15 cost |
 | `input_max_users` | `4` | tvOS RA hard-caps at 3 ([#16685](https://github.com/libretro/RetroArch/issues/16685)); 4th slot is forward-compat |
@@ -328,8 +328,8 @@ supported on the App Store build.
 | 1 | GB / GBC / GBA | mGBA | — |
 | 1 | Genesis / MD / CD, SMS | Genesis Plus GX | Per-game BRAM (system + cart); Run Ahead |
 | 1 | PC Engine / TG-16 | Beetle PCE Fast | 2× CD read speed (full-image precache is per-game opt-in); Run Ahead single-instance |
-| 1 | Neo Geo, Arcade (CPS1/2/3) | FinalBurn Neo | Run Ahead 2 single-instance; rewind `false` ([#16374](https://github.com/libretro/RetroArch/issues/16374)) |
-| 2 | Nintendo 64 | Mupen64Plus-Next | tvOS Metal-only stack; P-core multithread pin; FrameDuping; 4P rumble. Frontend pins per [retroarch-configs](https://github.com/ryanmusante/retroarch-configs#configuration) |
+| 1 | Neo Geo, Arcade (CPS1/2/3) | FinalBurn Neo | Run Ahead 2 single-instance; rewind `false` drift-guard ([#16374](https://github.com/libretro/RetroArch/issues/16374) closed; FBNeo README marks it fixed 2026-05-12) |
+| 2 | Nintendo 64 | Mupen64Plus-Next | tvOS software stack (angrylion + cxd4, no JIT); angrylion worker-thread count `2`, not an affinity pin; FrameDuping; 4P rumble. Frontend pins per [retroarch-configs](https://github.com/ryanmusante/retroarch-configs#configuration) |
 
 ## Known Issues
 
