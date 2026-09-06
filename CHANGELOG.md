@@ -1,3 +1,30 @@
+# 4.5 - 2026-09-05
+
+  - v4.5: README release; retroarch.cfg 74 keys unchanged (header + paired
+    stamps only). Lockstep with companion retroarch-configs v4.5.
+  - retroarch.cfg: header + paired stamps v4.4 -> v4.5. Body byte-identical
+    to v4.4.
+  - README.md: every table now sits in a default-collapsed `<details>` block.
+    New: Hardware and software, Servers and ports, Controller compatibility,
+    Recommended presets, Tier table, Issue list, File list; the nine v4.0
+    blocks are kept. Prose, numbered steps and admonitions stay open. 16
+    blocks total (was 9).
+  - README.md: Controllers drops the ghost-input `[!NOTE]`; Known Issues
+    already carries the issue (#18447) and its workaround.
+  - README.md: Supported Systems FinalBurn Neo Notes drops the 2026-05-12
+    FBNeo README date (kept in the v4.3 entry). Facts unchanged.
+  - README.md: lockstep stated once, in Versioning; intro and Related drop
+    their restatements. "See CHANGELOG for release history" dropped - the
+    version badge already links it.
+  - README.md: version badge 4.4 -> 4.5.
+  - README.md: byte size 17018; line count 400; cfg key count 74 unchanged.
+  - Companion v4.5: 7 `.cfg` header + paired stamps v4.4 -> v4.5, bodies
+    byte-identical; 7 `.opt` byte-identical. README tables collapsed (5
+    blocks); its Shaders block folded into a link to this repo's Shaders.
+  - CHANGELOG.md: trim v4.0 per 5-release retention; retained entries are
+    now v4.1-v4.5.
+
+
 # 4.4 - 2026-09-05
 
   - v4.4: audit release; retroarch.cfg 74 keys unchanged (header stamp and two
@@ -153,40 +180,3 @@
     (reverts to upstream default `"disabled"`; multi-hundred-MB precache
     imprudent on the 4 GB fanless ATV4K); opt 3 -> 2 keys, cfg+opt 40 -> 39.
   - CHANGELOG.md: trim v3.25 entry per 5-release retention.
-
-
-# 4.0 - 2026-05-16
-
-  - v4.0: MAJOR bump - README restructured to ry-install style (breaking
-    anchor schema); retroarch.cfg 74 keys byte-identical to v3.28 (header
-    stamp + section 2 reference fix only).
-  - retroarch.cfg: bump header version stamp + paired stamp v3.28 -> v4.0.
-    Trailing `(section 2)` reference replaced with `(see README Installation)`
-    - sections are no longer numbered.
-  - README.md: **BREAKING** anchor schema change - slugs drop the leading `N-`
-    prefix (`#1-prerequisites` -> `#prerequisites`). External inbound links to
-    old anchors will 404. Motivates the MAJOR bump per versioning policy.
-  - README.md: full restructure to ry-install template. Numbered sections
-    dropped (sections 1-13 -> unnumbered); all `section N` references removed
-    body-wide; `## Table of Contents` -> `## Contents`, numbered list ->
-    bulleted list.
-  - README.md: 9 reference subsections folded into default-collapsed
-    `<details>` blocks - Filesystem layout; ROM folder reference; BIOS files;
-    Hotkeys; Video settings; Latency reduction; TV output; Additional
-    settings; Assign procedure. File Transfers web-interface / WebDAV
-    subsections merged into one `| Server | Port | Endpoint |` table.
-  - README.md: GitHub admonitions replace prose callouts - Quick Start (Save
-    Current Config trap), Storage Persistence (500 KB cap), File Transfers
-    (unauthenticated 80/8080), Controllers (ghost inputs), Configuration (menu
-    access), TV output (VRR / DRC failure modes).
-  - README.md: Quick Start moved above Contents; header gains tvOS + paired
-    badges (4 badges + license); License adopts `MIT (c) 2026 Ryan Musante`.
-  - README.md: cross-repo Supported Systems Mupen link
-    `retroarch-configs#4-frontend-override-keys` ->
-    `retroarch-configs#configuration`; Latency reduction
-    `run_ahead_secondary_instance` Notes drops the upstream FBN attribution
-    for a reciprocal "per companion repo" pointer.
-  - README.md: byte size 16240 -> 15555 (-4.2%); line count 279 -> 362 (+83).
-  - Companion v4.0: 7 `.cfg` paired stamps v3.28 -> v4.0; bodies
-    byte-identical (cfg 21, opt 19, cfg+opt 40).
-  - CHANGELOG.md: trim v3.24 entry per 5-release retention.

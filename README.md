@@ -1,14 +1,13 @@
 # retroarch-appletv4k
 
-[![version](https://img.shields.io/badge/version-4.4-blue.svg)](CHANGELOG.md)
+[![version](https://img.shields.io/badge/version-4.5-blue.svg)](CHANGELOG.md)
 [![companion](https://img.shields.io/badge/companion-retroarch--configs-blue.svg)](https://github.com/ryanmusante/retroarch-configs)
 
-> RetroArch setup for Apple TV 4K (3rd Gen). Covers installation,
-> ROM/BIOS, controllers, performance tuning, and CRT shaders. Ships a
-> 74-key `retroarch.cfg`. Companion to
+> RetroArch setup for Apple TV 4K (3rd Gen): installation, ROM/BIOS,
+> controllers, performance tuning, and CRT shaders, plus a 74-key
+> `retroarch.cfg`. Companion to
 > [retroarch-configs](https://github.com/ryanmusante/retroarch-configs),
-> which ships the per-core `.cfg` / `.opt` files; both repos release in
-> lockstep (see [Related](#related)).
+> which ships the per-core `.cfg` / `.opt` files.
 
 **Target:** Apple TV 4K 3rd Gen (64 GB Wi-Fi, A15 Bionic) on tvOS 26. See [Prerequisites](#prerequisites).
 
@@ -45,9 +44,10 @@
 > after uploading `retroarch.cfg` — it overwrites the uploaded file
 > with the in-memory config.
 
-See [CHANGELOG](CHANGELOG.md) for release history.
-
 ## Prerequisites
+
+<details>
+<summary><b>Hardware and software</b></summary>
 
 | Component | Specification |
 |-----------|---------------|
@@ -58,6 +58,8 @@ See [CHANGELOG](CHANGELOG.md) for release history.
 | tvOS | 26 (target); the App Store build requires tvOS 13.0 or later |
 | RetroArch | ≥ v1.20.0 (WebDAV file transfer); v1.22.x recommended |
 | ROMs / BIOS | Legally acquired; BIOS required for Sega CD, Neo Geo |
+
+</details>
 
 ## Installation
 
@@ -86,10 +88,15 @@ once on first run; these paths persist via NSUserDefaults.
 tvOS has no Files app. All transfers use RetroArch's built-in network
 servers; RetroArch must remain running.
 
+<details>
+<summary><b>Servers and ports</b></summary>
+
 | Server | Port | Endpoint |
 |--------|------|----------|
 | Web interface | 80 | `http://<atv-ip>` or `http://appletv.local` |
 | WebDAV (v1.20.0+) | 8080 | macOS Finder ⌘K · Windows Map Network Drive · `http://appletv.local:8080` |
+
+</details>
 
 > [!IMPORTANT]
 > Web interface and WebDAV are **unauthenticated** with no option to
@@ -171,6 +178,9 @@ The Siri Remote navigates menus only.
 **Pairing:** Settings → Remotes and Devices → Bluetooth → put
 controller in pairing mode → select under "Other Devices."
 
+<details>
+<summary><b>Controller compatibility</b></summary>
+
 | Controller | Status |
 |------------|--------|
 | PS5 DualSense / Edge | **Recommended** — BT 5.1 (capped to ATV BT 5.0) |
@@ -178,9 +188,7 @@ controller in pairing mode → select under "Other Devices."
 | PS4 DualShock 4 / 8BitDo Pro 2 / SteelSeries Nimbus+ | Excellent |
 | Nintendo Switch Pro | **Avoid** — B button exits app ([#18286](https://github.com/libretro/RetroArch/issues/18286)) |
 
-> [!NOTE]
-> Ghost inputs from controllers 2+ may bleed into controller 1 in
-> multi-controller setups ([#18447](https://github.com/libretro/RetroArch/issues/18447)).
+</details>
 
 ## Configuration
 
@@ -293,10 +301,15 @@ Shader pipeline is enabled (`video_shader_enable = "true"`); no global
 preset is set. Assign per-core via Quick Menu → Shaders → Manage
 Presets → Save Core Preset.
 
+<details>
+<summary><b>Recommended presets</b></summary>
+
 | GPU Cost | Shader | Best For |
 |----------|--------|----------|
 | Minimal | `crt/zfast-crt.slangp` | All 2D systems (Tier 1 + Tier 2); single-pass, integer-scale safe |
 | Minimal | `handheld/lcd-grid-v2.slangp` | mGBA only (GBA / GB / GBC) when LCD aesthetic preferred |
+
+</details>
 
 `zfast-crt.slangp` exposes `BLURSCALEX`, `LOWLUMSCAN`, `HILUMSCAN`,
 `BRIGHTBOOST`, `MASK_DARK`, `MASK_FADE` via Quick Menu → Shaders →
@@ -326,6 +339,9 @@ Tier 1 = full speed with shaders; Tier 2 = most titles at full speed.
 JIT-required systems (Dreamcast, GameCube, Wii, PS2) are not
 supported on the App Store build.
 
+<details>
+<summary><b>Tier table</b></summary>
+
 | Tier | System | Core | Notes |
 |------|--------|------|-------|
 | 1 | NES | Mesen | Per-game `mesen_overclock` for Battletoads, Recca |
@@ -333,10 +349,15 @@ supported on the App Store build.
 | 1 | GB / GBC / GBA | mGBA | — |
 | 1 | Genesis / MD / CD, SMS | Genesis Plus GX | Per-game BRAM (system + cart); Run Ahead |
 | 1 | PC Engine / TG-16 | Beetle PCE Fast | 2× CD read speed (full-image precache is per-game opt-in); Run Ahead single-instance |
-| 1 | Neo Geo, Arcade (CPS1/2/3) | FinalBurn Neo | Run Ahead 2 single-instance; rewind `false` drift-guard ([#16374](https://github.com/libretro/RetroArch/issues/16374) closed; FBNeo README marks it fixed 2026-05-12) |
+| 1 | Neo Geo, Arcade (CPS1/2/3) | FinalBurn Neo | Run Ahead 2 single-instance; rewind `false` drift-guard ([#16374](https://github.com/libretro/RetroArch/issues/16374) closed) |
 | 2 | Nintendo 64 | Mupen64Plus-Next | tvOS software stack (angrylion + cxd4, no JIT); angrylion worker-thread count `2`, not an affinity pin; FrameDuping; 4P rumble. Frontend pins per [retroarch-configs](https://github.com/ryanmusante/retroarch-configs#configuration) |
 
+</details>
+
 ## Known Issues
+
+<details>
+<summary><b>Issue list</b></summary>
 
 | # | Issue | Ref | Workaround |
 |---|-------|-----|------------|
@@ -344,7 +365,12 @@ supported on the App Store build.
 | 2 | Ghost inputs with multiple controllers | [#18447](https://github.com/libretro/RetroArch/issues/18447) | Use single controller or test carefully |
 | 3 | tvOS caps at 3 simultaneous controllers despite OS supporting 4 | [#16685](https://github.com/libretro/RetroArch/issues/16685) | Limit multiplayer to 3 controllers |
 
+</details>
+
 ## Files in This Repository
+
+<details>
+<summary><b>File list</b></summary>
 
 | File | Description |
 |------|-------------|
@@ -353,9 +379,11 @@ supported on the App Store build.
 | `retroarch.cfg` | Drop-in configuration for Apple TV 4K 3rd Gen |
 | `LICENSE` | MIT License |
 
+</details>
+
 ## Related
 
-- [retroarch-configs](https://github.com/ryanmusante/retroarch-configs) — Per-core `.cfg` overrides and `.opt` core options for the seven cores in [Supported Systems](#supported-systems); they layer on top of this repo's `retroarch.cfg` and release in lockstep with it
+- [retroarch-configs](https://github.com/ryanmusante/retroarch-configs) — per-core `.cfg` overrides and `.opt` core options for the seven cores in [Supported Systems](#supported-systems); they layer on top of this repo's `retroarch.cfg`
 
 ## Versioning
 
