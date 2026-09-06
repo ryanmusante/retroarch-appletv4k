@@ -1,6 +1,6 @@
 # retroarch-appletv4k
 
-[![version](https://img.shields.io/badge/version-5.0-blue.svg)](CHANGELOG.md)
+[![version](https://img.shields.io/badge/version-5.2-blue.svg)](CHANGELOG.md)
 [![companion](https://img.shields.io/badge/companion-retroarch--configs-blue.svg)](https://github.com/ryanmusante/retroarch-configs)
 
 > RetroArch setup for Apple TV 4K 3rd Gen (tvOS 26, RetroArch v1.22.x)
@@ -13,8 +13,8 @@
 1. App Store → RetroArch (developer: Libretro). On first launch note the two URLs in the Welcome popup.
 2. Main Menu → Online Updater → Assets, Core Info Files, Databases, Slang Shaders.
 3. Upload `retroarch.cfg` to `/` ([File Transfers](#file-transfers)), then quit and relaunch RetroArch.
-4. Pair a controller ([Controllers](#controllers)) and set the Menu Toggle combo ([Configuration](#configuration)).
-5. Upload ROMs and BIOS ([Systems](#systems)); Main Menu → Import Content → Manual Scan per system folder.
+4. Pair a controller ([Controllers](#controllers)), bind the hotkeys and save the configuration ([Configuration](#configuration)).
+5. Upload ROMs and BIOS ([Systems](#systems)); Main Menu → Import Content → Manual Scan per system folder. Playlists appear under Main Menu → Playlists.
 
 > [!IMPORTANT]
 > Do not use "Save Current Configuration" between uploading
@@ -26,7 +26,7 @@
 
 | Component | Requirement |
 |-----------|-------------|
-| Apple TV | 4K 3rd Gen (A2737, A15 Bionic), 64 GB Wi-Fi, tvOS 26 |
+| Apple TV | 4K 3rd Gen (A2737, A15 Bionic), 64 GB Wi-Fi; tvOS 26 target (App Store floor tvOS 13) |
 | RetroArch | ≥ v1.20.0 (WebDAV); v1.22.x recommended |
 | Controller | PS5 DualSense or Xbox Series X/S; the Siri Remote is menu-only |
 | Network | Apple TV and computer on the same LAN (the 64 GB model has no Ethernet) |
@@ -62,9 +62,10 @@ and RetroArch must be running.
 </details>
 
 > [!IMPORTANT]
-> Both servers are unauthenticated with no auth or TLS option. Restrict
-> ports 80 and 8080 on the Apple TV's IP with router firewall rules or a
-> VLAN.
+> Both servers are unauthenticated with no auth or TLS option — anyone on
+> the LAN can read or overwrite saves, states and configuration.
+> Restrict ports 80 and 8080 on the Apple TV's IP with router firewall
+> rules or a VLAN.
 
 ```
 /                              ← web interface / WebDAV root
@@ -87,16 +88,16 @@ matches against the system database you select.
 <details open>
 <summary><b>System table</b></summary>
 
-| System | Tier | Folder | Core | BIOS (`config/BIOS/`) |
-|--------|------|--------|------|-----------------------|
-| NES | 1 | `nes/` | Mesen | — |
-| SNES | 1 | `snes/` | Snes9x | — |
-| GB / GBC / GBA | 1 | `gb/` `gbc/` `gba/` | mGBA | `gba_bios.bin` (optional) |
-| Genesis / MD, Master System | 1 | `megadrive/` `mastersystem/` | Genesis Plus GX | — |
-| Sega CD / Mega CD | 1 | `segacd/` | Genesis Plus GX | `bios_CD_U.bin`, `bios_CD_E.bin`, `bios_CD_J.bin` |
-| PC Engine / TG-16, TurboGrafx-CD | 1 | `pce/` | Beetle PCE Fast | `syscard3.pce` (CD) |
-| Neo Geo, Arcade (CPS1/2/3) | 1 | `neogeo/` `fbneo/` | FinalBurn Neo | `neogeo.zip` (also in `config/ROMs/neogeo/`) |
-| Nintendo 64 | 2 | `n64/` | Mupen64Plus-Next | — |
+| System | Tier | Folder | Extensions | Core | BIOS (`config/BIOS/`) |
+|--------|------|--------|------------|------|-----------------------|
+| NES | 1 | `nes/` | `.nes` `.unf` `.unif` | Mesen | — |
+| SNES | 1 | `snes/` | `.sfc` `.smc` | Snes9x | — |
+| GB / GBC / GBA | 1 | `gb/` `gbc/` `gba/` | `.gb` `.gbc` `.gba` | mGBA | `gba_bios.bin` (optional) |
+| Genesis / MD, Master System | 1 | `megadrive/` `mastersystem/` | `.md` `.gen` `.bin`; `.sms` | Genesis Plus GX | — |
+| Sega CD / Mega CD | 1 | `segacd/` | `.cue` `.chd` | Genesis Plus GX | `bios_CD_U.bin`, `bios_CD_E.bin`, `bios_CD_J.bin` |
+| PC Engine / TG-16, TurboGrafx-CD | 1 | `pce/` | `.pce`; `.cue` `.chd` | Beetle PCE Fast | `syscard3.pce` (CD) |
+| Neo Geo, Arcade (CPS1/2/3) | 1 | `neogeo/` `fbneo/` | `.zip` | FinalBurn Neo | `neogeo.zip` (also in `config/ROMs/neogeo/`) |
+| Nintendo 64 | 2 | `n64/` | `.n64` `.z64` `.v64` | Mupen64Plus-Next | — |
 
 </details>
 
@@ -124,12 +125,17 @@ inputs from controllers 2+ can bleed into controller 1
 
 ## Configuration
 
-The PS/Xbox home button opens tvOS Control Center, not RetroArch. Set
-Settings → Input → Hotkeys → Menu Toggle (Controller Combo) → L3 + R3
-and Hotkey Enable → Select before launching content; without the combo
-there is no way back to the menu short of force-quitting. Game Focus
-must stay off (`input_auto_game_focus = "0"`, shipped) — it blocks every
-hotkey bind while content runs.
+The PS/Xbox home button opens tvOS Control Center, not RetroArch.
+`retroarch.cfg` ships the Menu Toggle combo L3 + R3
+(`input_menu_toggle_gamepad_combo = "2"`) — the only way back to the
+menu short of force-quitting, so keep it. RetroArch binds no other
+gamepad hotkeys by default: under Settings → Input → Hotkeys bind
+Hotkey Enable → Select first, then the table below, and persist them
+with Main Menu → Configuration File → Save Current Configuration (safe
+once the uploaded file has loaded; `config_save_on_exit = "false"`
+would otherwise drop them on quit). Game Focus must stay off
+(`input_auto_game_focus = "0"`, shipped) — it blocks every hotkey bind
+while content runs.
 
 <details open>
 <summary><b>Hotkeys</b></summary>
@@ -144,6 +150,29 @@ hotkey bind while content runs.
 
 </details>
 
+SRAM flushes every 5 min (`autosave_interval = "300"`; Mupen pins `0`)
+and is protected from state-load overwrite. Close Content auto-saves a
+state into 10 rotating auto-indexed slots; nothing auto-loads, so load
+it manually.
+
+<details open>
+<summary><b>What <code>retroarch.cfg</code> sets</b></summary>
+
+| Section | Keys | Sets |
+|---------|------|------|
+| Menu / UI | 18 | XMB (theme 20, no shadows) with widgets; sublabels, horizontal and load-content animations off, XMB animation styles pinned, background pipeline off; favorites and history capped at 10; playlist compression and core-info cache on; no config save on exit; no pause when tvOS marks the app inactive; emulation pauses in the menu |
+| Video | 14 | `metal` driver; integer scaling with core-provided aspect; no bilinear smoothing; shaders on; vsync; auto frame delay; threaded video off; 60 Hz; FPS counter; GPU screenshots; HDR off (1000-nit ceiling); screensaver suppressed |
+| Audio | 5 | `coreaudio` at 48 kHz; audio sync; resampler quality 3; 64 ms latency |
+| Latency / Run Ahead | 7 | VRR runloop off; run-ahead off globally (2 frames, single instance, warnings hidden — Tier 1 cores enable it per-core); preemptive frames off (mutually exclusive with run-ahead); fast-forward 4× |
+| Input | 5 | L3 + R3 menu combo; `mfi` joypad driver; Game Focus off; overlays off; 4 users |
+| Saves / Savestates | 11 | compressed saves and states sorted per core; 5-min SRAM flush protected from state-load overwrite; auto-indexed auto-save state, 10 kept, no thumbnails; rewind off |
+| Security | 4 | network commands, network remote, on-demand thumbnails and cloud sync off |
+| Null drivers | 6 | bluetooth, wifi, midi, record, camera, location |
+| Netplay | 3 | public announce, NAT traversal and MITM relay off |
+| Logging | 1 | verbosity off |
+
+</details>
+
 <details open>
 <summary><b>Tuning</b></summary>
 
@@ -152,6 +181,8 @@ hotkey bind while content runs.
 | `video_hdr_enable` | `false` | tvOS output is HDR10 / Dolby Vision (valid through v1.22.x; master uses `video_hdr_mode`) |
 | `audio_latency` | `64` | `48` for lower latency if audio stays clean |
 | `fastforward_ratio` | `4.0` | Raise only with thermal headroom (passive A15) |
+| `fps_show` | `true` | `false` to hide the on-screen frame-rate counter |
+| `video_refresh_rate` | `60.000000` | Seed for 60 Hz SDR; calibrate via Settings → Video → Output |
 | `vrr_runloop_enable` | `false` | Never — Apple TV has no game VRR; `true` disables Dynamic Rate Control (judder, desync) |
 | `run_ahead_enabled` | `false` | Per-core `true` on Tier 1 via retroarch-configs; per-game on Mupen |
 
@@ -165,6 +196,7 @@ hotkey bind while content runs.
 | Resolution | tvOS Settings → Video and Audio | 4K SDR 60 Hz |
 | Match Frame Rate / Dynamic Range | tvOS Settings → Video and Audio → Match Content | Off / Off |
 | Audio Format | tvOS Settings → Video and Audio | Stereo |
+| Reduce Loud Sounds | tvOS Settings → Video and Audio | Off |
 | Game Mode | TV (HDMI input) | On |
 | Chroma subsampling | TV (HDMI input) | 4:4:4 or RGB Full |
 
@@ -174,7 +206,8 @@ hotkey bind while content runs.
 
 The pipeline is on (`video_shader_enable = "true"`) with no global
 preset. Per core: Quick Menu → Shaders → Load Preset → pick a preset →
-Manage Presets → Save Core Preset. Avoid CRT-Royale, CRT-Geom-Deluxe,
+Manage Presets → Save Core Preset; adjust preset parameters under Quick
+Menu → Shaders → Shader Parameters. Avoid CRT-Royale, CRT-Geom-Deluxe,
 Guest-Dr-Venom, Guest-Advanced and Mega Bezel — they exceed the A15 GPU
 budget.
 
