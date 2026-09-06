@@ -1,3 +1,21 @@
+# 4.6 - 2026-09-05
+
+  - v4.6: README release; retroarch.cfg 74 keys unchanged (header + paired
+    stamps only). Lockstep with companion retroarch-configs v4.6.
+  - retroarch.cfg: header + paired stamps v4.5 -> v4.6. Body byte-identical
+    to v4.5.
+  - README.md: all 16 `<details>` blocks now carry the `open` attribute -
+    expanded by default, still collapsible. Block set and contents unchanged
+    from v4.5.
+  - README.md: version badge 4.5 -> 4.6.
+  - README.md: byte size 17098; line count 400; cfg key count 74
+    unchanged.
+  - Companion v4.6: 7 `.cfg` header + paired stamps v4.5 -> v4.6, bodies
+    byte-identical; 7 `.opt` byte-identical; all 5 README blocks `open`.
+  - CHANGELOG.md: trim v4.1 per 5-release retention; retained entries are
+    now v4.2-v4.6.
+
+
 # 4.5 - 2026-09-05
 
   - v4.5: README release; retroarch.cfg 74 keys unchanged (header + paired
@@ -152,31 +170,3 @@
     trim v3.26 per matching 5-release retention.
   - CHANGELOG.md: trim v3.26 entry per 5-release retention; retained entries
     are now v3.27-v4.2.
-
-
-# 4.1 - 2026-07-05
-
-  - v4.1: retroarch.cfg `audio_latency` tuning fix - first cfg body change
-    since v4.0; 74 keys unchanged. Released in lockstep with companion
-    retroarch-configs v4.1.
-  - retroarch.cfg: `audio_latency "48" -> "64"`. Prior "48" (2.88 frames @ 60
-    Hz) sat below the libretro optimal-vsync 3-frame safe floor (52 ms)
-    documented at libretro/docs `docs/guides/optimal-vsync.md`. On the
-    passively-cooled A15, sustained throttling induces frame-time spikes a
-    sub-3-frame audio buffer fails to absorb. "64" (3.84 frames) clears the
-    floor and matches the upstream default for this platform (`config.def.h`
-    v1.22.2 `DEFAULT_OUT_LATENCY 64`, non-Android branch), trading ~1 frame of
-    audio latency for stutter resistance. Latency-favoring "48" remains
-    available as a per-user flip.
-  - retroarch.cfg: bump header version stamp + paired stamp v4.0 -> v4.1.
-  - README.md: Additional settings `audio_latency` row `48` -> `64`; Notes
-    rewritten - 64 is the shipped default, 48 the documented opt-in.
-  - README.md: version badge 4.0 -> 4.1; paired badge `retroarch--configs
-    v4.0` -> `v4.1`.
-  - README.md: byte size 15555 -> 15657 (+102); line count 362 unchanged; cfg
-    key count 74 unchanged.
-  - Companion v4.1: 7 `.cfg` stamps v4.0 -> v4.1, bodies byte-identical to
-    v4.0. Beetle PCE Fast.opt drops `pce_fast_cdimagecache = "enabled"`
-    (reverts to upstream default `"disabled"`; multi-hundred-MB precache
-    imprudent on the 4 GB fanless ATV4K); opt 3 -> 2 keys, cfg+opt 40 -> 39.
-  - CHANGELOG.md: trim v3.25 entry per 5-release retention.

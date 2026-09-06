@@ -1,6 +1,6 @@
 # retroarch-appletv4k
 
-[![version](https://img.shields.io/badge/version-4.5-blue.svg)](CHANGELOG.md)
+[![version](https://img.shields.io/badge/version-4.6-blue.svg)](CHANGELOG.md)
 [![companion](https://img.shields.io/badge/companion-retroarch--configs-blue.svg)](https://github.com/ryanmusante/retroarch-configs)
 
 > RetroArch setup for Apple TV 4K (3rd Gen): installation, ROM/BIOS,
@@ -46,7 +46,7 @@
 
 ## Prerequisites
 
-<details>
+<details open>
 <summary><b>Hardware and software</b></summary>
 
 | Component | Specification |
@@ -88,7 +88,7 @@ once on first run; these paths persist via NSUserDefaults.
 tvOS has no Files app. All transfers use RetroArch's built-in network
 servers; RetroArch must remain running.
 
-<details>
+<details open>
 <summary><b>Servers and ports</b></summary>
 
 | Server | Port | Endpoint |
@@ -105,7 +105,7 @@ servers; RetroArch must remain running.
 > router firewall rules restricting access to ports 80 and 8080 on
 > the Apple TV's IP.
 
-<details>
+<details open>
 <summary><b>Filesystem layout</b></summary>
 
 ```
@@ -136,7 +136,7 @@ Scan via **Main Menu → Import Content → Manual Scan**, point at each
 system subfolder, pick the system/core, start scan. Playlists appear
 under Main Menu → Playlists.
 
-<details>
+<details open>
 <summary><b>ROM folder reference</b></summary>
 
 | System | Folder | Extensions | Core |
@@ -156,7 +156,7 @@ under Main Menu → Playlists.
 
 </details>
 
-<details>
+<details open>
 <summary><b>BIOS files</b></summary>
 
 | System | Required File(s) | Required? |
@@ -178,7 +178,7 @@ The Siri Remote navigates menus only.
 **Pairing:** Settings → Remotes and Devices → Bluetooth → put
 controller in pairing mode → select under "Other Devices."
 
-<details>
+<details open>
 <summary><b>Controller compatibility</b></summary>
 
 | Controller | Status |
@@ -202,7 +202,7 @@ combos below assume it.
 > it there is no way back to the menu — and so no way to reach Close
 > Content, save states, or settings — short of force-quitting.
 
-<details>
+<details open>
 <summary><b>Hotkeys</b></summary>
 
 | Action | Combo |
@@ -222,7 +222,7 @@ bind while content runs.
 
 </details>
 
-<details>
+<details open>
 <summary><b>Video settings</b></summary>
 
 | Setting | Value | Notes |
@@ -237,7 +237,7 @@ bind while content runs.
 
 </details>
 
-<details>
+<details open>
 <summary><b>Latency reduction</b></summary>
 
 | Setting | Value | Notes |
@@ -251,7 +251,7 @@ bind while content runs.
 
 </details>
 
-<details>
+<details open>
 <summary><b>TV output</b></summary>
 
 | Setting | Location | Value |
@@ -272,7 +272,7 @@ bind while content runs.
 
 </details>
 
-<details>
+<details open>
 <summary><b>Additional settings</b></summary>
 
 `retroarch.cfg` ships hardening defaults
@@ -301,7 +301,7 @@ Shader pipeline is enabled (`video_shader_enable = "true"`); no global
 preset is set. Assign per-core via Quick Menu → Shaders → Manage
 Presets → Save Core Preset.
 
-<details>
+<details open>
 <summary><b>Recommended presets</b></summary>
 
 | GPU Cost | Shader | Best For |
@@ -318,7 +318,7 @@ Shader Parameters.
 **Avoid on Apple TV:** CRT-Royale, CRT-Geom-Deluxe, Guest-Dr-Venom,
 Guest-Advanced, all Mega Bezel shaders — exceed A15 GPU budget.
 
-<details>
+<details open>
 <summary><b>Assign procedure</b></summary>
 
 1. Launch a game → Quick Menu (L3 + R3) → Shaders → Video Shaders: **ON**.
@@ -339,7 +339,7 @@ Tier 1 = full speed with shaders; Tier 2 = most titles at full speed.
 JIT-required systems (Dreamcast, GameCube, Wii, PS2) are not
 supported on the App Store build.
 
-<details>
+<details open>
 <summary><b>Tier table</b></summary>
 
 | Tier | System | Core | Notes |
@@ -356,7 +356,7 @@ supported on the App Store build.
 
 ## Known Issues
 
-<details>
+<details open>
 <summary><b>Issue list</b></summary>
 
 | # | Issue | Ref | Workaround |
@@ -369,7 +369,7 @@ supported on the App Store build.
 
 ## Files in This Repository
 
-<details>
+<details open>
 <summary><b>File list</b></summary>
 
 | File | Description |
