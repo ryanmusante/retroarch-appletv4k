@@ -1,10 +1,14 @@
 # retroarch-appletv4k
 
-[![version](https://img.shields.io/badge/version-4.3-blue.svg)](CHANGELOG.md)
+[![version](https://img.shields.io/badge/version-4.4-blue.svg)](CHANGELOG.md)
+[![companion](https://img.shields.io/badge/companion-retroarch--configs-blue.svg)](https://github.com/ryanmusante/retroarch-configs)
 
 > RetroArch setup for Apple TV 4K (3rd Gen). Covers installation,
 > ROM/BIOS, controllers, performance tuning, and CRT shaders. Ships a
-> 74-key `retroarch.cfg`.
+> 74-key `retroarch.cfg`. Companion to
+> [retroarch-configs](https://github.com/ryanmusante/retroarch-configs),
+> which ships the per-core `.cfg` / `.opt` files; both repos release in
+> lockstep (see [Related](#related)).
 
 **Target:** Apple TV 4K 3rd Gen (64 GB Wi-Fi, A15 Bionic) on tvOS 26. See [Prerequisites](#prerequisites).
 
@@ -24,6 +28,7 @@
 - [Supported Systems](#supported-systems)
 - [Known Issues](#known-issues)
 - [Files in This Repository](#files-in-this-repository)
+- [Related](#related)
 - [Versioning](#versioning)
 - [License](#license)
 
@@ -50,13 +55,13 @@ See [CHANGELOG](CHANGELOG.md) for release history.
 | Controller | PS5 DualSense or Xbox Series X/S (Siri Remote is menu-only) |
 | Network | Same Wi-Fi/LAN for Apple TV and computer (no Ethernet on 64 GB model) |
 | Computer | Mac, Windows, or Linux with a web browser |
-| tvOS | Latest version |
+| tvOS | 26 (target); the App Store build requires tvOS 13.0 or later |
 | RetroArch | ≥ v1.20.0 (WebDAV file transfer); v1.22.x recommended |
 | ROMs / BIOS | Legally acquired; BIOS required for Sega CD, Neo Geo |
 
 ## Installation
 
-1. **App Store:** Search "RetroArch" (Daniel De Matteis) → Get.
+1. **App Store:** Search "RetroArch" (developer: Libretro) → Get.
 2. **Launch:** Record the two URLs (local IP + Bonjour) from the Welcome popup — required for file transfers.
 3. **Online Updater:** Main Menu → Online Updater → Assets, Core Info Files, Databases, Slang Shaders.
 4. **Apply config:** Upload the companion `retroarch.cfg` to the root of the web interface ([File Transfers](#file-transfers)), then quit and relaunch RetroArch.
@@ -180,9 +185,9 @@ controller in pairing mode → select under "Other Devices."
 ## Configuration
 
 The PS/Xbox home button opens tvOS Control Center, not RetroArch.
-**Settings → Input → Hotkeys → Menu Toggle Controller Combo → L3 + R3**
-(click both thumbsticks). Set an Enable Hotkeys modifier (Select) —
-the combos below assume it.
+**Settings → Input → Hotkeys → Menu Toggle (Controller Combo) → L3 + R3**
+(click both thumbsticks). Set a Hotkey Enable modifier (Select) — the
+combos below assume it.
 
 > [!IMPORTANT]
 > Configure the Menu Toggle combo before launching content. Without
@@ -214,7 +219,7 @@ bind while content runs.
 
 | Setting | Value | Notes |
 |---------|-------|-------|
-| `video_driver` | `metal` | Apple silicon |
+| `video_driver` | `metal` | Native Metal; a real flip from the upstream Apple default `vulkan` (MoltenVK). Only `vulkan` can drive ParaLLEl-RDP |
 | `video_scale_integer` | `true` | Pixel-perfect; per-core integer overscale on 224p / 240p / 304p systems |
 | `video_smooth` | `false` | Nearest-neighbour; avoids pre-shader blur |
 | `video_shader_enable` | `true` | Pipeline on; no global preset — assign per-core |
@@ -233,7 +238,7 @@ bind while content runs.
 | `run_ahead_enabled` / `_frames` | `false` / `2` | Tier 1 per-core `true`; Tier 2 explicit `false` |
 | `run_ahead_secondary_instance` | `false` | All cores inherit; single-instance per companion repo |
 | `preemptive_frames_enable` | `false` | Per-core only; mutually exclusive with `run_ahead_enabled` |
-| `video_frame_delay_auto` | `true` | Mupen pinned `false` — drift-guard ([#14201](https://github.com/libretro/RetroArch/issues/14201)) |
+| `video_frame_delay_auto` | `true` | Mupen pins `false` — real override kept as a regression guard ([#14201](https://github.com/libretro/RetroArch/issues/14201) closed) |
 | `fastforward_ratio` | `4.0` | 4× cap; reduces thermal load on passive A15 |
 
 </details>
@@ -285,8 +290,8 @@ key list is in `retroarch.cfg`.
 ## Shaders
 
 Shader pipeline is enabled (`video_shader_enable = "true"`); no global
-preset is set. Assign per-core via Quick Menu → Shaders → Save Core
-Preset.
+preset is set. Assign per-core via Quick Menu → Shaders → Manage
+Presets → Save Core Preset.
 
 | GPU Cost | Shader | Best For |
 |----------|--------|----------|
@@ -306,7 +311,7 @@ Guest-Advanced, all Mega Bezel shaders — exceed A15 GPU budget.
 1. Launch a game → Quick Menu (L3 + R3) → Shaders → Video Shaders: **ON**.
 2. Load Preset → `shaders_slang` → `crt` (or `handheld` for LCD-style systems) → select a preset.
 3. Adjust parameters as needed.
-4. Save Preset → **Save Core Preset**.
+4. Manage Presets → **Save Core Preset**.
 
 </details>
 
@@ -347,6 +352,10 @@ supported on the App Store build.
 | [`CHANGELOG.md`](CHANGELOG.md) | Release history (kernel.org style) |
 | `retroarch.cfg` | Drop-in configuration for Apple TV 4K 3rd Gen |
 | `LICENSE` | MIT License |
+
+## Related
+
+- [retroarch-configs](https://github.com/ryanmusante/retroarch-configs) — Per-core `.cfg` overrides and `.opt` core options for the seven cores in [Supported Systems](#supported-systems); they layer on top of this repo's `retroarch.cfg` and release in lockstep with it
 
 ## Versioning
 
