@@ -1,172 +1,59 @@
+# 5.0 - 2026-09-05
+
+  - v5.0: MAJOR - README trimmed to vital information; sections merged and
+    removed, so inbound anchors change. retroarch.cfg 74 keys unchanged.
+    Lockstep with companion retroarch-configs v5.0.
+  - README.md: Installation merged into Quick Start; ROM and BIOS Setup,
+    Supported Systems and the BIOS table merged into one Systems table; Known
+    Issues folded into Controllers; Contents, Files in This Repository and
+    Related removed; Video / Latency / Additional settings tables replaced by
+    one Tuning table of user-facing knobs. Sections: Quick Start, Storage
+    Persistence, File Transfers, Systems, Controllers, Configuration, Shaders,
+    Versioning, License. Badge 4.6 -> 5.0.
+  - README.md: byte size 7978; line count 200; cfg key count 74
+    unchanged.
+  - retroarch.cfg: header reduced to name, version, target, key count,
+    pairing and the upload / Save Current Configuration trap; section
+    markers reduced to names. Stamps v4.6 -> v5.0. Key lines byte-identical.
+  - CHANGELOG.md: retained entries v4.3-v4.6 condensed to changed keys, files,
+    stamps and lockstep; rationale prose dropped, nothing renumbered or
+    redated. Trim v4.2 per 5-release retention.
+
+
 # 4.6 - 2026-09-05
 
-  - v4.6: README release; retroarch.cfg 74 keys unchanged (header + paired
-    stamps only). Lockstep with companion retroarch-configs v4.6.
-  - retroarch.cfg: header + paired stamps v4.5 -> v4.6. Body byte-identical
-    to v4.5.
-  - README.md: all 16 `<details>` blocks now carry the `open` attribute -
-    expanded by default, still collapsible. Block set and contents unchanged
-    from v4.5.
-  - README.md: version badge 4.5 -> 4.6.
-  - README.md: byte size 17098; line count 400; cfg key count 74
-    unchanged.
-  - Companion v4.6: 7 `.cfg` header + paired stamps v4.5 -> v4.6, bodies
-    byte-identical; 7 `.opt` byte-identical; all 5 README blocks `open`.
-  - CHANGELOG.md: trim v4.1 per 5-release retention; retained entries are
-    now v4.2-v4.6.
+  - README.md: all 16 `<details>` blocks gain `open`. Badge 4.5 -> 4.6.
+  - retroarch.cfg: header + paired stamps v4.5 -> v4.6; 74 keys unchanged.
+    Lockstep with retroarch-configs v4.6. CHANGELOG: trim v4.1.
 
 
 # 4.5 - 2026-09-05
 
-  - v4.5: README release; retroarch.cfg 74 keys unchanged (header + paired
-    stamps only). Lockstep with companion retroarch-configs v4.5.
-  - retroarch.cfg: header + paired stamps v4.4 -> v4.5. Body byte-identical
-    to v4.4.
-  - README.md: every table now sits in a default-collapsed `<details>` block.
-    New: Hardware and software, Servers and ports, Controller compatibility,
-    Recommended presets, Tier table, Issue list, File list; the nine v4.0
-    blocks are kept. Prose, numbered steps and admonitions stay open. 16
-    blocks total (was 9).
-  - README.md: Controllers drops the ghost-input `[!NOTE]`; Known Issues
-    already carries the issue (#18447) and its workaround.
-  - README.md: Supported Systems FinalBurn Neo Notes drops the 2026-05-12
-    FBNeo README date (kept in the v4.3 entry). Facts unchanged.
-  - README.md: lockstep stated once, in Versioning; intro and Related drop
-    their restatements. "See CHANGELOG for release history" dropped - the
-    version badge already links it.
-  - README.md: version badge 4.4 -> 4.5.
-  - README.md: byte size 17018; line count 400; cfg key count 74 unchanged.
-  - Companion v4.5: 7 `.cfg` header + paired stamps v4.4 -> v4.5, bodies
-    byte-identical; 7 `.opt` byte-identical. README tables collapsed (5
-    blocks); its Shaders block folded into a link to this repo's Shaders.
-  - CHANGELOG.md: trim v4.0 per 5-release retention; retained entries are
-    now v4.1-v4.5.
+  - README.md: every table in a default-collapsed `<details>` block (9 -> 16);
+    ghost-input note folded into Known Issues; FBN note, lockstep restatements
+    and the CHANGELOG pointer trimmed. Badge 4.4 -> 4.5.
+  - retroarch.cfg: header + paired stamps v4.4 -> v4.5; 74 keys unchanged.
+    Lockstep with retroarch-configs v4.5. CHANGELOG: trim v4.0.
 
 
 # 4.4 - 2026-09-05
 
-  - v4.4: audit release; retroarch.cfg 74 keys unchanged (header stamp and two
-    section comments only). Lockstep with companion retroarch-configs v4.4.
-  - retroarch.cfg: header + paired stamps v4.3 -> v4.4; the header now quotes
-    the real menu label "Save Current Configuration".
-  - retroarch.cfg: Security and Netplay section comments state purpose only;
-    the "restored ... drift-guard" history wording is gone. Keys unchanged.
-  - README.md: the v4.3 "tvOS does not provide Vulkan" claim was wrong;
-    RetroArch tvOS ships MoltenVK Vulkan, the upstream Apple default driver.
-  - README.md: Video settings `video_driver` note replaced: "Apple silicon" ->
-    real flip from default `vulkan`; only `vulkan` can drive ParaLLEl-RDP.
-  - README.md: Latency reduction `video_frame_delay_auto` row now matches the
-    companion: Mupen `false` is a real override kept as a #14201 guard.
-  - README.md: menu paths follow the v1.22.2 tree: "Menu Toggle (Controller
-    Combo)", "Hotkey Enable", Shaders -> Manage Presets -> Save Core Preset.
-  - README.md: Installation names the App Store developer as Libretro (was
-    Daniel De Matteis); Prerequisites tvOS row: 26 target, App Store floor 13.
-  - README.md: companion badge, intro link and a new Related section point at
-    retroarch-configs; Contents gains the Related entry.
-  - README.md: version badge 4.3 -> 4.4.
-  - README.md: byte size 16917; line count 372; cfg key count 74 unchanged.
-  - Companion v4.4: 7 `.cfg` header + paired stamps v4.3 -> v4.4; comment
-    fixes in 2 `.cfg` and 3 `.opt` files; `config/.gitkeep` removed for real.
-  - CHANGELOG.md: reflowed to kernel.org shape (ASCII, 78 columns, 2 blank
-    lines between blocks; nothing reworded); trim v3.28 per retention.
+  - README.md: the v4.3 "tvOS does not provide Vulkan" claim corrected -
+    RetroArch tvOS ships MoltenVK Vulkan (the Apple default driver), so
+    `video_driver = "metal"` is a real flip and only `vulkan` can drive
+    ParaLLEl-RDP. Menu paths follow the v1.22.2 tree; App Store developer
+    named as Libretro; tvOS 26 target, App Store floor 13. Companion badge and
+    Related section added. Badge 4.3 -> 4.4.
+  - retroarch.cfg: header + paired stamps v4.3 -> v4.4; Security and Netplay
+    section comments state purpose only. 74 keys unchanged. Lockstep with
+    retroarch-configs v4.4. CHANGELOG: kernel.org reflow; trim v3.28.
 
 
 # 4.3 - 2026-08-30
 
-  - v4.3: README accuracy pass; retroarch.cfg 74 keys byte-identical to v4.2
-    (header stamp only). Released in lockstep with companion retroarch-configs
-    v4.3.
-  - retroarch.cfg: bump header version stamp + paired stamp v4.2 -> v4.3.
-  - README.md: Supported Systems - FinalBurn Neo rewind note corrected.
-    Upstream FBNeo `src/burner/libretro/README.md` struck the #16374 note on
-    2026-05-12 and RetroArch #16374 is closed. The companion pin equals the
-    global value, so it is a drift-guard, not a live workaround.
-  - README.md: Supported Systems - Mupen Notes reworded.
-    `mupen64plus-angrylion-multithread` sets the RDP worker-thread count, not
-    CPU affinity; tvOS exposes no P-core pinning to applications. "Metal-only
-    stack" replaced with "software stack": ParaLLEl-RDP/RSP are compiled into
-    the tvOS core but need Vulkan, which RetroArch tvOS does not provide, and
-    GLideN64 needs a GL context that `video_driver = "metal"` does not
-    provide.
-  - README.md: Configuration > Additional settings - `video_hdr_enable` row
-    gains a forward-compatibility note. The key is valid through v1.22.x;
-    RetroArch master replaces it with `video_hdr_mode` (`0` off, `1` HDR10,
-    `2` scRGB). Re-check the pin when moving off the v1.22.x target.
-  - README.md: the v4.2 entry recorded byte size 16192 and line count 367 and
-    a `paired` badge bump. The file carries a single version badge and neither
-    figure matched what shipped. Corrected here rather than by editing the
-    historical entry; see the metrics line below.
-  - README.md: version badge 4.2 -> 4.3.
-  - README.md: byte size 16076; line count 363; cfg key count 74 unchanged.
-  - Companion v4.3: 7 `.cfg` header + paired stamps v4.2 -> v4.3; comment
-    corrections in FinalBurn Neo.cfg, Mupen64Plus-Next.cfg,
-    Mupen64Plus-Next.opt; `config/.gitkeep` removed. cfg 21, opt 18, cfg+opt
-    39 unchanged.
-  - CHANGELOG.md: trim v3.27 entry per 5-release retention; retained entries
-    are now v3.28-v4.3.
-
-
-# 4.2 - 2026-07-26
-
-  - v4.2: retroarch.cfg `input_auto_game_focus` correction + README accuracy
-    pass; 74 keys unchanged. Released in lockstep with companion
-    retroarch-configs v4.2.
-  - retroarch.cfg: `input_auto_game_focus "1" -> "0"`. With Game Focus
-    enabled, RetroArch forces it on every time the menu closes over loaded
-    content (`menu/menu_driver.c` v1.22.2), setting `INP_FLAG_BLOCK_HOTKEY` +
-    `INP_FLAG_KB_MAPPING_BLOCKED` (`retroarch.c`). When an Enable Hotkeys
-    modifier is bound on the pad and no keyboard bind exists - the setup this
-    README documents - the selective-block path in `input/input_driver.c`
-    offers no unblock branch, so every hotkey bind stays dead while content
-    runs: save/load state, fast-forward, state slot, Close Content. Only the
-    L3 + R3 menu combo survived, because `runloop.c` evaluates it from raw pad
-    bits ahead of hotkey blocking. `"0"` is the upstream default
-    (`DEFAULT_INPUT_AUTO_GAME_FOCUS AUTO_GAME_FOCUS_OFF`).
-  - retroarch.cfg: bump header version stamp + paired stamp v4.1 -> v4.2.
-  - README.md: Configuration - Close Content warning replaced. Exiting content
-    never required a Close Content hotkey (the Quick Menu carries the entry);
-    the real failure mode is an unset Menu Toggle combo, which strands the
-    user in the running core. Enable Hotkeys modifier promoted from optional
-    to required, matching the Select-based combo table below it.
-  - README.md: Configuration > Hotkeys - note added that Game Focus must stay
-    off for hotkey binds to fire.
-  - README.md: Configuration > Additional settings - `input_auto_game_focus`
-    row added; table 7 -> 8 rows. Note states the trade explicitly: enabling
-    Game Focus swaps all pad hotkeys for keyboard capture.
-  - README.md: Storage Persistence - asset re-extraction re-dated. Landed in
-    RetroArch 1.18.0 ("TVOS: Force asset re-extraction when cache is
-    deleted"), not 1.16.0; the NSUserDefaults `retroarch.cfg` mirror remains
-    1.16.0. Scope widened from "shader assets" to assets generally, per
-    upstream wording.
-  - README.md: Configuration > TV output - "fixed 59.94 Hz panel" -> "fixed 60
-    Hz output". Prior figure contradicted both the shipped `video_refresh_rate
-    = "60.000000"` and the 4K SDR 60 Hz row in the same table.
-  - README.md: ROM and BIOS Setup - folder names reframed as convention.
-    Manual Scan identifies content against the system database selected in the
-    scan dialog, not against directory names.
-  - README.md: Prerequisites - RetroArch row rationale narrowed to WebDAV.
-    Auto frame delay and integer scaling long predate v1.20.0 and did not
-    motivate the floor; v1.22.x noted as recommended.
-  - README.md: Configuration > Video settings - `video_smooth` note "Required
-    for shader rendering" -> "Nearest-neighbour; avoids pre-shader blur".
-    Bilinear filtering degrades CRT shader output but is not a hard
-    requirement.
-  - README.md: Configuration > Latency reduction - `video_frame_delay_auto`
-    Mupen pin marked drift-guard; #14201 is closed upstream and the pin now
-    guards against regression only.
-  - README.md: Supported Systems - Beetle PCE Fast Notes drops "CD precache",
-    stale since the companion removed `pce_fast_cdimagecache = "enabled"` at
-    v4.1. Shipped behaviour is 2x CD read speed, with full-image precache
-    retained as a per-game opt-in.
-  - README.md: Versioning - retention wording "last 5 MINOR entries" -> "last
-    5 releases"; the retained window includes the v4.0 MAJOR entry.
-  - README.md: version badge 4.1 -> 4.2; paired badge `retroarch--configs
-    v4.1` -> `v4.2`.
-  - README.md: byte size 15657 -> 16192 (+535); line count 362 -> 367 (+5);
-    cfg key count 74 unchanged.
-  - Companion v4.2: 7 `.cfg` header + paired stamps v4.1 -> v4.2, bodies
-    byte-identical to v4.1. No per-core `input_auto_game_focus` override
-    exists (global cfg governs), so no companion body edit required. CHANGELOG
-    trim v3.26 per matching 5-release retention.
-  - CHANGELOG.md: trim v3.26 entry per 5-release retention; retained entries
-    are now v3.27-v4.2.
+  - README.md: FBN `rewind_enable` note reclassified as drift-guard (#16374
+    closed); Mupen note - `angrylion-multithread` is a worker-thread count,
+    not CPU affinity; `video_hdr_enable` valid through v1.22.x, master uses
+    `video_hdr_mode`. Badge 4.2 -> 4.3.
+  - retroarch.cfg: header + paired stamps v4.2 -> v4.3; 74 keys unchanged.
+    Lockstep with retroarch-configs v4.3. CHANGELOG: trim v3.27.
