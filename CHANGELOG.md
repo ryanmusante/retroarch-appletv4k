@@ -1,3 +1,72 @@
+# 5.4 - 2026-09-05
+
+  - v5.4: completeness release - additions only, no removals. retroarch.cfg
+    74 keys unchanged. Lockstep with companion retroarch-configs v5.4.
+  - README.md: Systems table gains a System Name (Manual Scan) column with
+    the libretro-database names of all 8 systems; new Manual Scan
+    subsection (Content Directory / System Name / Default Core / Start
+    Scan, File Extensions split for pce/, Scan Inside Archives off for
+    arcade, FBNeo Arcade-only DAT + Arcade DAT Filter, prefer .chd).
+  - README.md: new Troubleshooting section - 9 symptom -> fix rows, each
+    pointing at the owning section. Quick Start step 1 names the IP source
+    (tvOS Settings -> Network), step 3 the relaunch cue (XMB Gray Dark),
+    step 5 links Manual Scan. File Transfers gains Linux clients (Dolphin
+    webdav://, GNOME Files dav://, curl -T); tree gains playlists/ and
+    screenshots/; purge list gains playlists. Shaders: Remove Core Preset.
+    Badge 5.3 -> 5.4.
+  - Verified: all System Name strings against libretro-database/rdb; DAT
+    file name against FBNeo/dats; menu labels (Manual Scan, System Name,
+    Default Core, File Extensions, Arcade DAT File / Filter, Scan Inside
+    Archives, Start Scan, Remove Core Preset) against intl/msg_hash_us.h
+    @v1.22.2.
+  - README.md: byte size 14927; line count 282; cfg key count 74 unchanged.
+  - retroarch.cfg: header + paired stamps v5.3 -> v5.4; body byte-identical.
+  - Companion v5.4: 7 `.cfg` header + paired stamps v5.3 -> v5.4; 7 `.opt`
+    byte-identical; README gains a core-options check step, a Systems
+    cross-link, the global_core_options note and per-game .opt / removal
+    paths.
+  - CHANGELOG.md: trim v4.6 per 5-release retention; retained entries are
+    now v5.0-v5.4.
+
+
+# 5.3 - 2026-09-05
+
+  - v5.3: audit release against upstream source (RetroArch v1.22.2 tag and
+    master) and live GitHub issue state. retroarch.cfg 74 keys unchanged.
+    Lockstep with companion retroarch-configs v5.3.
+  - README.md: upload target corrected to /config/ - the tvOS build keeps
+    retroarch.cfg at <cache>/RetroArch/config/retroarch.cfg while the web /
+    WebDAV root is <cache>/RetroArch (WebServer.m, ui_cocoatouch.m).
+    Directory tree redrawn: saves/, states/ and shaders/ sit at the root per
+    platform_darwin.m defaults, not under config/.
+  - README.md: Close Content writes one auto-save state to slot Auto
+    (.state.auto); auto-index and the 10-state cap govern manual saves only.
+    Hotkey row, save prose and the cfg summary Saves row corrected.
+  - README.md: Configuration - tvOS reserves the controller Home button
+    (Apple developer forum thread 715012); tvOS default combo Down + Y + L1
+    + R1 named; NSUserDefaults mirror refreshes only on Save Current
+    Configuration; re-uploading the 74-key file drops saved binds and
+    directory choices. Storage Persistence and Quick Start step 4 follow.
+  - README.md: Controllers - backing out of the menu root backgrounds the
+    app on any pad (#18286 maintainer reply); Switch Pro row Avoid ->
+    Caution. Tuning: video_hdr_enable has no effect on the v1.22.x Metal
+    driver (HDR output lands on master as video_hdr_mode). Security row
+    notes the network command interface enabled on tvOS in 1.22.1; Menu row
+    names theme 20 (Gray Dark); playlists appear as XMB tabs; server table
+    uses <atv-ip> / <device-name>.local. Badge 5.2 -> 5.3.
+  - Verified: all 74 keys present in configuration.c @v1.22.2; combo 2 =
+    L3 + R3, aspect 22 = Core provided, integer scaling 1 = Overscale;
+    ports 80 / 8080 and no auth in WebServer.m; issues #16685, #18447,
+    #18286 open, #14201 closed; both shader presets present upstream.
+  - README.md: byte size 12011; line count 243; cfg key count 74 unchanged.
+  - retroarch.cfg: header + paired stamps v5.2 -> v5.3; header upload path
+    corrected to /config/; body byte-identical.
+  - Companion v5.3: 7 `.cfg` header + paired stamps v5.2 -> v5.3; 7 `.opt`
+    byte-identical; README Quick Start, Layout and override-table wording.
+  - CHANGELOG.md: trim v4.5 per 5-release retention; retained entries are
+    now v4.6-v5.3.
+
+
 # 5.2 - 2026-09-05
 
   - v5.2: final audit release. retroarch.cfg 74 keys unchanged. Lockstep with
@@ -74,19 +143,3 @@
   - CHANGELOG.md: retained entries v4.3-v4.6 condensed to changed keys, files,
     stamps and lockstep; rationale prose dropped, nothing renumbered or
     redated. Trim v4.2 per 5-release retention.
-
-
-# 4.6 - 2026-09-05
-
-  - README.md: all 16 `<details>` blocks gain `open`. Badge 4.5 -> 4.6.
-  - retroarch.cfg: header + paired stamps v4.5 -> v4.6; 74 keys unchanged.
-    Lockstep with retroarch-configs v4.6. CHANGELOG: trim v4.1.
-
-
-# 4.5 - 2026-09-05
-
-  - README.md: every table in a default-collapsed `<details>` block (9 -> 16);
-    ghost-input note folded into Known Issues; FBN note, lockstep restatements
-    and the CHANGELOG pointer trimmed. Badge 4.4 -> 4.5.
-  - retroarch.cfg: header + paired stamps v4.4 -> v4.5; 74 keys unchanged.
-    Lockstep with retroarch-configs v4.5. CHANGELOG: trim v4.0.
