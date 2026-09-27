@@ -1,3 +1,72 @@
+# 5.6 - 2026-09-26
+
+  - v5.6: deep-scan release against upstream source and Apple
+    documentation. retroarch.cfg 74 keys unchanged. Lockstep with
+    companion retroarch-configs v5.6.
+  - README.md: File Transfers - the servers run only while RetroArch is in
+    the foreground (GCDWebServer suspends them in the background by
+    default); the security note trades the router-firewall advice, which
+    cannot filter traffic between hosts on one LAN, for VLAN isolation.
+  - README.md: Tuning - vrr_runloop_enable true skips the audio
+    timing-skew sync and paces on video only (runloop.c @v1.22.2); the
+    "disables Dynamic Rate Control" wording is withdrawn, DRC is gated by
+    audio_rate_control alone (audio_driver.c).
+  - README.md: Storage Persistence - tvOS may purge the cache only while
+    RetroArch is not running; Controllers - tvOS allows four controllers,
+    or one while a Bluetooth audio accessory is connected, with the
+    Troubleshooting pad row to match; Systems - Neo Geo BIOS at
+    fbneo/neogeo.zip, the core-info firmware path. Badge 5.5 -> 5.6.
+  - Verified: A2737 = 64 GB Wi-Fi model without Ethernet (Apple 101605);
+    500 KB NSUserDefaults limit (App Programming Guide for tvOS); pairing
+    path Settings -> Remotes and Devices -> Bluetooth (tvOS User Guide);
+    extensions and BIOS names against libretro-core-info; mFi autoconfig
+    binds Menu Toggle to Home (button 16); zfast-crt and lcd-grid-v2 are
+    single-pass; all README links resolve; section key counts sum to 74.
+  - README.md: byte size 15570; line count 285; cfg key count 74 unchanged.
+  - retroarch.cfg: header + paired stamps v5.5 -> v5.6; body
+    byte-identical.
+  - Companion v5.6: 7 `.cfg` header + paired stamps v5.5 -> v5.6; 7 `.opt`
+    byte-identical; README badge only.
+  - CHANGELOG.md: trim v5.1 per 5-release retention; retained entries are
+    now v5.2-v5.6.
+
+
+# 5.5 - 2026-09-26
+
+  - v5.5: currency release against upstream and tvOS 27. retroarch.cfg 74
+    keys unchanged. Lockstep with companion retroarch-configs v5.5.
+  - Target tvOS 26 -> 27 (GA 2026-09-14, supports Apple TV 4K 2nd and 3rd
+    Gen; RetroArch confirmed running on-device). RetroArch v1.22.2
+    (2025-11-20) remains the latest release. README intro, Prerequisites
+    and the retroarch.cfg header updated.
+  - README.md: Troubleshooting gains a lockout row - tvOS Settings -> Apps
+    -> RetroArch -> Restore Default Config renames config/retroarch.cfg to
+    RetroArch-HHmm-yyMMdd.cfg and clears the NSUserDefaults mirror on the
+    next launch; defaults load with the Down + Y + L1 + R1 menu combo.
+  - README.md: Quick Start step 2 uses the exact Online Updater labels
+    (Update Assets, Update Core Info Files, Update Databases, Update Slang
+    Shaders); Controllers notes the 8BitDo Pro 2 pairs in mode D; Shaders
+    drops Guest-Dr-Venom, no longer a preset in libretro/slang-shaders.
+    Badge 5.4 -> 5.5.
+  - Verified: 74 keys in configuration.c @v1.22.2, master replaces only
+    video_hdr_enable (video_hdr_mode); Restore Default Config in
+    Settings.bundle/Root.plist and ui_cocoatouch.m; Update Core Info Files
+    built into App Store builds (BaseConfig.xcconfig); 13 System Names in
+    libretro-database/rdb; FBNeo Arcade-only DAT; zfast-crt and
+    lcd-grid-v2 presets; neogeo.zip found in the system root (FBNeo
+    libretro.cpp); #16685, #18447, #18286 open; tvOS withholds the pad
+    Home button (Apple forum thread 715012).
+  - README.md: byte size 15262; line count 282; cfg key count 74 unchanged.
+  - retroarch.cfg: header + paired stamps v5.4 -> v5.5, target tvOS 27;
+    body byte-identical.
+  - Companion v5.5: 7 `.cfg` header + paired stamps v5.4 -> v5.5;
+    Mupen64Plus-Next.opt header note corrected, other 6 `.opt`
+    byte-identical; README tvOS 27, Angrylion label, Mupen driver note;
+    config/.gitkeep removed.
+  - CHANGELOG.md: trim v5.0 per 5-release retention; retained entries are
+    now v5.1-v5.5.
+
+
 # 5.4 - 2026-09-05
 
   - v5.4: completeness release - additions only, no removals. retroarch.cfg
@@ -88,58 +157,3 @@
     and DMC / FrameDuping rationale restored.
   - CHANGELOG.md: trim v4.4 per 5-release retention; retained entries are
     now v4.5-v5.2.
-
-
-# 5.1 - 2026-09-05
-
-  - v5.1: audit release - restores v5.0 removals judged vital and closes one
-    long-standing doc gap. retroarch.cfg 74 keys unchanged. Lockstep with
-    companion retroarch-configs v5.1.
-  - README.md: Configuration - the Menu Toggle combo is documented as shipped
-    (`input_menu_toggle_gamepad_combo = "2"` = L3 + R3, per the upstream
-    enum) and the hotkey table gains the binding step it always needed:
-    upstream retroarch.cfg leaves `input_enable_hotkey_btn` and every pad
-    hotkey unset, so bind Hotkey Enable + the table, then Save Current
-    Configuration (`config_save_on_exit = "false"` would otherwise drop
-    them on quit).
-  - README.md: Configuration regains the save-behaviour line (5-min SRAM
-    flush, state auto-save on Close Content, 10 slots, no auto-load) and
-    gains a "What retroarch.cfg sets" table - one row per cfg section, key
-    counts summing to 74. Tuning gains `fps_show`; TV output regains Reduce
-    Loud Sounds.
-  - README.md: Systems table regains the file-extension column;
-    Prerequisites regains the tvOS 13 App Store floor; Quick Start step 4
-    points at binding hotkeys.
-  - README.md: every cited key / value verified against retroarch.cfg.
-    Badge 5.0 -> 5.1.
-  - README.md: byte size 10446; line count 230; cfg key count 74
-    unchanged.
-  - retroarch.cfg: header + paired stamps v5.0 -> v5.1; body unchanged.
-  - Companion v5.1: 7 `.cfg` header + paired stamps v5.0 -> v5.1; 7 `.opt`
-    byte-identical; README regains the PCE #127 hazard, the Mupen
-    `cached_interpreter` drift-guard and thread fallbacks, and the typical
-    per-game overclock values.
-  - CHANGELOG.md: trim v4.3 per 5-release retention; retained entries are
-    now v4.4-v5.1.
-
-
-# 5.0 - 2026-09-05
-
-  - v5.0: MAJOR - README trimmed to vital information; sections merged and
-    removed, so inbound anchors change. retroarch.cfg 74 keys unchanged.
-    Lockstep with companion retroarch-configs v5.0.
-  - README.md: Installation merged into Quick Start; ROM and BIOS Setup,
-    Supported Systems and the BIOS table merged into one Systems table; Known
-    Issues folded into Controllers; Contents, Files in This Repository and
-    Related removed; Video / Latency / Additional settings tables replaced by
-    one Tuning table of user-facing knobs. Sections: Quick Start, Storage
-    Persistence, File Transfers, Systems, Controllers, Configuration, Shaders,
-    Versioning, License. Badge 4.6 -> 5.0.
-  - README.md: byte size 7978; line count 200; cfg key count 74
-    unchanged.
-  - retroarch.cfg: header reduced to name, version, target, key count,
-    pairing and the upload / Save Current Configuration trap; section
-    markers reduced to names. Stamps v4.6 -> v5.0. Key lines byte-identical.
-  - CHANGELOG.md: retained entries v4.3-v4.6 condensed to changed keys, files,
-    stamps and lockstep; rationale prose dropped, nothing renumbered or
-    redated. Trim v4.2 per 5-release retention.

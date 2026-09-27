@@ -1,9 +1,9 @@
 # retroarch-appletv4k
 
-[![version](https://img.shields.io/badge/version-5.4-blue.svg)](CHANGELOG.md)
+[![version](https://img.shields.io/badge/version-5.6-blue.svg)](CHANGELOG.md)
 [![companion](https://img.shields.io/badge/companion-retroarch--configs-blue.svg)](https://github.com/ryanmusante/retroarch-configs)
 
-> RetroArch setup for Apple TV 4K 3rd Gen (tvOS 26, RetroArch v1.22.x)
+> RetroArch setup for Apple TV 4K 3rd Gen (tvOS 27, RetroArch v1.22.x)
 > with a 74-key `retroarch.cfg`. Companion to
 > [retroarch-configs](https://github.com/ryanmusante/retroarch-configs),
 > which ships the per-core `.cfg` / `.opt` files.
@@ -11,7 +11,7 @@
 ## Quick Start
 
 1. App Store → RetroArch (developer: Libretro). On first launch note the two URLs in the Welcome popup; the IP is also under tvOS Settings → Network.
-2. Main Menu → Online Updater → Assets, Core Info Files, Databases, Slang Shaders.
+2. Main Menu → Online Updater → Update Assets, Update Core Info Files, Update Databases, Update Slang Shaders.
 3. Upload `retroarch.cfg` to `/config/` ([File Transfers](#file-transfers)), then quit and relaunch RetroArch — the menu should come back in XMB's Gray Dark theme.
 4. Pair a controller ([Controllers](#controllers)), bind the hotkeys, set the two directories ([Storage Persistence](#storage-persistence)) and save the configuration once ([Configuration](#configuration)).
 5. Upload ROMs and BIOS ([Systems](#systems)); Main Menu → Import Content → Manual Scan per system folder ([Manual Scan](#manual-scan)). Playlists appear as XMB tabs.
@@ -26,7 +26,7 @@
 
 | Component | Requirement |
 |-----------|-------------|
-| Apple TV | 4K 3rd Gen (A2737, A15 Bionic), 64 GB Wi-Fi; tvOS 26 target (App Store floor tvOS 13) |
+| Apple TV | 4K 3rd Gen (A2737, A15 Bionic), 64 GB Wi-Fi; tvOS 27 target (App Store floor tvOS 13) |
 | RetroArch | ≥ v1.20.0 (WebDAV); v1.22.x recommended |
 | Controller | PS5 DualSense or Xbox Series X/S; the Siri Remote is menu-only |
 | Network | Apple TV and computer on the same LAN (the 64 GB model has no Ethernet) |
@@ -39,8 +39,9 @@
 > [!IMPORTANT]
 > tvOS guarantees only 500 KB of persistent storage per app. Everything
 > under the web root — ROMs, BIOS, saves, states, playlists, shaders and
-> per-core overrides — lives in purgeable cache that tvOS deletes silently
-> under storage pressure. Back it up via WebDAV.
+> per-core overrides — lives in purgeable cache that tvOS may delete
+> silently under storage pressure while RetroArch is not running. Back it
+> up via WebDAV.
 
 `retroarch.cfg` is mirrored to NSUserDefaults (RetroArch ≥ 1.16.0) and
 restored from there after a purge, with assets re-extracted (≥ 1.18.0).
@@ -53,7 +54,7 @@ mirror.
 ## File Transfers
 
 tvOS has no Files app; RetroArch's built-in servers handle all transfers
-and RetroArch must be running.
+and run only while RetroArch is in the foreground.
 
 <details open>
 <summary><b>Servers</b></summary>
@@ -71,9 +72,10 @@ From Linux: Dolphin `webdav://<atv-ip>:8080`, GNOME Files
 
 > [!IMPORTANT]
 > Both servers are unauthenticated with no auth or TLS option — anyone on
-> the LAN can read or overwrite saves, states and configuration.
-> Restrict ports 80 and 8080 on the Apple TV's IP with router firewall
-> rules or a VLAN.
+> the LAN can read or overwrite saves, states and configuration while
+> RetroArch is in the foreground. A router firewall does not filter
+> traffic between hosts on one LAN; isolate the Apple TV on its own VLAN
+> if other clients are untrusted.
 
 ```
 /                              ← web interface / WebDAV root (tvOS cache)
@@ -106,7 +108,7 @@ matches against the system database you select.
 | Genesis / MD, Master System | 1 | `megadrive/` `mastersystem/` | `.md` `.gen` `.bin`; `.sms` | Genesis Plus GX | `Sega - Mega Drive - Genesis`; `Sega - Master System - Mark III` | — |
 | Sega CD / Mega CD | 1 | `segacd/` | `.cue` `.chd` | Genesis Plus GX | `Sega - Mega-CD - Sega CD` | `bios_CD_U.bin`, `bios_CD_E.bin`, `bios_CD_J.bin` |
 | PC Engine / TG-16, TurboGrafx-CD | 1 | `pce/` | `.pce`; `.cue` `.chd` | Beetle PCE Fast | `NEC - PC Engine - TurboGrafx 16`; `NEC - PC Engine CD - TurboGrafx-CD` | `syscard3.pce` (CD) |
-| Neo Geo, Arcade (CPS1/2/3) | 1 | `neogeo/` `fbneo/` | `.zip` | FinalBurn Neo | `SNK - Neo Geo`; `FBNeo - Arcade Games` | `neogeo.zip` (also in `config/ROMs/neogeo/`) |
+| Neo Geo, Arcade (CPS1/2/3) | 1 | `neogeo/` `fbneo/` | `.zip` | FinalBurn Neo | `SNK - Neo Geo`; `FBNeo - Arcade Games` | `fbneo/neogeo.zip` (also beside the games in `config/ROMs/neogeo/`) |
 | Nintendo 64 | 2 | `n64/` | `.n64` `.z64` `.v64` | Mupen64Plus-Next | `Nintendo - Nintendo 64` | — |
 
 </details>
@@ -129,8 +131,9 @@ Per-core overrides and core options for these cores ship in
 
 ## Controllers
 
-Pair via tvOS Settings → Remotes and Devices → Bluetooth. RetroArch on
-tvOS recognizes at most three controllers
+Pair via tvOS Settings → Remotes and Devices → Bluetooth. tvOS allows
+four controllers, or one while a Bluetooth audio accessory is connected;
+RetroArch on tvOS recognizes at most three
 ([#16685](https://github.com/libretro/RetroArch/issues/16685)); ghost
 inputs from controllers 2+ can bleed into controller 1
 ([#18447](https://github.com/libretro/RetroArch/issues/18447)). Backing
@@ -143,7 +146,7 @@ not a bug ([#18286](https://github.com/libretro/RetroArch/issues/18286)).
 | Controller | Status |
 |------------|--------|
 | PS5 DualSense / Edge, Xbox Series X/S | Recommended |
-| PS4 DualShock 4, 8BitDo Pro 2, SteelSeries Nimbus+ | Works |
+| PS4 DualShock 4, 8BitDo Pro 2 (mode switch D), SteelSeries Nimbus+ | Works |
 | Nintendo Switch Pro | Caution — source of the [#18286](https://github.com/libretro/RetroArch/issues/18286) exit report (root-menu Back, see above); A / B labels sit swapped against the PS / Xbox layout |
 
 </details>
@@ -212,7 +215,7 @@ the slot, keeping at most 10.
 | `fastforward_ratio` | `4.0` | Raise only with thermal headroom (passive A15) |
 | `fps_show` | `true` | `false` to hide the on-screen frame-rate counter |
 | `video_refresh_rate` | `60.000000` | Seed for 60 Hz SDR; calibrate via Settings → Video → Output |
-| `vrr_runloop_enable` | `false` | Never — Apple TV has no game VRR; `true` disables Dynamic Rate Control (judder, desync) |
+| `vrr_runloop_enable` | `false` | Never — Apple TV has no game VRR; `true` drops the audio timing-skew sync to the display and paces on video only |
 | `run_ahead_enabled` | `false` | Per-core `true` on Tier 1 via retroarch-configs; per-game on Mupen |
 
 </details>
@@ -237,9 +240,8 @@ The pipeline is on (`video_shader_enable = "true"`) with no global
 preset. Per core: Quick Menu → Shaders → Load Preset → pick a preset →
 Manage Presets → Save Core Preset; adjust preset parameters under Quick
 Menu → Shaders → Shader Parameters; Manage Presets → Remove Core Preset
-undoes it. Avoid CRT-Royale, CRT-Geom-Deluxe,
-Guest-Dr-Venom, Guest-Advanced and Mega Bezel — they exceed the A15 GPU
-budget.
+undoes it. Avoid CRT-Royale, CRT-Geom-Deluxe, Guest-Advanced and Mega
+Bezel — they exceed the A15 GPU budget.
 
 <details open>
 <summary><b>Presets</b></summary>
@@ -260,9 +262,10 @@ budget.
 |---------|-----|
 | Uploaded `retroarch.cfg` changed nothing | It must sit at `/config/retroarch.cfg`; relaunch without saving first ([File Transfers](#file-transfers)) |
 | Pad cannot reach the menu | L3 + R3 only — tvOS keeps the Home button ([Configuration](#configuration)) |
+| Bad `retroarch.cfg` locks you out | tvOS Settings → Apps → RetroArch → Restore Default Config, then quit and relaunch: the file is renamed to `config/RetroArch-HHmm-yyMMdd.cfg`, the mirror is cleared and defaults load (menu combo Down + Y + L1 + R1); re-upload ([File Transfers](#file-transfers)) |
 | Hotkeys dead while content runs | Game Focus is on: keep `input_auto_game_focus = "0"` and leave its toggle unbound ([Configuration](#configuration)) |
 | App drops to the tvOS Home Screen | Back at the menu root — tvOS behaviour on any pad ([Controllers](#controllers)) |
-| Fourth pad ignored, phantom inputs on pad 1 | Three-pad cap and #18447 ghosting ([Controllers](#controllers)) |
+| Extra pads ignored, phantom inputs on pad 1 | Three-pad cap, one pad while Bluetooth audio is connected, #18447 ghosting ([Controllers](#controllers)) |
 | ROMs, saves or overrides vanished | tvOS purged the cache: config returns from the mirror if saved once, assets re-extract, re-upload the rest ([Storage Persistence](#storage-persistence)) |
 | Arcade set will not load | Set must match FBNeo's DAT; `neogeo.zip` beside Neo Geo games ([Manual Scan](#manual-scan)) |
 | Audio crackle | Raise `audio_latency` (`64` → `96`) before touching anything else |
