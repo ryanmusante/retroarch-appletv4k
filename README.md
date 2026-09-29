@@ -1,6 +1,6 @@
 # retroarch-appletv4k
 
-[![version](https://img.shields.io/badge/version-5.6-blue.svg)](CHANGELOG.md)
+[![version](https://img.shields.io/badge/version-5.7-blue.svg)](CHANGELOG.md)
 [![companion](https://img.shields.io/badge/companion-retroarch--configs-blue.svg)](https://github.com/ryanmusante/retroarch-configs)
 
 > RetroArch setup for Apple TV 4K 3rd Gen (tvOS 27, RetroArch v1.22.x)
@@ -10,11 +10,20 @@
 
 ## Quick Start
 
-1. App Store → RetroArch (developer: Libretro). On first launch note the two URLs in the Welcome popup; the IP is also under tvOS Settings → Network.
-2. Main Menu → Online Updater → Update Assets, Update Core Info Files, Update Databases, Update Slang Shaders.
-3. Upload `retroarch.cfg` to `/config/` ([File Transfers](#file-transfers)), then quit and relaunch RetroArch — the menu should come back in XMB's Gray Dark theme.
-4. Pair a controller ([Controllers](#controllers)), bind the hotkeys, set the two directories ([Storage Persistence](#storage-persistence)) and save the configuration once ([Configuration](#configuration)).
-5. Upload ROMs and BIOS ([Systems](#systems)); Main Menu → Import Content → Manual Scan per system folder ([Manual Scan](#manual-scan)). Playlists appear as XMB tabs.
+1. App Store → RetroArch (developer: Libretro). On first launch note the
+   two URLs in the Welcome popup; the IP is also under tvOS Settings →
+   Network.
+2. Main Menu → Online Updater → Update Assets, Update Core Info Files,
+   Update Databases, Update Slang Shaders.
+3. Upload `retroarch.cfg` to `/config/`
+   ([File Transfers](#file-transfers)), then quit and relaunch RetroArch
+   — the menu should come back in XMB's Gray Dark theme.
+4. Pair a controller ([Controllers](#controllers)), bind the hotkeys, set
+   the two directories ([Storage Persistence](#storage-persistence)) and
+   save the configuration once ([Configuration](#configuration)).
+5. Upload ROMs and BIOS ([Systems](#systems)); Main Menu → Import Content
+   → Manual Scan per system folder ([Manual Scan](#manual-scan)).
+   Playlists appear as XMB tabs.
 
 > [!IMPORTANT]
 > Do not use "Save Current Configuration" between uploading
@@ -26,7 +35,7 @@
 
 | Component | Requirement |
 |-----------|-------------|
-| Apple TV | 4K 3rd Gen (A2737, A15 Bionic), 64 GB Wi-Fi; tvOS 27 target (App Store floor tvOS 13) |
+| Apple TV | 4K 3rd Gen (A2737, A15 Bionic), 64 GB Wi-Fi; tvOS 27 target (App Store floor tvOS 11) |
 | RetroArch | ≥ v1.20.0 (WebDAV); v1.22.x recommended |
 | Controller | PS5 DualSense or Xbox Series X/S; the Siri Remote is menu-only |
 | Network | Apple TV and computer on the same LAN (the 64 GB model has no Ethernet) |
@@ -47,9 +56,9 @@
 restored from there after a purge, with assets re-extracted (≥ 1.18.0).
 The mirror is refreshed only by Save Current Configuration, so an
 uploaded file is unprotected until saved once. After the uploaded file
-has loaded, set Settings → Directory → File Browser to `config/ROMs/` and
-System/BIOS to `config/BIOS/`, then save — both paths ride along in the
-mirror.
+has loaded, set Settings → Directory → Start Directory to `config/ROMs/`
+and System/BIOS to `config/BIOS/`, then save — both paths ride along in
+the mirror.
 
 ## File Transfers
 
@@ -71,7 +80,7 @@ From Linux: Dolphin `webdav://<atv-ip>:8080`, GNOME Files
 `curl -T retroarch.cfg http://<atv-ip>:8080/config/retroarch.cfg`.
 
 > [!IMPORTANT]
-> Both servers are unauthenticated with no auth or TLS option — anyone on
+> Neither server offers authentication or TLS — anyone on
 > the LAN can read or overwrite saves, states and configuration while
 > RetroArch is in the foreground. A router firewall does not filter
 > traffic between hosts on one LAN; isolate the Apple TV on its own VLAN
@@ -81,7 +90,7 @@ From Linux: Dolphin `webdav://<atv-ip>:8080`, GNOME Files
 /                              ← web interface / WebDAV root (tvOS cache)
 ├── config/
 │   ├── retroarch.cfg          ← this repo
-│   ├── ROMs/<system>/         ← see Systems (File Browser directory)
+│   ├── ROMs/<system>/         ← see Systems (Start Directory)
 │   ├── BIOS/                  ← case-sensitive filenames (System/BIOS directory)
 │   └── <Core Name>/           ← per-core .cfg + .opt (retroarch-configs)
 ├── saves/  states/            ← per-core subfolders (sort_savefiles_enable / sort_savestates_enable)
@@ -116,11 +125,12 @@ matches against the system database you select.
 ### Manual Scan
 
 One scan per System Name: Content Directory → the folder, System Name →
-the database above, Default Core → the core, Start Scan. Where one
-folder holds two systems (`pce/`), set File Extensions (`pce` vs
-`cue chd`) to split the scans. Arcade: Scan Inside Archives off (the
-`.zip` is the ROM); Arcade DAT File → `FinalBurn Neo (ClrMame Pro XML,
-Arcade only).dat` from
+the database above, Default Core → the core, Start Scan. With a core set
+the scan takes every extension the core supports; File Extensions
+narrows it — `pce` vs `cue chd` splits the two systems in `pce/`, and
+`cue chd` keeps `.bin` tracks out of the `segacd/` playlist. Arcade:
+Scan Inside Archives off (the `.zip` is the ROM); Arcade DAT File →
+`FinalBurn Neo (ClrMame Pro XML, Arcade only).dat` from
 [FBNeo/dats](https://github.com/libretro/FBNeo/tree/master/dats),
 uploaded to the device, gives proper titles, and Arcade DAT Filter drops
 sets the core cannot load — FBNeo wants sets built against its own DAT,
@@ -175,8 +185,8 @@ saved file, so re-apply the binds and directories and save again.
 |--------|-------|
 | Quick Menu | L3 + R3 |
 | Save / Load State | Select + R1 / Select + L1 |
-| State Slot ± | Select + D-Pad Right / Left |
-| Fast Forward / Rewind | Select + R2 / Select + L2 (rewind off globally; enable per-game) |
+| Next / Previous Save State Slot | Select + D-Pad Right / Left |
+| Fast-Forward (Toggle) / Rewind | Select + R2 / Select + L2 (rewind off globally; enable per-game) |
 | Close Content | Select + Start (auto-saves to slot Auto; to resume, step State Slot down to Auto, then Select + L1) |
 
 </details>
@@ -267,8 +277,8 @@ Bezel — they exceed the A15 GPU budget.
 | App drops to the tvOS Home Screen | Back at the menu root — tvOS behaviour on any pad ([Controllers](#controllers)) |
 | Extra pads ignored, phantom inputs on pad 1 | Three-pad cap, one pad while Bluetooth audio is connected, #18447 ghosting ([Controllers](#controllers)) |
 | ROMs, saves or overrides vanished | tvOS purged the cache: config returns from the mirror if saved once, assets re-extract, re-upload the rest ([Storage Persistence](#storage-persistence)) |
-| Arcade set will not load | Set must match FBNeo's DAT; `neogeo.zip` beside Neo Geo games ([Manual Scan](#manual-scan)) |
-| Audio crackle | Raise `audio_latency` (`64` → `96`) before touching anything else |
+| Arcade set will not load | Set must match FBNeo's DAT ([Manual Scan](#manual-scan)); Neo Geo also needs `neogeo.zip` in `config/BIOS/fbneo/` or beside the games ([Systems](#systems)) |
+| Audio crackle | Raise `audio_latency` (`64` → `96`) before touching anything else ([Configuration](#configuration)) |
 | Judder or drift | Match Frame Rate off, 4K SDR 60 Hz, `vrr_runloop_enable` stays `false` ([Configuration](#configuration)) |
 
 </details>

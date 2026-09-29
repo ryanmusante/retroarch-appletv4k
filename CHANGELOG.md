@@ -1,3 +1,39 @@
+# 5.7 - 2026-09-28
+
+  - v5.7: audit release against the RetroArch v1.22.2 tag and upstream
+    core, database and shader sources. retroarch.cfg 74 keys unchanged.
+    Lockstep with companion retroarch-configs v5.7.
+  - README.md: Storage Persistence and the directory tree name the
+    Directory entry Start Directory, its v1.22.2 label (File Browser is
+    the User Interface submenu). Manual Scan: with a core set the scan
+    takes every core extension and prunes only M3U-listed files, so File
+    Extensions cue chd now also covers segacd/, keeping .bin tracks out
+    of the playlist.
+  - README.md: Hotkeys rows use the bind labels Next / Previous Save
+    State Slot and Fast-Forward (Toggle); Troubleshooting arcade row adds
+    config/BIOS/fbneo/ with a Systems link, Audio crackle row links
+    Configuration; server security note reworded; Prerequisites App Store
+    floor tvOS 13 -> 11 (RetroArchTV target, project.pbxproj @v1.22.2);
+    Quick Start steps wrapped to the prose width. Badge 5.6 -> 5.7.
+  - Verified: 74 keys in configuration.c @v1.22.2; theme 20 = Gray Dark,
+    aspect 22 = Core provided, combo 2 = L3 + R3 (tvOS default Down + Y
+    + L1 + R1), integer scaling 1 = Overscale; coreaudio is the tvOS
+    audio driver (BaseConfig.xcconfig); README menu labels against
+    msg_hash_us.h; 13 System Names in libretro-database/rdb; Arcade-only
+    DAT present; #16685, #18447, #18286 open, #14201 closed; zfast-crt
+    and lcd-grid-v2 single-pass; retroarch.cfg loads through
+    libretro-common config_file.c as exactly the 74 listed keys.
+  - README.md: byte size 15811; line count 295; cfg key count 74 unchanged.
+  - retroarch.cfg: header + paired stamps v5.6 -> v5.7; header target
+    now reads (tvOS 27, RetroArch v1.22.x); body byte-identical.
+  - Companion v5.7: 7 `.cfg` header + paired stamps v5.6 -> v5.7;
+    Mupen64Plus-Next.cfg video keys in the global order; FinalBurn Neo
+    headers read Neo Geo/Arcade; config/.gitkeep deleted; README badge
+    and Quick Start wrap.
+  - CHANGELOG.md: trim v5.2 per 5-release retention; retained entries are
+    now v5.3-v5.7.
+
+
 # 5.6 - 2026-09-26
 
   - v5.6: deep-scan release against upstream source and Apple
@@ -134,26 +170,3 @@
     byte-identical; README Quick Start, Layout and override-table wording.
   - CHANGELOG.md: trim v4.5 per 5-release retention; retained entries are
     now v4.6-v5.3.
-
-
-# 5.2 - 2026-09-05
-
-  - v5.2: final audit release. retroarch.cfg 74 keys unchanged. Lockstep with
-    companion retroarch-configs v5.2.
-  - README.md: File Transfers warning regains its consequence (anyone on the
-    LAN can read or overwrite saves, states and configuration); Quick Start
-    step 5 regains where playlists appear; Shaders regains the Shader
-    Parameters path.
-  - README.md: Tuning gains `video_refresh_rate` (60 Hz seed; calibrate via
-    Settings -> Video -> Output); the cfg summary marks preemptive frames as
-    mutually exclusive with run-ahead. Badge 5.1 -> 5.2.
-  - Verified: every cited key / value matches retroarch.cfg; section key
-    counts sum to 74; Systems core names match the companion's file names.
-  - README.md: byte size 10790; line count 233; cfg key count 74
-    unchanged.
-  - retroarch.cfg: header + paired stamps v5.1 -> v5.2; body unchanged.
-  - Companion v5.2: 7 `.cfg` header + paired stamps v5.1 -> v5.2; 7 `.opt`
-    byte-identical; README File roles path corrected, inherited-keys line
-    and DMC / FrameDuping rationale restored.
-  - CHANGELOG.md: trim v4.4 per 5-release retention; retained entries are
-    now v4.5-v5.2.
