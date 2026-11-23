@@ -1,6 +1,6 @@
 # retroarch-appletv4k
 
-[![version](https://img.shields.io/badge/version-5.7-blue.svg)](CHANGELOG.md)
+[![version](https://img.shields.io/badge/version-5.8-blue.svg)](CHANGELOG.md)
 [![companion](https://img.shields.io/badge/companion-retroarch--configs-blue.svg)](https://github.com/ryanmusante/retroarch-configs)
 
 > RetroArch setup for Apple TV 4K 3rd Gen (tvOS 27, RetroArch v1.22.x)
@@ -147,7 +147,7 @@ RetroArch on tvOS recognizes at most three
 ([#16685](https://github.com/libretro/RetroArch/issues/16685)); ghost
 inputs from controllers 2+ can bleed into controller 1
 ([#18447](https://github.com/libretro/RetroArch/issues/18447)). Backing
-out of the menu root backgrounds the app on any pad — tvOS behaviour,
+out of the menu root backgrounds the app on any pad — tvOS behavior,
 not a bug ([#18286](https://github.com/libretro/RetroArch/issues/18286)).
 
 <details open>
@@ -274,7 +274,7 @@ Bezel — they exceed the A15 GPU budget.
 | Pad cannot reach the menu | L3 + R3 only — tvOS keeps the Home button ([Configuration](#configuration)) |
 | Bad `retroarch.cfg` locks you out | tvOS Settings → Apps → RetroArch → Restore Default Config, then quit and relaunch: the file is renamed to `config/RetroArch-HHmm-yyMMdd.cfg`, the mirror is cleared and defaults load (menu combo Down + Y + L1 + R1); re-upload ([File Transfers](#file-transfers)) |
 | Hotkeys dead while content runs | Game Focus is on: keep `input_auto_game_focus = "0"` and leave its toggle unbound ([Configuration](#configuration)) |
-| App drops to the tvOS Home Screen | Back at the menu root — tvOS behaviour on any pad ([Controllers](#controllers)) |
+| App drops to the tvOS Home Screen | Back at the menu root — tvOS behavior on any pad ([Controllers](#controllers)) |
 | Extra pads ignored, phantom inputs on pad 1 | Three-pad cap, one pad while Bluetooth audio is connected, #18447 ghosting ([Controllers](#controllers)) |
 | ROMs, saves or overrides vanished | tvOS purged the cache: config returns from the mirror if saved once, assets re-extract, re-upload the rest ([Storage Persistence](#storage-persistence)) |
 | Arcade set will not load | Set must match FBNeo's DAT ([Manual Scan](#manual-scan)); Neo Geo also needs `neogeo.zip` in `config/BIOS/fbneo/` or beside the games ([Systems](#systems)) |

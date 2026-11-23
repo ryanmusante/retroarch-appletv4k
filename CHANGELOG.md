@@ -1,3 +1,15 @@
+# 5.8 - 2026-10-29
+
+  - v5.8: lockstep release with retroarch-configs v5.8; retroarch.cfg 74
+    keys unchanged.
+  - README.md: spell behavior the US way (Controllers, Troubleshooting);
+    badge 5.7 -> 5.8.
+  - retroarch.cfg: header and paired stamps v5.7 -> v5.8; body
+    byte-identical.
+  - CHANGELOG.md: trim v5.3 per 5-release retention; keep v5.4-v5.8; rewrap
+    a v5.7 line that began with + and rendered as a list item.
+
+
 # 5.7 - 2026-09-28
 
   - v5.7: audit release against the RetroArch v1.22.2 tag and upstream
@@ -16,8 +28,8 @@
     floor tvOS 13 -> 11 (RetroArchTV target, project.pbxproj @v1.22.2);
     Quick Start steps wrapped to the prose width. Badge 5.6 -> 5.7.
   - Verified: 74 keys in configuration.c @v1.22.2; theme 20 = Gray Dark,
-    aspect 22 = Core provided, combo 2 = L3 + R3 (tvOS default Down + Y
-    + L1 + R1), integer scaling 1 = Overscale; coreaudio is the tvOS
+    aspect 22 = Core provided, combo 2 = L3 + R3 (tvOS default Down +
+    Y + L1 + R1), integer scaling 1 = Overscale; coreaudio is the tvOS
     audio driver (BaseConfig.xcconfig); README menu labels against
     msg_hash_us.h; 13 System Names in libretro-database/rdb; Arcade-only
     DAT present; #16685, #18447, #18286 open, #14201 closed; zfast-crt
@@ -132,41 +144,3 @@
     paths.
   - CHANGELOG.md: trim v4.6 per 5-release retention; retained entries are
     now v5.0-v5.4.
-
-
-# 5.3 - 2026-09-05
-
-  - v5.3: audit release against upstream source (RetroArch v1.22.2 tag and
-    master) and live GitHub issue state. retroarch.cfg 74 keys unchanged.
-    Lockstep with companion retroarch-configs v5.3.
-  - README.md: upload target corrected to /config/ - the tvOS build keeps
-    retroarch.cfg at <cache>/RetroArch/config/retroarch.cfg while the web /
-    WebDAV root is <cache>/RetroArch (WebServer.m, ui_cocoatouch.m).
-    Directory tree redrawn: saves/, states/ and shaders/ sit at the root per
-    platform_darwin.m defaults, not under config/.
-  - README.md: Close Content writes one auto-save state to slot Auto
-    (.state.auto); auto-index and the 10-state cap govern manual saves only.
-    Hotkey row, save prose and the cfg summary Saves row corrected.
-  - README.md: Configuration - tvOS reserves the controller Home button
-    (Apple developer forum thread 715012); tvOS default combo Down + Y + L1
-    + R1 named; NSUserDefaults mirror refreshes only on Save Current
-    Configuration; re-uploading the 74-key file drops saved binds and
-    directory choices. Storage Persistence and Quick Start step 4 follow.
-  - README.md: Controllers - backing out of the menu root backgrounds the
-    app on any pad (#18286 maintainer reply); Switch Pro row Avoid ->
-    Caution. Tuning: video_hdr_enable has no effect on the v1.22.x Metal
-    driver (HDR output lands on master as video_hdr_mode). Security row
-    notes the network command interface enabled on tvOS in 1.22.1; Menu row
-    names theme 20 (Gray Dark); playlists appear as XMB tabs; server table
-    uses <atv-ip> / <device-name>.local. Badge 5.2 -> 5.3.
-  - Verified: all 74 keys present in configuration.c @v1.22.2; combo 2 =
-    L3 + R3, aspect 22 = Core provided, integer scaling 1 = Overscale;
-    ports 80 / 8080 and no auth in WebServer.m; issues #16685, #18447,
-    #18286 open, #14201 closed; both shader presets present upstream.
-  - README.md: byte size 12011; line count 243; cfg key count 74 unchanged.
-  - retroarch.cfg: header + paired stamps v5.2 -> v5.3; header upload path
-    corrected to /config/; body byte-identical.
-  - Companion v5.3: 7 `.cfg` header + paired stamps v5.2 -> v5.3; 7 `.opt`
-    byte-identical; README Quick Start, Layout and override-table wording.
-  - CHANGELOG.md: trim v4.5 per 5-release retention; retained entries are
-    now v4.6-v5.3.
